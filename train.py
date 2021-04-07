@@ -70,6 +70,7 @@ def train(env, args, writer):
 
     # Main Loop
     (p1_state, p2_state) = env.reset()
+
     for frame_idx in range(1, args.max_frames + 1):
         is_best_response = False
         # TODO(Aiden):
@@ -83,9 +84,13 @@ def train(env, args, writer):
             p1_action = p1_current_model.act(torch.FloatTensor(p1_state).to(args.device), epsilon)
             p2_action = p2_current_model.act(torch.FloatTensor(p2_state).to(args.device), epsilon)
 
-        actions = {"1": p1_action, "2": p2_action}
+        if "LaserTag" in  env.spec.id:
+            actions = {"1": p1_action, "2": p2_action}
+        else: # PettingZoo style env
+            actions = {"first_0": p1_action, "second_0": p2_action}
+            
         (p1_next_state, p2_next_state), reward, done, info = env.step(actions)
-
+        
         # Save current state, reward, action to deque for multi-step learning
         p1_state_deque.append(p1_state)
         p2_state_deque.append(p2_state)
@@ -144,22 +149,23 @@ def train(env, args, writer):
             frame_idx % args.train_freq == 0):
 
             # Update Best Response with Reinforcement Learning
-            loss = compute_rl_loss(p1_current_model, p1_target_model, p1_replay_buffer, p1_rl_optimizer, args)
-            p1_rl_loss_list.append(loss.item())
-            writer.add_scalar("p1/rl_loss", loss.item(), frame_idx)
+            p1_rl_loss = compute_rl_loss(p1_current_model, p1_target_model, p1_replay_buffer, p1_rl_optimizer, args)
+            p1_rl_loss_list.append(p1_rl_loss.item())
+            writer.add_scalar("p1/rl_loss", p1_rl_loss.item(), frame_idx)
 
-            loss = compute_rl_loss(p2_current_model, p2_target_model, p2_replay_buffer, p2_rl_optimizer, args)
-            p2_rl_loss_list.append(loss.item())
-            writer.add_scalar("p2/rl_loss", loss.item(), frame_idx)
+            p2_rl_loss = compute_rl_loss(p2_current_model, p2_target_model, p2_replay_buffer, p2_rl_optimizer, args)
+            p2_rl_loss_list.append(p2_rl_loss.item())
+            writer.add_scalar("p2/rl_loss", p2_rl_loss.item(), frame_idx)
 
             # Update Average Strategy with Supervised Learning
-            loss = compute_sl_loss(p1_policy, p1_reservoir_buffer, p1_sl_optimizer, args)
-            p1_sl_loss_list.append(loss.item())
-            writer.add_scalar("p1/sl_loss", loss.item(), frame_idx)
+            p1_sl_loss = compute_sl_loss(p1_policy, p1_reservoir_buffer, p1_sl_optimizer, args)
+            p1_sl_loss_list.append(p1_sl_loss.item())
+            writer.add_scalar("p1/sl_loss", p1_sl_loss.item(), frame_idx)
 
-            loss = compute_sl_loss(p2_policy, p2_reservoir_buffer, p2_sl_optimizer, args)
-            p2_sl_loss_list.append(loss.item())
-            writer.add_scalar("p2/sl_loss", loss.item(), frame_idx)
+            p2_sl_loss = compute_sl_loss(p2_policy, p2_reservoir_buffer, p2_sl_optimizer, args)
+            p2_sl_loss_list.append(p2_sl_loss.item())
+            writer.add_scalar("p2/sl_loss", p2_sl_loss.item(), frame_idx)
+            # print(f"Frame: {frame_idx},  P1/RL Loss: {p1_rl_loss:.2f}, P2/RL Loss: {p2_rl_loss:.2f}, P1/SL Loss: {p1_sl_loss:.2f}, P2/SL Loss: {p2_sl_loss:.2f},")
         
 
         if frame_idx % args.update_target == 0:

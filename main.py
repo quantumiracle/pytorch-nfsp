@@ -8,7 +8,7 @@ import time, os
 from tensorboardX import SummaryWriter
 
 from common.utils import create_log_dir, print_args, set_global_seeds
-from common.wrappers import wrap_pytorch
+from common.wrappers import wrap_pytorch, make_env
 from arguments import get_args
 from train import train
 from test import test
@@ -20,9 +20,10 @@ def main():
     log_dir = create_log_dir(args)
     if not args.evaluate:
         writer = SummaryWriter(log_dir)
+    SEED = 721
+    env = make_env(args.env)  # "LaserTag-small2-v0"   "SlimeVolleyPixel-v0"
 
-    env = gym.make(args.env)
-    env = wrap_pytorch(env)
+    print(env.observation_space, env.action_space)
 
     set_global_seeds(args.seed)
     env.seed(args.seed)
