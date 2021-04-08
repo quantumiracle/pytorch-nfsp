@@ -37,7 +37,10 @@ def test(env, args):
             p1_action = p1_policy.act(torch.FloatTensor(p1_state).to(args.device))
             p2_action = p2_policy.act(torch.FloatTensor(p2_state).to(args.device))
 
-            actions = {"1": p1_action, "2": p2_action}
+            if "LaserTag" in  env.spec.id:
+                actions = {"1": p1_action, "2": p2_action}
+            else: # PettingZoo style env
+                actions = {"first_0": p1_action, "second_0": p2_action}
 
             (p1_next_state, p2_next_state), reward, done, _ = env.step(actions)
 

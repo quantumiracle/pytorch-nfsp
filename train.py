@@ -158,13 +158,13 @@ def train(env, args, writer):
             writer.add_scalar("p2/rl_loss", p2_rl_loss.item(), frame_idx)
 
             # Update Average Strategy with Supervised Learning
-            p1_sl_loss = compute_sl_loss(p1_policy, p1_reservoir_buffer, p1_sl_optimizer, args)
-            p1_sl_loss_list.append(p1_sl_loss.item())
-            writer.add_scalar("p1/sl_loss", p1_sl_loss.item(), frame_idx)
+            # p1_sl_loss = compute_sl_loss(p1_policy, p1_reservoir_buffer, p1_sl_optimizer, args)
+            # p1_sl_loss_list.append(p1_sl_loss.item())
+            # writer.add_scalar("p1/sl_loss", p1_sl_loss.item(), frame_idx)
 
-            p2_sl_loss = compute_sl_loss(p2_policy, p2_reservoir_buffer, p2_sl_optimizer, args)
-            p2_sl_loss_list.append(p2_sl_loss.item())
-            writer.add_scalar("p2/sl_loss", p2_sl_loss.item(), frame_idx)
+            # p2_sl_loss = compute_sl_loss(p2_policy, p2_reservoir_buffer, p2_sl_optimizer, args)
+            # p2_sl_loss_list.append(p2_sl_loss.item())
+            # writer.add_scalar("p2/sl_loss", p2_sl_loss.item(), frame_idx)
             # print(f"Frame: {frame_idx},  P1/RL Loss: {p1_rl_loss:.2f}, P2/RL Loss: {p2_rl_loss:.2f}, P1/SL Loss: {p1_sl_loss:.2f}, P2/SL Loss: {p2_sl_loss:.2f},")
         
 
