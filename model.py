@@ -28,17 +28,25 @@ class DQNBase(nn.Module):
         
         self.input_shape = env.observation_space.shape
         self.num_actions = env.action_space.n
-
         self.flatten = Flatten()
-        
-        self.features = nn.Sequential(
-            nn.Conv2d(self.input_shape[0], 8, kernel_size=4, stride=2),
-            cReLU(),
-            nn.Conv2d(16, 8, kernel_size=5, stride=1),
-            cReLU(),
-            nn.Conv2d(16, 8, kernel_size=3, stride=1),
-            cReLU()
-        )
+        if len(self.input_shape) > 1: # image
+            self.features = nn.Sequential(
+                nn.Conv2d(self.input_shape[0], 8, kernel_size=4, stride=2),
+                cReLU(),
+                nn.Conv2d(16, 8, kernel_size=5, stride=1),
+                cReLU(),
+                nn.Conv2d(16, 8, kernel_size=3, stride=1),
+                cReLU()
+            )
+        else:
+            self.features = nn.Sequential(
+                nn.Linear(self.input_shape[0], 64),
+                nn.ReLU(),
+                nn.Linear(64, 64),
+                nn.ReLU(),
+                nn.Linear(64, 32),
+                nn.ReLU(),
+            )
         
         self.fc = nn.Sequential(
             nn.Linear(self._feature_size(), 32),
@@ -54,6 +62,7 @@ class DQNBase(nn.Module):
         return x
     
     def _feature_size(self):
+        # print(torch.zeros(1, *self.input_shape).shape)
         return self.features(torch.zeros(1, *self.input_shape)).view(1, -1).size(1)
     
     def act(self, state, epsilon):

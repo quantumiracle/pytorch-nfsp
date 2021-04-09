@@ -336,8 +336,13 @@ class NFSPPettingZooWrapper():
     def __init__(self, env):
         super(NFSPPettingZooWrapper, self).__init__()
         self.env = env
-        old_shape = self.env.observation_space.shape
-        self.observation_space = gym.spaces.Box(low=0.0, high=1.0, shape=(old_shape[-1], old_shape[0], old_shape[1]), dtype=np.uint8)
+        if len(env.observation_space.shape) > 1: # image
+            old_shape = env.observation_space.shape
+            self.observation_space = gym.spaces.Box(low=0.0, high=1.0, shape=(old_shape[-1], old_shape[0], old_shape[1]), dtype=np.uint8)
+            self.obs_type = 'rgb_image'
+        else:
+            self.observation_space = env.observation_space
+            self.obs_type = 'ram'
         self.action_space = env.action_space
         fake_env = gym.make('Pong-v0')
         self.spec = fake_env.spec
@@ -352,11 +357,17 @@ class NFSPPettingZooWrapper():
     
     def reset(self):
         obs_dict = self.env.reset()
-        return self.observation_swapaxis(tuple(obs_dict.values()))
+        if self.obs_type == 'ram':
+            return tuple(obs_dict.values())
+        else:
+            return self.observation_swapaxis(tuple(obs_dict.values()))
 
     def step(self, actions):
         obs, rewards, dones, infos = self.env.step(actions)
-        o = self.observation_swapaxis(tuple(obs.values()))
+        if self.obs_type == 'ram':
+            o = tuple(obs.values())
+        else:
+            o = self.observation_swapaxis(tuple(obs.values()))
         r = list(rewards.values())
         d = np.any(np.array(list(dones.values())))
         info = list(infos.values())
