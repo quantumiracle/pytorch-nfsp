@@ -362,8 +362,11 @@ class NFSPPettingZooWrapper():
         else:
             return self.observation_swapaxis(tuple(obs_dict.values()))
 
-    def step(self, actions):
-        obs, rewards, dones, infos = self.env.step(actions)
+    def step(self, actions, against_baseline=False):
+        if against_baseline:
+            obs, rewards, dones, infos = self.env.step(actions, against_baseline)
+        else:
+            obs, rewards, dones, infos = self.env.step(actions)
         if self.obs_type == 'ram':
             o = tuple(obs.values())
         else:
