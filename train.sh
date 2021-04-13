@@ -1,6 +1,6 @@
-echo "Running DATE:" $(date +"%Y-%m-%d %H:%M")
-
+echo "Running DATE:" $(date +"%Y-%m-%d %H:%M") 
 DATE=`date '+%Y%m%d_%H%M'`
+echo "Save as: " $DATE
 
 #nohup python main.py --env 'SlimeVolleyPixel-v0' --train-freq 1000 --batch-size 256 > log/$DATE$RAND.log &
 # nohup python main.py --env 'pong_v1'  > log/$DATE$RAND.log &

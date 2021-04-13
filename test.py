@@ -34,11 +34,13 @@ def test(env, args):
                 sleep(0.01)
 
             # Agents follow average strategy
+            p1_action = p1_policy.act(torch.FloatTensor(p1_state).to(args.device))
+            p2_action = p2_policy.act(torch.FloatTensor(p2_state).to(args.device))
+
+            # test: try to follow the most recent DQN 
             # p1_action = p1_current_model.act(torch.FloatTensor(p1_state).to(args.device), 0.)
             # p2_action = p2_current_model.act(torch.FloatTensor(p2_state).to(args.device), 0.)
 
-            p1_action = p1_policy.act(torch.FloatTensor(p1_state).to(args.device))
-            p2_action = p2_policy.act(torch.FloatTensor(p2_state).to(args.device))
 
             if "LaserTag" in  env.spec.id:
                 actions = {"1": p1_action, "2": p2_action}
