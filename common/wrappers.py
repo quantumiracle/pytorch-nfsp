@@ -112,7 +112,6 @@ class WarpFrame(gym.ObservationWrapper):
     :param frame: ([int] or [float]) environment frame
     :return: ([int] or [float]) the observation
     """
-    print("warp frame")
     frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
     frame = cv2.resize(frame, (self.width, self.height), interpolation=cv2.INTER_AREA)
     return frame[:, :, None]
@@ -137,14 +136,18 @@ def make_env(env_name='boxing_v1', seed=1, obs_type='rgb_image'):
     '''https://www.pettingzoo.ml/atari'''
     if "slimevolley" in env_name or "SlimeVolley" in env_name:
         env = gym.make(env_name)
-        env = SlimeVolleyWrapper(env)  # slimevolley to pettingzoo style
+        if env_name in ['SlimeVolleySurvivalNoFrameskip-v0', 'SlimeVolleyNoFrameskip-v0', 'SlimeVolleyPixel-v0']:
+            # For image-based envs, apply following wrappers (from gym atari) to achieve pettingzoo style env, 
+            # or use supersuit (requires input env to be either pettingzoo or gym env).
+            # same as: https://github.com/hardmaru/slimevolleygym/blob/master/training_scripts/train_ppo_pixel.py
+            if env_name != 'SlimeVolleyPixel-v0':
+                env = NoopResetEnv(env, noop_max=30)
+            env = MaxAndSkipEnv(env, skip=4)
+            env = WarpFrame(env) 
+            # #env = ClipRewardEnv(env)
+            env = FrameStack(env, 4)
 
-        # TODO apply these wrappers for pettingzoo style env, cannot use supersuit since SlimeVolley is neither pettingzoo nor gym env.
-        # env = NoopResetEnv(env, noop_max=30)
-        # env = MaxAndSkipEnv(env, skip=4)
-        # env = WarpFrame(env)  # TODO maybe not use this since it's not an atari game
-        # #env = ClipRewardEnv(env)
-        # env = FrameStack(env, 4)
+        env = SlimeVolleyWrapper(env)  # slimevolley to pettingzoo style
         env = NFSPPettingZooWrapper(env)  # pettingzoo to nfsp style 
 
     elif env_name in AtariEnvs: # PettingZoo envs
@@ -176,15 +179,58 @@ def make_env(env_name='boxing_v1', seed=1, obs_type='rgb_image'):
         env.action_space = list(env.action_spaces.values())[0]
         env = NFSPPettingZooWrapper(env)
 
-    else: # laserframe
+    elif "LaserTag" in env_name: # LaserTag: https://github.com/younggyoseo/pytorch-nfsp
         env = gym.make(env_name)
         env = wrap_pytorch(env)    
+    
+    else: # gym env 
+        try:
+            env = gym.make(env_name)
+        except:
+            print(f"Error: No such env: {env_name}!")
+        env = NFSPAtariWrapper(env)
 
     env.seed(seed)
     return env
 
-class SlimeVolleyWrapper():
-    # action transformation of SlimeVolley 
+class NFSPAtariWrapper():
+    """ Wrap single agent OpenAI gym atari game to be two-agent version """
+    def __init__(self, env):
+        super(NFSPAtariWrapper, self).__init__()
+        self.env = env
+        self.agents = ['first_0', 'second_0']
+        self.observation_space = self.env.observation_space
+        self.observation_spaces = {name: self.env.observation_space for name in self.agents}
+        self.action_space = self.env.action_space
+        self.action_spaces = {name: self.action_space for name in self.agents}
+
+    def reset(self, observation=None):
+        obs1 = self.env.reset()
+        return (obs1, obs1)
+
+    def seed(self, SEED):
+        self.env.seed(SEED)
+
+    def render(self,):
+        self.env.render()
+
+    def step(self, actions, against_baseline=False):
+        action = list(actions.values())[0]
+        next_state, reward, done, info = self.env.step(action)
+        return [next_state, next_state], [reward, reward], done, [info, info]
+
+    def close(self):
+        self.env.close()
+
+class SlimeVolleyWrapper(gym.Wrapper):
+    """ 
+    Wrapper to transform SlimeVolley environment (https://github.com/hardmaru/slimevolleygym) 
+    into PettingZoo (https://github.com/PettingZoo-Team/PettingZoo) env style. 
+    Specifically, most important changes are:
+    1. to make reset() return a dictionary of obsevations: {'agent1_name': obs1, 'agent2_name': obs2}
+    2. to make step() return dict of obs, dict of rewards, dict of dones, dict of infos, in a similar format as above.
+    """
+    # action transformation of SlimeVolley, the inner action is MultiBinary, which can be transformed into Discrete
     action_table = [[0, 0, 0], # NOOP
                     [1, 0, 0], # LEFT (forward)
                     [1, 0, 1], # UPLEFT (forward jump)
@@ -194,7 +240,8 @@ class SlimeVolleyWrapper():
 
 
     def __init__(self, env):
-        super(SlimeVolleyWrapper, self).__init__()
+        # super(SlimeVolleyWrapper, self).__init__()
+        super().__init__(env)
         self.env = env
         self.agents = ['first_0', 'second_0']
         self.observation_space = self.env.observation_space

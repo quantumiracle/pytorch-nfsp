@@ -21,10 +21,7 @@ from common.wrappers import wrap_pytorch, make_env
 from arguments import get_args
 from test import test  # TODO
 
-def train(env, args, writer):
-    model_path = f'models/train_dqn_against_baseline/{args.env}'
-    os.makedirs(model_path, exist_ok=True)
-
+def train(env, args, writer, model_path):
     # RL Model for Player 1
     p1_current_model = DQN(env, args).to(args.device)
     p1_target_model = DQN(env, args).to(args.device)
@@ -92,7 +89,7 @@ def train(env, args, writer):
         if done:
             length_list.append(tag_interval_length)
             tag_interval_length = 0
-
+            
         # Episode done. Reset environment and clear logging records
         if done or tag_interval_length >= args.max_tag_interval:
             (p1_state, p2_state) =  env.reset()  # p1_state=p2_state
@@ -131,8 +128,8 @@ def train(env, args, writer):
         if args.render:
             env.render()
 
-        torch.save(p1_current_model.state_dict(), model_path+'/dqn')
-        torch.save(p1_target_model.state_dict(), model_path+'/dqn_target')
+    torch.save(p1_current_model.state_dict(), model_path+'/dqn')
+    torch.save(p1_target_model.state_dict(), model_path+'/dqn_target')
 
 
 def compute_rl_loss(current_model, target_model, replay_buffer, optimizer, args):
@@ -163,6 +160,41 @@ def compute_rl_loss(current_model, target_model, replay_buffer, optimizer, args)
     optimizer.step()
     return loss
 
+def test(env, args, model_path): 
+    p1_current_model = DQN(env, args).to(args.device)
+    p1_current_model.eval()
+    print('Load model from: ', model_path)
+    p1_current_model.load_state_dict(torch.load(model_path+'/dqn'))
+
+    p1_reward_list = []
+    length_list = []
+
+    for _ in range(30):
+        (p1_state, p2_state) = env.reset()
+        p1_episode_reward = 0
+        p2_episode_reward = 0
+        episode_length = 0
+        while True:
+            if args.render:
+                env.render()
+                # sleep(0.01)
+            p1_action = p1_current_model.act(torch.FloatTensor(p1_state).to(args.device), 0.)  # greedy action
+            actions = {"first_0": p1_action, "second_0": p1_action}  # a replicate of actions, actually the learnable agent is "second_0"
+            (p1_next_state, p2_next_state), reward, done, _ = env.step(actions)
+
+            (p1_state, p2_state) = (p1_next_state, p2_next_state)
+            p1_episode_reward += reward[0]
+            episode_length += 1
+
+            if done:
+                p1_reward_list.append(p1_episode_reward)
+                length_list.append(episode_length)
+                break
+    
+    print("Test Result - Length {:.2f} Reward {:.2f}".format(
+        np.mean(length_list), np.mean(p1_reward_list)))
+    
+
 def multi_step_reward(rewards, gamma):
     ret = 0.
     for idx, reward in enumerate(rewards):
@@ -172,12 +204,14 @@ def multi_step_reward(rewards, gamma):
 def main():
     args = get_args()
     print_args(args)
+    model_path = f'models/train_dqn_against_baseline/{args.env}'
+    os.makedirs(model_path, exist_ok=True)
 
     log_dir = create_log_dir(args)
     if not args.evaluate:
         writer = SummaryWriter(log_dir)
     SEED = 721
-    env = make_env(args.env)  # "SlimeVolley-v0", "SlimeVolleyPixel-v0"
+    env = make_env(args.env)  # "SlimeVolley-v0", "SlimeVolleyPixel-v0" 'Pong-ram-v0'
 
     print(env.observation_space, env.action_space)
 
@@ -185,11 +219,11 @@ def main():
     env.seed(args.seed)
 
     if args.evaluate:
-        test(env, args)
+        test(env, args, model_path)
         env.close()
         return
 
-    train(env, args, writer)
+    train(env, args, writer, model_path)
 
     writer.export_scalars_to_json(os.path.join(log_dir, "all_scalars.json"))
     writer.close()
