@@ -10,9 +10,9 @@ from functools import partial
 
 def DQN(env, args):
     if args.dueling:
-        model = DuelingDQN(env)
+        model = DuelingDQN(env, args.hidden_dim)
     else:
-        model = DQNBase(env)
+        model = DQNBase(env, args.hidden_dim)
     return model
 
 class DQNBase(nn.Module):
@@ -23,12 +23,13 @@ class DQNBase(nn.Module):
     ---------
     env         environment(openai gym)
     """
-    def __init__(self, env):
+    def __init__(self, env, hidden_dim=64):
         super(DQNBase, self).__init__()
         
         self.input_shape = env.observation_space.shape
         self.num_actions = env.action_space.n
         self.flatten = Flatten()
+        self.hidden_dim = hidden_dim
         if len(self.input_shape) > 1: # image
             self.features = nn.Sequential(
                 nn.Conv2d(self.input_shape[0], 8, kernel_size=4, stride=2),
@@ -40,18 +41,18 @@ class DQNBase(nn.Module):
             )
         else:
             self.features = nn.Sequential(
-                nn.Linear(self.input_shape[0], 64),
+                nn.Linear(self.input_shape[0], hidden_dim),
                 nn.ReLU(),
-                nn.Linear(64, 64),
+                nn.Linear(hidden_dim, hidden_dim),
                 nn.ReLU(),
-                nn.Linear(64, 32),
+                nn.Linear(hidden_dim, int(hidden_dim/2)),
                 nn.ReLU(),
             )
         
         self.fc = nn.Sequential(
-            nn.Linear(self._feature_size(), 32),
+            nn.Linear(self._feature_size(), int(hidden_dim/2)),
             nn.ReLU(),
-            nn.Linear(32, self.num_actions)
+            nn.Linear(int(hidden_dim/2), self.num_actions)
         )
         
     def forward(self, x):
@@ -86,15 +87,15 @@ class DuelingDQN(DQNBase):
     Dueling Network Architectures for Deep Reinforcement Learning
     https://arxiv.org/abs/1511.06581
     """
-    def __init__(self, env):
-        super(DuelingDQN, self).__init__(env)
+    def __init__(self, env, hidden_dim=64):
+        super(DuelingDQN, self).__init__(env, hidden_dim)
         
         self.advantage = self.fc
 
         self.value = nn.Sequential(
-            nn.Linear(self._feature_size(), 32),
+            nn.Linear(self._feature_size(), int(hidden_dim/2)),
             nn.ReLU(),
-            nn.Linear(32, 1)
+            nn.Linear(int(hidden_dim/2), 1)
         )
     
     def forward(self, x):

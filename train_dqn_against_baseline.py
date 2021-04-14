@@ -164,7 +164,7 @@ def test(env, args, model_path):
     p1_current_model = DQN(env, args).to(args.device)
     p1_current_model.eval()
     print('Load model from: ', model_path)
-    p1_current_model.load_state_dict(torch.load(model_path+'/dqn'))
+    p1_current_model.load_state_dict(torch.load(model_path+'/dqn', map_location='cuda:0'))
 
     p1_reward_list = []
     length_list = []
@@ -177,10 +177,10 @@ def test(env, args, model_path):
         while True:
             if args.render:
                 env.render()
-                # sleep(0.01)
+                # time.sleep(0.05)
             p1_action = p1_current_model.act(torch.FloatTensor(p1_state).to(args.device), 0.)  # greedy action
             actions = {"first_0": p1_action, "second_0": p1_action}  # a replicate of actions, actually the learnable agent is "second_0"
-            (p1_next_state, p2_next_state), reward, done, _ = env.step(actions)
+            (p1_next_state, p2_next_state), reward, done, _ = env.step(actions, against_baseline=True)
 
             (p1_state, p2_state) = (p1_next_state, p2_next_state)
             p1_episode_reward += reward[0]
@@ -225,7 +225,7 @@ def main():
 
     train(env, args, writer, model_path)
 
-    writer.export_scalars_to_json(os.path.join(log_dir, "all_scalars.json"))
+    # writer.export_scalars_to_json(os.path.join(log_dir, "all_scalars.json"))
     writer.close()
     env.close()
 

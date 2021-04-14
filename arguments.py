@@ -31,6 +31,8 @@ def get_args():
                         help='How many steps of the model to collect transitions for before SL starts')
 
     # Algorithm Arguments
+    parser.add_argument('--hidden-dim', type=int, default=64,
+                        help='Hidden dimension of networks')
     parser.add_argument('--dueling', action='store_true',
                         help='Enable Dueling Network')
     parser.add_argument('--multi-step', type=int, default=1,
