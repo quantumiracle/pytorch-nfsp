@@ -107,7 +107,9 @@ def train(env, args, writer, model_path):
             # Update Best Response with Reinforcement Learning
             p1_rl_loss = compute_rl_loss(p1_current_model, p1_target_model, p1_replay_buffer, p1_rl_optimizer, args)
             p1_rl_loss_list.append(p1_rl_loss.item())
-            writer.add_scalar("p1/rl_loss", p1_rl_loss.item(), frame_idx)
+
+            if frame_idx % args.max_tag_interval == 0:  # not log at every step
+                writer.add_scalar("p1/rl_loss", p1_rl_loss.item(), frame_idx)
 
         if frame_idx % args.update_target == 0:
             update_target(p1_current_model, p1_target_model)
@@ -177,7 +179,7 @@ def test(env, args, model_path):
         while True:
             if args.render:
                 env.render()
-                # time.sleep(0.05)
+                time.sleep(0.05)
             p1_action = p1_current_model.act(torch.FloatTensor(p1_state).to(args.device), 0.)  # greedy action
             actions = {"first_0": p1_action, "second_0": p1_action}  # a replicate of actions, actually the learnable agent is "second_0"
             (p1_next_state, p2_next_state), reward, done, _ = env.step(actions, against_baseline=True)

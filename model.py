@@ -110,12 +110,12 @@ class Policy(DQNBase):
     """
     Policy with only actors. This is used in supervised learning for NFSP.
     """
-    def __init__(self, env):
-        super(Policy, self).__init__(env)
+    def __init__(self, env, hidden_dim=64):
+        super(Policy, self).__init__(env, hidden_dim)
         self.fc = nn.Sequential(
-            nn.Linear(self._feature_size(), 32),
+            nn.Linear(self._feature_size(), int(hidden_dim/2)),
             nn.ReLU(),
-            nn.Linear(32, self.num_actions),
+            nn.Linear(int(hidden_dim/2), self.num_actions),
             nn.Softmax(dim=1)
         )
 
