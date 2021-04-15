@@ -3,8 +3,9 @@ import gym
 from gym import spaces
 # from stable_baselines.common.atari_wrappers import ClipRewardEnv, NoopResetEnv, MaxAndSkipEnv, WarpFrame
 import slimevolleygym
-from slimevolleygym import FrameStack # doesn't use Lazy Frames, easier to debug
 import cv2
+from collections import deque
+
 
 class ImageToPyTorch(gym.ObservationWrapper):
     """
@@ -21,6 +22,41 @@ class ImageToPyTorch(gym.ObservationWrapper):
 
 def wrap_pytorch(env):
     return ImageToPyTorch(env)
+
+
+class FrameStack(gym.Wrapper):
+  def __init__(self, env, n_frames):
+    """
+    Stack n_frames last frames.     (don't use lazy frames)
+    or alternatively, run:
+    from slimevolleygym import FrameStack # doesn't use Lazy Frames, easier to debug
+
+    modified from:
+    stable_baselines.common.atari_wrappers
+    :param env: (Gym Environment) the environment
+    :param n_frames: (int) the number of frames to stack
+    """
+    gym.Wrapper.__init__(self, env)
+    self.n_frames = n_frames
+    self.frames = deque([], maxlen=n_frames)
+    shp = env.observation_space.shape
+    self.observation_space = spaces.Box(low=0, high=255, shape=(shp[0], shp[1], shp[2] * n_frames),
+                                        dtype=env.observation_space.dtype)
+
+  def reset(self):
+    obs = self.env.reset()
+    for _ in range(self.n_frames):
+        self.frames.append(obs)
+    return self._get_ob()
+
+  def step(self, action):
+    obs, reward, done, info = self.env.step(action)
+    self.frames.append(obs)
+    return self._get_ob(), reward, done, info
+
+  def _get_ob(self):
+    assert len(self.frames) == self.n_frames
+    return np.concatenate(list(self.frames), axis=2)
 
 class NoopResetEnv(gym.Wrapper):
   def __init__(self, env, noop_max=30):
@@ -136,14 +172,18 @@ AtariEnvs = ['basketball_pong_v1', 'boxing_v1', 'combat_plane_v1', 'combat_tank_
 for env in AtariEnvs:   
     exec("from pettingzoo.atari import {}".format(env)) 
 
-def make_env(env_name='boxing_v1', seed=1, obs_type='rgb_image'):
+def make_env(args):
+    env_name = args.env
     '''https://www.pettingzoo.ml/atari'''
     if "slimevolley" in env_name or "SlimeVolley" in env_name:
+        print(f'Load SlimeVolley env: {env_name}')
         env = gym.make(env_name)
         if env_name in ['SlimeVolleySurvivalNoFrameskip-v0', 'SlimeVolleyNoFrameskip-v0', 'SlimeVolleyPixel-v0']:
             # For image-based envs, apply following wrappers (from gym atari) to achieve pettingzoo style env, 
             # or use supersuit (requires input env to be either pettingzoo or gym env).
             # same as: https://github.com/hardmaru/slimevolleygym/blob/master/training_scripts/train_ppo_pixel.py
+            # TODO Note: this cannot handle the two obervations in above SlimeVolley envs, 
+            # since the wrappers are for single agent.
             if env_name != 'SlimeVolleyPixel-v0':
                 env = NoopResetEnv(env, noop_max=30)
             env = MaxAndSkipEnv(env, skip=4)
@@ -155,8 +195,13 @@ def make_env(env_name='boxing_v1', seed=1, obs_type='rgb_image'):
         env = NFSPPettingZooWrapper(env)  # pettingzoo to nfsp style 
 
     elif env_name in AtariEnvs: # PettingZoo envs
+        print(f'Load PettingZoo env: {env_name}')
+        if args.ram:
+            obs_type = 'ram'
+        else:
+            obs_type = 'rgb_image'
+
         env = eval(env_name).parallel_env(obs_type=obs_type)
-        # print(env.action_spaces)
 
         if obs_type == 'rgb_image':
             # as per openai baseline's MaxAndSKip wrapper, maxes over the last 2 frames
@@ -184,17 +229,19 @@ def make_env(env_name='boxing_v1', seed=1, obs_type='rgb_image'):
         env = NFSPPettingZooWrapper(env)
 
     elif "LaserTag" in env_name: # LaserTag: https://github.com/younggyoseo/pytorch-nfsp
+        print(f'Load LaserTag env: {env_name}')
         env = gym.make(env_name)
         env = wrap_pytorch(env)    
     
     else: # gym env 
+        print(f'Load Gym env: {env_name}')
         try:
             env = gym.make(env_name)
         except:
             print(f"Error: No such env: {env_name}!")
         env = NFSPAtariWrapper(env)
 
-    env.seed(seed)
+    env.seed(args.seed)
     return env
 
 class NFSPAtariWrapper():

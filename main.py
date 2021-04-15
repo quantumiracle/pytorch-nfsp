@@ -21,7 +21,7 @@ def main():
     if not args.evaluate:
         writer = SummaryWriter(log_dir)
     SEED = 721
-    env = make_env(args.env)  # "LaserTag-small2-v0"   "SlimeVolleyPixel-v0"
+    env = make_env(args)  # "LaserTag-small2-v0"   "SlimeVolleyPixel-v0"
 
     print(env.observation_space, env.action_space)
 

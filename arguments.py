@@ -41,6 +41,8 @@ def get_args():
     # Environment Arguments
     parser.add_argument('--env', type=str, default='LaserTag-small2-v0',
                         help='Environment Name')
+    parser.add_argument('--ram', action='store_true', default=False,
+                        help='Use RAM observation rather than image')
     parser.add_argument('--negative', action='store_true', default=False,
                         help='Give negative(-1) reward for not done.')
 

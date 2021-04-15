@@ -89,7 +89,7 @@ def train(env, args, writer, model_path):
         if done:
             length_list.append(tag_interval_length)
             tag_interval_length = 0
-            
+
         # Episode done. Reset environment and clear logging records
         if done or tag_interval_length >= args.max_tag_interval:
             (p1_state, p2_state) =  env.reset()  # p1_state=p2_state
@@ -213,7 +213,7 @@ def main():
     if not args.evaluate:
         writer = SummaryWriter(log_dir)
     SEED = 721
-    env = make_env(args.env)  # "SlimeVolley-v0", "SlimeVolleyPixel-v0" 'Pong-ram-v0'
+    env = make_env(args)  # "SlimeVolley-v0", "SlimeVolleyPixel-v0" 'Pong-ram-v0'
 
     print(env.observation_space, env.action_space)
 
