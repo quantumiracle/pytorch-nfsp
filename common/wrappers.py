@@ -52,7 +52,11 @@ class NoopResetEnv(gym.Wrapper):
     return obs
 
   def step(self, action):
-      return self.env.step(action)
+    try: # modified
+        output = self.env.step(action)
+    except:
+        output = self.env.step(*action) # expand the action if it is a list of two
+    return output
 
 class MaxAndSkipEnv(gym.Wrapper):
   def __init__(self, env, skip=4):
@@ -273,7 +277,11 @@ class SlimeVolleyWrapper(gym.Wrapper):
             obs1 = obs2 
         else:
             # normal 2-player setting
-            obs1, reward, done, info = self.env.step(*actions_) # extra argument
+            if len(self.observation_space.shape)>1: 
+                # for image-based env, fake the action list as one input to pass through NoopResetEnv, etc wrappers
+                obs1, reward, done, info = self.env.step(actions_) # extra argument
+            else:
+                obs1, reward, done, info = self.env.step(*actions_) # extra argument
             obs2 = info['otherObs']
 
         obs[self.agents[0]] = obs1
