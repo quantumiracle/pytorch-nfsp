@@ -19,7 +19,6 @@ from tensorboardX import SummaryWriter
 from common.utils import create_log_dir, print_args, set_global_seeds
 from common.wrappers import wrap_pytorch, make_env
 from arguments import get_args
-from test import test  # TODO
 
 def train(env, args, writer, model_path):
     # RL Model for Player 1

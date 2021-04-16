@@ -31,7 +31,7 @@ def test(env, args):
         while True:
             if args.render:
                 env.render()
-                sleep(0.01)
+                # sleep(0.01)
 
             # Agents follow average strategy
             p1_action = p1_policy.act(torch.FloatTensor(p1_state).to(args.device))

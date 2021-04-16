@@ -99,7 +99,8 @@ def load_model(models, policies, args):
     
     if not os.path.exists(fname):
         raise ValueError("No model saved with name {}".format(fname))
-
+        
+    print(f"Load model from {fname}")
     checkpoint = torch.load(fname, map_location)
     models['p1'].load_state_dict(checkpoint['p1_model'])
     models['p2'].load_state_dict(checkpoint['p2_model'])
