@@ -1,0 +1,42 @@
+                          Options
+                          seed: 1122
+                          batch_size: 32
+                          no_cuda: False
+                          max_frames: 30000000
+                          buffer_size: 100000
+                          update_target: 1000
+                          train_freq: 1
+                          gamma: 0.99
+                          eta: 0.1
+                          rl_start: 10000
+                          sl_start: 1000
+                          hidden_dim: 512
+                          dueling: False
+                          multi_step: 1
+                          env: SlimeVolleyNoFrameskip-v0
+                          negative: False
+                          load_model: None
+                          save_model: model
+                          evaluate: False
+                          render: False
+                          evaluation_interval: 10000
+                          lr: 0.0001
+                          max_tag_interval: 1000
+                          eps_start: 1.0
+                          eps_final: 0.01
+                          eps_decay: 30000
+                          cuda: True
+                          device: cuda:0
+Box(0, 1, (4, 84, 84), uint8) Discrete(6)
+Traceback (most recent call last):
+  File "main.py", line 44, in <module>
+    main()
+  File "main.py", line 36, in main
+    train(env, args, writer)
+  File "/home/zihan/research/pytorch-nfsp/train.py", line 92, in train
+    (p1_next_state, p2_next_state), reward, done, info = env.step(actions)
+  File "/home/zihan/research/pytorch-nfsp/common/wrappers.py", line 416, in step
+    obs, rewards, dones, infos = self.env.step(actions)
+  File "/home/zihan/research/pytorch-nfsp/common/wrappers.py", line 276, in step
+    obs1, reward, done, info = self.env.step(*actions_) # extra argument
+TypeError: step() takes 2 positional arguments but 3 were given
