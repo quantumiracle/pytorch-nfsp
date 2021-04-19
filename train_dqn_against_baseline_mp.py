@@ -92,7 +92,7 @@ def train(env, args, writer, model_path):
 
         # Episode done. Reset environment and clear logging records
         if np.all(done) or tag_interval_length >= args.max_tag_interval:
-            (p1_state, p2_state) =  env.reset()  # p1_state=p2_state
+            obs =  env.reset()  # p1_state=p2_state
             p1_reward_list.append(p1_episode_reward)
             writer.add_scalar("p1/episode_reward", p1_episode_reward, frame_idx*args.num_envs)
             writer.add_scalar("data/tag_interval_length", tag_interval_length, frame_idx*args.num_envs)
