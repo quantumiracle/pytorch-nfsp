@@ -192,7 +192,10 @@ def make_env(args):
             env = FrameStack(env, 4)
 
         env = SlimeVolleyWrapper(env)  # slimevolley to pettingzoo style
-        env = NFSPPettingZooWrapper(env)  # pettingzoo to nfsp style 
+        if args.num_envs > 1:
+            env = NFSPPettingZooWrapper(env, args.against_baseline, keep_info=True)  # pettingzoo to nfsp style 
+        else:
+            env = NFSPPettingZooWrapper(env, args.against_baseline)
 
     elif env_name in AtariEnvs: # PettingZoo envs
         print(f'Load PettingZoo env: {env_name}')
@@ -435,9 +438,11 @@ class NFSPSlimeVolleyWrapper(SlimeVolleyWrapper):
 
 class NFSPPettingZooWrapper():
     """ Wrap the PettingZoo envs to have a similar style as LaserFrame in NFSP """
-    def __init__(self, env):
+    def __init__(self, env, against_baseline, keep_info=False):
         super(NFSPPettingZooWrapper, self).__init__()
         self.env = env
+        self.against_baseline = against_baseline
+        self.keep_info = keep_info
         if len(env.observation_space.shape) > 1: # image
             old_shape = env.observation_space.shape
             self.observation_space = gym.spaces.Box(low=0.0, high=1.0, shape=(old_shape[-1], old_shape[0], old_shape[1]), dtype=np.uint8)
@@ -464,9 +469,9 @@ class NFSPPettingZooWrapper():
         else:
             return self.observation_swapaxis(tuple(obs_dict.values()))
 
-    def step(self, actions, against_baseline=False):
-        if against_baseline:
-            obs, rewards, dones, infos = self.env.step(actions, against_baseline)
+    def step(self, actions, against_baseline=False): # TODO: should try to remove the against_baseline in step() args
+        if against_baseline or self.against_baseline:
+            obs, rewards, dones, infos = self.env.step(actions, against_baseline or self.against_baseline)
         else:
             obs, rewards, dones, infos = self.env.step(actions)
         if self.obs_type == 'ram':
@@ -475,7 +480,10 @@ class NFSPPettingZooWrapper():
             o = self.observation_swapaxis(tuple(obs.values()))
         r = list(rewards.values())
         d = np.any(np.array(list(dones.values())))
-        info = list(infos.values())
+        if self.keep_info:  # a special case for VectorEnv
+            info = infos
+        else:
+            info = list(infos.values())
         del obs,rewards, dones, infos
         return o, r, d, info
 

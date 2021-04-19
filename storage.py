@@ -22,6 +22,25 @@ class ReplayBuffer(object):
     def __len__(self):
         return len(self.buffer)
 
+class ParallelReplayBuffer(object):
+    def __init__(self, capacity):
+        self.buffer = deque(maxlen=capacity)
+    
+    def push(self, state, action, reward, next_state, done):
+        """
+        For parallel buffer with samples from multiple envs, each time
+        the sample contains a list of sample for each env, for example,
+        state = [state1, state2, ... ]
+        """
+        self.buffer.extend([*zip(state, action, reward, next_state, done)])
+    
+    def sample(self, batch_size):
+        state, action, reward, next_state, done = zip(*random.sample(self.buffer, batch_size))
+        return state, action, reward, next_state, done
+
+    def __len__(self):
+        return len(self.buffer)
+
 class ReservoirBuffer(object):
     def __init__(self, capacity):
         self.buffer = deque(maxlen=capacity)

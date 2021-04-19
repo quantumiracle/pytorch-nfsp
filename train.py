@@ -173,7 +173,7 @@ def train(env, args, writer):
                 writer.add_scalar("p1/sl_loss", p1_sl_loss.item(), frame_idx)
                 writer.add_scalar("p2/sl_loss", p2_sl_loss.item(), frame_idx)
 
-            print(f"Frame: {frame_idx},  P1/RL Loss: {p1_rl_loss:.2f}, P2/RL Loss: {p2_rl_loss:.2f}, P1/SL Loss: {p1_sl_loss:.2f}, P2/SL Loss: {p2_sl_loss:.2f},")
+                print(f"Frame: {frame_idx},  P1/RL Loss: {p1_rl_loss:.2f}, P2/RL Loss: {p2_rl_loss:.2f}, P1/SL Loss: {p1_sl_loss:.2f}, P2/SL Loss: {p2_sl_loss:.2f},")
         
 
         if frame_idx % args.update_target == 0:

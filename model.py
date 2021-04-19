@@ -9,10 +9,17 @@ import math
 from functools import partial
 
 def DQN(env, args):
-    if args.dueling:
-        model = DuelingDQN(env, args.hidden_dim)
+    if args.num_envs == 1:
+        if args.dueling:
+            model = DuelingDQN(env, args.hidden_dim)
+        else:
+            model = DQNBase(env, args.hidden_dim)
     else:
-        model = DQNBase(env, args.hidden_dim)
+        if args.dueling:
+            # TODO
+            pass
+        else:
+            model = ParallelDQN(env, args.hidden_dim, args.num_envs)
     return model
 
 class DQNBase(nn.Module):
@@ -25,9 +32,13 @@ class DQNBase(nn.Module):
     """
     def __init__(self, env, hidden_dim=64):
         super(DQNBase, self).__init__()
-        
-        self.input_shape = env.observation_space.shape
-        self.num_actions = env.action_space.n
+        try:
+            self.input_shape = env.observation_space.shape
+            self.num_actions = env.action_space.n
+        except:
+            self.input_shape = env.observation_space[0].shape
+            self.num_actions = env.action_space[0].n
+
         self.flatten = Flatten()
         self.hidden_dim = hidden_dim
         if len(self.input_shape) > 1: # image
@@ -89,7 +100,6 @@ class DuelingDQN(DQNBase):
     """
     def __init__(self, env, hidden_dim=64):
         super(DuelingDQN, self).__init__(env, hidden_dim)
-        
         self.advantage = self.fc
 
         self.value = nn.Sequential(
@@ -105,6 +115,34 @@ class DuelingDQN(DQNBase):
         advantage = self.advantage(x)
         value = self.value(x)
         return value + advantage - advantage.mean(1, keepdim=True)
+
+class ParallelDQN(DQNBase):
+    """
+    DQN for parallel env sampling
+
+    parameters
+    ---------
+    env         environment(openai gym)
+    """
+    def __init__(self, env, hidden_dim=64, number_envs=2):
+        super(ParallelDQN, self).__init__(env, hidden_dim)
+        self.number_envs = number_envs
+
+    def act(self, state, epsilon):
+        """
+        Parameters
+        ----------
+        state       torch.Tensor with appropritate device type
+        epsilon     epsilon for epsilon-greedy
+        """
+        if random.random() > epsilon:  # NoisyNet does not use e-greedy
+            with torch.no_grad():
+                q_value = self.forward(state)
+                action = q_value.max(1)[1].detach().cpu().numpy()
+        else:
+            action = np.random.randint(self.num_actions, size=self.number_envs)
+
+        return action        
 
 class Policy(DQNBase):
     """

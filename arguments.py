@@ -29,6 +29,8 @@ def get_args():
                         help='How many steps of the model to collect transitions for before RL starts')
     parser.add_argument('--sl-start', type=int, default=1000,
                         help='How many steps of the model to collect transitions for before SL starts')
+    parser.add_argument('--num-envs', type=int, default=1,
+                        help='Number of environments for parallel sampling (needs to be >0)')
 
     # Algorithm Arguments
     parser.add_argument('--hidden-dim', type=int, default=64,
@@ -45,6 +47,8 @@ def get_args():
                         help='Use RAM observation rather than image')
     parser.add_argument('--negative', action='store_true', default=False,
                         help='Give negative(-1) reward for not done.')
+    parser.add_argument('--against-baseline', action='store_true', default=True,
+                        help='Train the agent against baseline of env.')
 
     # Evaluation Arguments
     parser.add_argument('--load-model', type=str, default=None,

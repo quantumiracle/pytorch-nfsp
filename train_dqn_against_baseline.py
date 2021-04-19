@@ -57,11 +57,8 @@ def train(env, args, writer, model_path):
     for frame_idx in range(1, args.max_frames + 1):
         epsilon = epsilon_by_frame(frame_idx)
         p1_action = p1_current_model.act(torch.FloatTensor(p1_state).to(args.device), epsilon)
-
         actions = {"first_0": p1_action, "second_0": p1_action}  # a replicate of actions, actually the learnable agent is "second_0"
-            
         next_states, rewards, dones, infos = env.step(actions, against_baseline=True)
-
         p1_next_state = next_states[1]  # the second one is learnable
         reward = rewards[1]
         done = dones
@@ -213,7 +210,6 @@ def main():
         writer = SummaryWriter(log_dir)
     SEED = 721
     env = make_env(args)  # "SlimeVolley-v0", "SlimeVolleyPixel-v0" 'Pong-ram-v0'
-
     print(env.observation_space, env.action_space)
 
     set_global_seeds(args.seed)
