@@ -9,4 +9,4 @@ echo "Save as: " $DATE
 # nohup python main.py --env 'pong_v1' --train-freq 1000 --batch-size 256 --eta 1  > log/$DATE$RAND.log &
 # python train_dqn_against_baseline.py --env SlimeVolley-v0 --hidden-dim 256 --max-frames 10000000 > log/$DATE$RAND.log &
 #python train_dqn_against_baseline.py --env SlimeVolleyNoFrameskip-v0 --hidden-dim 512 --max-frames 30000000 > log/$DATE$RAND.log &
-python train_dqn_against_baseline_mp.py --env SlimeVolley-v0 --num-envs 5 --hidden-dim 256 --max-frames 20000000 > log/$DATE$RAND.log &
+python train_dqn_against_baseline_mp.py --env SlimeVolley-v0 --num-envs 5 --hidden-dim 256 --batch-size 128 --max-frames 20000000 > log/$DATE$RAND.log &
