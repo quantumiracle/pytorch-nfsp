@@ -47,7 +47,7 @@ def get_args():
                         help='Use RAM observation rather than image')
     parser.add_argument('--negative', action='store_true', default=False,
                         help='Give negative(-1) reward for not done.')
-    parser.add_argument('--against-baseline', action='store_true', default=True,
+    parser.add_argument('--against-baseline', action='store_true', default=False,
                         help='Train the agent against baseline of env.')
 
     # Evaluation Arguments

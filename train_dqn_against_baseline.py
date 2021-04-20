@@ -58,7 +58,7 @@ def train(env, args, writer, model_path):
         epsilon = epsilon_by_frame(frame_idx)
         p1_action = p1_current_model.act(torch.FloatTensor(p1_state).to(args.device), epsilon)
         actions = {"first_0": p1_action, "second_0": p1_action}  # a replicate of actions, actually the learnable agent is "second_0"
-        next_states, rewards, dones, infos = env.step(actions, against_baseline=True)
+        next_states, rewards, dones, infos = env.step(actions)
         p1_next_state = next_states[1]  # the second one is learnable
         reward = rewards[1]
         done = dones
@@ -177,7 +177,7 @@ def test(env, args, model_path):
                 time.sleep(0.05)
             p1_action = p1_current_model.act(torch.FloatTensor(p1_state).to(args.device), 0.)  # greedy action
             actions = {"first_0": p1_action, "second_0": p1_action}  # a replicate of actions, actually the learnable agent is "second_0"
-            (p1_next_state, p2_next_state), reward, done, _ = env.step(actions, against_baseline=True)
+            (p1_next_state, p2_next_state), reward, done, _ = env.step(actions)
 
             (p1_state, p2_state) = (p1_next_state, p2_next_state)
             p1_episode_reward += reward[0]
@@ -200,6 +200,7 @@ def multi_step_reward(rewards, gamma):
 
 def main():
     args = get_args()
+    args.against_baseline=True
     print_args(args)
     model_path = f'models/train_dqn_against_baseline/{args.env}'
     os.makedirs(model_path, exist_ok=True)

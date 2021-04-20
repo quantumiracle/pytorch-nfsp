@@ -191,11 +191,11 @@ def make_env(args):
             # #env = ClipRewardEnv(env)
             env = FrameStack(env, 4)
 
-        env = SlimeVolleyWrapper(env)  # slimevolley to pettingzoo style
+        env = SlimeVolleyWrapper(env, args.against_baseline)  # slimevolley to pettingzoo style
         if args.num_envs > 1:
-            env = NFSPPettingZooWrapper(env, args.against_baseline, keep_info=True)  # pettingzoo to nfsp style 
+            env = NFSPPettingZooWrapper(env, keep_info=True)  # pettingzoo to nfsp style 
         else:
-            env = NFSPPettingZooWrapper(env, args.against_baseline)
+            env = NFSPPettingZooWrapper(env)
 
     elif env_name in AtariEnvs: # PettingZoo envs
         print(f'Load PettingZoo env: {env_name}')
@@ -293,7 +293,7 @@ class SlimeVolleyWrapper(gym.Wrapper):
                     [0, 1, 0]] # RIGHT (backward)
 
 
-    def __init__(self, env):
+    def __init__(self, env, against_baseline=False):
         # super(SlimeVolleyWrapper, self).__init__()
         super().__init__(env)
         self.env = env
@@ -302,7 +302,7 @@ class SlimeVolleyWrapper(gym.Wrapper):
         self.observation_spaces = {name: self.env.observation_space for name in self.agents}
         self.action_space = spaces.Discrete(len(self.action_table))
         self.action_spaces = {name: self.action_space for name in self.agents}
-
+        self.against_baseline = against_baseline
 
     def reset(self, observation=None):
         obs1 = self.env.reset()
@@ -318,10 +318,10 @@ class SlimeVolleyWrapper(gym.Wrapper):
     def render(self,):
         self.env.render()
 
-    def step(self, actions, against_baseline=False):
+    def step(self, actions):
         obs, rewards, dones, infos = {},{},{},{}
         actions_ = [self.env.discreteToBox(a) for a in actions.values()]  # from discrete to multibinary action
-        if against_baseline:
+        if self.against_baseline:
             # this is for validation: load a single policy as 'second_0' to play against the baseline agent (via self-play in 2015)
             obs2, reward, done, info = self.env.step(actions_[1]) # extra argument
             obs1 = obs2 
@@ -348,54 +348,12 @@ class SlimeVolleyWrapper(gym.Wrapper):
     def close(self):
         self.env.close()
 
-class NFSPSlimeVolleyWrapper(SlimeVolleyWrapper):
-    """ Wrap the SlimeVolley env to have a similar style as LaserFrame in NFSP """
-    def __init__(self, env):
-        super().__init__(env)
-        old_shape = self.observation_space.shape
-        self.observation_space = gym.spaces.Box(low=0.0, high=1.0, shape=(old_shape[-1], old_shape[0], old_shape[1]), dtype=np.uint8) 
-        fake_env = gym.make('Pong-v0')
-        self.spec = fake_env.spec
-        try:
-            self.spec.id = env.env.spec.id
-        except:
-            pass
-        fake_env.close()
-
-    def observation_swapaxis(self, observation):
-        return (np.swapaxes(observation[0], 2, 0), np.swapaxes(observation[1], 2, 0))
-    
-    def reset(self):
-        obs_dict = super().reset()
-        return self.observation_swapaxis(tuple(obs_dict.values()))
-
-    def step(self, actions, against_baseline=False):
-        obs, rewards, dones, infos = super().step(actions, against_baseline)
-        o = self.observation_swapaxis(tuple(obs.values()))
-        r = list(rewards.values())
-        d = np.any(np.array(list(dones.values())))
-        del obs,rewards, dones
-        return o, r, d, infos
-
-# class NFSPSlimeVolleyWrapper():
-#     # action transformation of SlimeVolley 
-#     action_table = [[0, 0, 0], # NOOP
-#                     [1, 0, 0], # LEFT (forward)
-#                     [1, 0, 1], # UPLEFT (forward jump)
-#                     [0, 0, 1], # UP (jump)
-#                     [0, 1, 1], # UPRIGHT (backward jump)
-#                     [0, 1, 0]] # RIGHT (backward)
-
-
+# class NFSPSlimeVolleyWrapper(SlimeVolleyWrapper):  # TODO inherit A from B and use both A and B is problematic
+#     """ Wrap the SlimeVolley env to have a similar style as LaserFrame in NFSP """
 #     def __init__(self, env):
-#         super(NFSPSlimeVolleyWrapper, self).__init__()
-#         self.env = env
-#         self.agents = ['first_0', 'second_0']
-#         old_shape = self.env.observation_space.shape
+#         super().__init__(env)
+#         old_shape = self.observation_space.shape
 #         self.observation_space = gym.spaces.Box(low=0.0, high=1.0, shape=(old_shape[-1], old_shape[0], old_shape[1]), dtype=np.uint8) 
-#         self.observation_spaces = {name: self.env.observation_space for name in self.agents}
-#         self.action_space = spaces.Discrete(len(self.action_table))
-#         self.action_spaces = {name: self.action_space for name in self.agents}
 #         fake_env = gym.make('Pong-v0')
 #         self.spec = fake_env.spec
 #         try:
@@ -404,45 +362,87 @@ class NFSPSlimeVolleyWrapper(SlimeVolleyWrapper):
 #             pass
 #         fake_env.close()
 
-#     def reset(self, observation=None):
-#         obs1 = self.env.reset()
-#         obs2 = obs1 # both sides always see the same initial observation.
-#         return (np.swapaxes(obs1, 2, 0), np.swapaxes(obs2, 2, 0))
+#     def observation_swapaxis(self, observation):
+#         return (np.swapaxes(observation[0], 2, 0), np.swapaxes(observation[1], 2, 0))
+    
+#     def reset(self):
+#         obs_dict = super().reset()
+#         return self.observation_swapaxis(tuple(obs_dict.values()))
 
-#     def seed(self, SEED):
-#         self.env.seed(SEED)
+#     def step(self, actions):
+#         obs, rewards, dones, infos = super().step(actions)
+#         o = self.observation_swapaxis(tuple(obs.values()))
+#         r = list(rewards.values())
+#         d = np.any(np.array(list(dones.values())))
+#         del obs,rewards, dones
+#         return o, r, d, infos
 
-#     def render(self,):
-#         self.env.render()
+class NFSPSlimeVolleyWrapper():
+    # action transformation of SlimeVolley 
+    action_table = [[0, 0, 0], # NOOP
+                    [1, 0, 0], # LEFT (forward)
+                    [1, 0, 1], # UPLEFT (forward jump)
+                    [0, 0, 1], # UP (jump)
+                    [0, 1, 1], # UPRIGHT (backward jump)
+                    [0, 1, 0]] # RIGHT (backward)
 
-#     def step(self, actions, against_baseline=False):
-#         actions_ = [self.env.discreteToBox(a) for a in actions.values()]  # from discrete to multibinary action
 
-#         if against_baseline:
-#             # this is for validation: load a single policy as 'second_0' to play against the baseline agent (via self-play in 2015)
-#             obs2, reward, done, info = self.env.step(actions_[1]) # extra argument
-#             obs1 = obs2 
-#         else:
-#             # normal 2-player setting
-#             obs1, reward, done, info = self.env.step(*actions_) # extra argument
-#             obs2 = info['otherObs']
+    def __init__(self, env, against_baseline=False):
+        super(NFSPSlimeVolleyWrapper, self).__init__()
+        self.env = env
+        self.against_baseline = against_baseline
+        self.agents = ['first_0', 'second_0']
+        old_shape = self.env.observation_space.shape
+        self.observation_space = gym.spaces.Box(low=0.0, high=1.0, shape=(old_shape[-1], old_shape[0], old_shape[1]), dtype=np.uint8) 
+        self.observation_spaces = {name: self.env.observation_space for name in self.agents}
+        self.action_space = spaces.Discrete(len(self.action_table))
+        self.action_spaces = {name: self.action_space for name in self.agents}
+        fake_env = gym.make('Pong-v0')
+        self.spec = fake_env.spec
+        try:
+            self.spec.id = env.env.spec.id
+        except:
+            pass
+        fake_env.close()
 
-#         obs = (np.swapaxes(obs1, 2, 0), np.swapaxes(obs2, 2, 0))
-#         rewards = [-reward, reward]
+    def reset(self, observation=None):
+        obs1 = self.env.reset()
+        obs2 = obs1 # both sides always see the same initial observation.
+        return (np.swapaxes(obs1, 2, 0), np.swapaxes(obs2, 2, 0))
 
-#         return obs, rewards, done, info
+    def seed(self, SEED):
+        self.env.seed(SEED)
 
-#     def close(self):
-#         self.env.close()
+    def render(self,):
+        self.env.render()
+
+    def step(self, actions):
+        actions_ = [self.env.discreteToBox(a) for a in actions.values()]  # from discrete to multibinary action
+
+        if self.against_baseline:
+            # this is for validation: load a single policy as 'second_0' to play against the baseline agent (via self-play in 2015)
+            obs2, reward, done, info = self.env.step(actions_[1]) # extra argument
+            obs1 = obs2 
+        else:
+            # normal 2-player setting
+            obs1, reward, done, info = self.env.step(*actions_) # extra argument
+            obs2 = info['otherObs']
+
+        obs = (np.swapaxes(obs1, 2, 0), np.swapaxes(obs2, 2, 0))
+        rewards = [-reward, reward]
+
+        return obs, rewards, done, info
+
+    def close(self):
+        self.env.close()
 
 
 class NFSPPettingZooWrapper():
     """ Wrap the PettingZoo envs to have a similar style as LaserFrame in NFSP """
-    def __init__(self, env, against_baseline, keep_info=False):
+    def __init__(self, env, keep_info=False):
         super(NFSPPettingZooWrapper, self).__init__()
         self.env = env
-        self.against_baseline = against_baseline
-        self.keep_info = keep_info
+        self.keep_info = keep_info  # if True keep info as dict
         if len(env.observation_space.shape) > 1: # image
             old_shape = env.observation_space.shape
             self.observation_space = gym.spaces.Box(low=0.0, high=1.0, shape=(old_shape[-1], old_shape[0], old_shape[1]), dtype=np.uint8)
@@ -469,11 +469,8 @@ class NFSPPettingZooWrapper():
         else:
             return self.observation_swapaxis(tuple(obs_dict.values()))
 
-    def step(self, actions, against_baseline=False): # TODO: should try to remove the against_baseline in step() args
-        if against_baseline or self.against_baseline:
-            obs, rewards, dones, infos = self.env.step(actions, against_baseline or self.against_baseline)
-        else:
-            obs, rewards, dones, infos = self.env.step(actions)
+    def step(self, actions): 
+        obs, rewards, dones, infos = self.env.step(actions)
         if self.obs_type == 'ram':
             o = tuple(obs.values())
         else:

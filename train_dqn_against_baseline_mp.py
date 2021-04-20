@@ -42,7 +42,7 @@ def train(env, args, writer, model_path):
     p1_reward_deque = deque(maxlen=args.multi_step)
     p1_action_deque = deque(maxlen=args.multi_step)
 
-    # RL Optimizer for Player 1, 2
+    # RL Optimizer for Player 0, 1
     p1_rl_optimizer = optim.Adam(p1_current_model.parameters(), lr=args.lr)
 
     # Logging
@@ -54,10 +54,10 @@ def train(env, args, writer, model_path):
     prev_frame = 1
 
     # Main Loop
-    obs =  env.reset()
+    states =  env.reset()
     for frame_idx in range(1, args.max_frames + 1): # each step contains args.num_envs steps actually due to parallel envs
         epsilon = epsilon_by_frame(frame_idx)
-        p1_state = obs[:, 1]  # obs: (env, agent, obs_dim)
+        p1_state = states[:, 1]  # obs: (env, agent, obs_dim)
         p1_action = p1_current_model.act(torch.FloatTensor(p1_state).to(args.device), epsilon)
         actions = [{"first_0": a, "second_0": a} for a in p1_action] # a replicate of actions, actually the learnable agent is "second_0"
         next_states, rewards, dones, infos = env.step(actions)
@@ -92,7 +92,7 @@ def train(env, args, writer, model_path):
 
         # Episode done. Reset environment and clear logging records
         if np.all(done) or tag_interval_length >= args.max_tag_interval:
-            obs = env.reset()  # p1_state=p2_state
+            states = env.reset()  # p1_state=p2_state
             p1_reward_list.append(p1_episode_reward)
             writer.add_scalar("p1/episode_reward", p1_episode_reward, frame_idx*args.num_envs)
             writer.add_scalar("data/tag_interval_length", tag_interval_length, frame_idx*args.num_envs)
@@ -100,7 +100,7 @@ def train(env, args, writer, model_path):
             # p1_state_deque.clear()
             # p1_reward_deque.clear()
             # p1_action_deque.clear()
-        print(frame_idx, len(p1_replay_buffer))
+
         if (len(p1_replay_buffer) > args.rl_start and
             frame_idx % args.train_freq == 0):
 
@@ -174,7 +174,6 @@ def test(env, args, model_path):
     for _ in range(30):
         (p1_state, p2_state) = env.reset()
         p1_episode_reward = 0
-        p2_episode_reward = 0
         episode_length = 0
         while True:
             if args.render:
@@ -205,6 +204,7 @@ def multi_step_reward(rewards, gamma):
 
 def main():
     args = get_args()
+    args.against_baseline = True
     print_args(args)
     model_path = f'models/train_dqn_against_baseline/{args.env}'
     os.makedirs(model_path, exist_ok=True)
@@ -213,10 +213,10 @@ def main():
     if not args.evaluate:
         writer = SummaryWriter(log_dir)
     SEED = 721
-    # if args.num_envs == 1 or args.evaluate:
-    #     env = make_env(args)  # "SlimeVolley-v0", "SlimeVolleyPixel-v0" 'Pong-ram-v0'
-    # else:
-    VectorEnv = [DummyVectorEnv, SubprocVectorEnv][1]  # https://github.com/thu-ml/tianshou/blob/master/tianshou/env/venvs.py
+    if args.evaluate or args.num_envs == 1:
+        env = make_env(args)  # "SlimeVolley-v0", "SlimeVolleyPixel-v0" 'Pong-ram-v0'
+    else:
+        VectorEnv = [DummyVectorEnv, SubprocVectorEnv][1]  # https://github.com/thu-ml/tianshou/blob/master/tianshou/env/venvs.py
     env = VectorEnv([lambda: make_env(args) for _ in range(args.num_envs)])
     print(env.observation_space, env.action_space)
 
