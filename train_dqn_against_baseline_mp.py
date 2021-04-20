@@ -92,7 +92,7 @@ def train(env, args, writer, model_path):
 
         # Episode done. Reset environment and clear logging records
         if np.all(done) or tag_interval_length >= args.max_tag_interval:
-            obs =  env.reset()  # p1_state=p2_state
+            obs = env.reset()  # p1_state=p2_state
             p1_reward_list.append(p1_episode_reward)
             writer.add_scalar("p1/episode_reward", p1_episode_reward, frame_idx*args.num_envs)
             writer.add_scalar("data/tag_interval_length", tag_interval_length, frame_idx*args.num_envs)
@@ -100,7 +100,7 @@ def train(env, args, writer, model_path):
             # p1_state_deque.clear()
             # p1_reward_deque.clear()
             # p1_action_deque.clear()
-
+        print(frame_idx, len(p1_replay_buffer))
         if (len(p1_replay_buffer) > args.rl_start and
             frame_idx % args.train_freq == 0):
 
@@ -179,7 +179,7 @@ def test(env, args, model_path):
         while True:
             if args.render:
                 env.render()
-                time.sleep(0.05)
+                # time.sleep(0.05)
             p1_action = p1_current_model.act(torch.FloatTensor(p1_state).to(args.device), 0.)  # greedy action
             actions = {"first_0": p1_action, "second_0": p1_action}  # a replicate of actions, actually the learnable agent is "second_0"
             (p1_next_state, p2_next_state), reward, done, _ = env.step(actions, against_baseline=True)
@@ -213,11 +213,11 @@ def main():
     if not args.evaluate:
         writer = SummaryWriter(log_dir)
     SEED = 721
-    if args.num_envs == 1 or args.evaluate:
-        env = make_env(args)  # "SlimeVolley-v0", "SlimeVolleyPixel-v0" 'Pong-ram-v0'
-    else:
-        VectorEnv = [DummyVectorEnv, SubprocVectorEnv][1]  # https://github.com/thu-ml/tianshou/blob/master/tianshou/env/venvs.py
-        env = VectorEnv([lambda: make_env(args) for _ in range(args.num_envs)])
+    # if args.num_envs == 1 or args.evaluate:
+    #     env = make_env(args)  # "SlimeVolley-v0", "SlimeVolleyPixel-v0" 'Pong-ram-v0'
+    # else:
+    VectorEnv = [DummyVectorEnv, SubprocVectorEnv][1]  # https://github.com/thu-ml/tianshou/blob/master/tianshou/env/venvs.py
+    env = VectorEnv([lambda: make_env(args) for _ in range(args.num_envs)])
     print(env.observation_space, env.action_space)
 
     set_global_seeds(args.seed)

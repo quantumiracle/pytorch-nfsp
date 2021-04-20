@@ -9,7 +9,7 @@ from collections import deque
 
 from common.utils import epsilon_scheduler, update_target, print_log, load_model, save_model
 from model import DQN, Policy
-from storage import ReplayBuffer, ReservoirBuffer
+from storage import ParallelReplayBuffer, ReservoirBuffer
 
 import gym
 import lasertag
@@ -19,6 +19,8 @@ from tensorboardX import SummaryWriter
 from common.utils import create_log_dir, print_args, set_global_seeds
 from common.wrappers import wrap_pytorch, make_env
 from arguments import get_args
+from common.env import DummyVectorEnv, SubprocVectorEnv
+
 
 def train(env, args, writer, model_path):
     # RL Model for Player 1
@@ -33,7 +35,7 @@ def train(env, args, writer, model_path):
     epsilon_by_frame = epsilon_scheduler(args.eps_start, args.eps_final, args.eps_decay)
 
     # Replay Buffer for Reinforcement Learning - Best Response
-    p1_replay_buffer = ReplayBuffer(args.buffer_size)
+    p1_replay_buffer = ParallelReplayBuffer(args.buffer_size)
 
     # Deque data structure for multi-step learning
     p1_state_deque = deque(maxlen=args.multi_step)
@@ -52,49 +54,52 @@ def train(env, args, writer, model_path):
     prev_frame = 1
 
     # Main Loop
-    (p1_state, p2_state) =  env.reset()  # p1_state=p2_state
-
-    for frame_idx in range(1, args.max_frames + 1):
+    obs =  env.reset()
+    for frame_idx in range(1, args.max_frames + 1): # each step contains args.num_envs steps actually due to parallel envs
         epsilon = epsilon_by_frame(frame_idx)
+        p1_state = obs[:, 1]  # obs: (env, agent, obs_dim)
         p1_action = p1_current_model.act(torch.FloatTensor(p1_state).to(args.device), epsilon)
-        actions = {"first_0": p1_action, "second_0": p1_action}  # a replicate of actions, actually the learnable agent is "second_0"
-        next_states, rewards, dones, infos = env.step(actions, against_baseline=True)
-        p1_next_state = next_states[1]  # the second one is learnable
-        reward = rewards[1]
-        done = dones
-        info = infos[1]
-        
-        # Save current state, reward, action to deque for multi-step learning
-        p1_state_deque.append(p1_state)
-        p1_reward_deque.append(reward)
-        p1_action_deque.append(p1_action)
-        # Store (state, action, reward, next_state) to Replay Buffer for Reinforcement Learning
-        if len(p1_state_deque) == args.multi_step or done:
-            n_reward = multi_step_reward(p1_reward_deque, args.gamma)
-            n_state = p1_state_deque[0]
-            n_action = p1_action_deque[0]
-            p1_replay_buffer.push(n_state, n_action, n_reward, p1_next_state, np.float32(done))
+        actions = [{"first_0": a, "second_0": a} for a in p1_action] # a replicate of actions, actually the learnable agent is "second_0"
+        next_states, rewards, dones, infos = env.step(actions)
+        p1_next_state = next_states[:, 1]  # the second one is learnable
+        reward = rewards[:, 1]
+        done = [np.float32(d) for d in dones]
+        info = [list(i.values())[1] for i in infos]  # infos is a list of dicts (env) of dicts (agents)
+        p1_replay_buffer.push(p1_state, p1_action, reward, p1_next_state, done)
+
+        # TODO multi-step reward needs to be implemented 
+        # # Save current state, reward, action to deque for multi-step learning
+        # p1_state_deque.extend(p1_state) # each item contains a list for all envs, so use .extend instead of .append
+        # p1_reward_deque.extend(reward)
+        # p1_action_deque.extend(p1_action)
+
+        # # Store (state, action, reward, next_state) to Replay Buffer for Reinforcement Learning
+        # if len(p1_state_deque) == args.multi_step or done:
+        #     n_reward = multi_step_reward(p1_reward_deque, args.gamma)
+        #     n_state = p1_state_deque[0]
+        #     n_action = p1_action_deque[0]
+        #     p1_replay_buffer.push(n_state, n_action, n_reward, p1_next_state, np.float32(done))
 
         p1_state = p1_next_state
 
         # Logging
-        p1_episode_reward += reward
+        p1_episode_reward += np.mean(reward) # mean over envs
         tag_interval_length += 1
 
-        if done:
+        if np.all(done):
             length_list.append(tag_interval_length)
             tag_interval_length = 0
 
         # Episode done. Reset environment and clear logging records
-        if done or tag_interval_length >= args.max_tag_interval:
-            (p1_state, p2_state) =  env.reset()  # p1_state=p2_state
+        if np.all(done) or tag_interval_length >= args.max_tag_interval:
+            obs =  env.reset()  # p1_state=p2_state
             p1_reward_list.append(p1_episode_reward)
-            writer.add_scalar("p1/episode_reward", p1_episode_reward, frame_idx)
-            writer.add_scalar("data/tag_interval_length", tag_interval_length, frame_idx)
+            writer.add_scalar("p1/episode_reward", p1_episode_reward, frame_idx*args.num_envs)
+            writer.add_scalar("data/tag_interval_length", tag_interval_length, frame_idx*args.num_envs)
             p1_episode_reward, tag_interval_length = 0, 0
-            p1_state_deque.clear()
-            p1_reward_deque.clear()
-            p1_action_deque.clear()
+            # p1_state_deque.clear()
+            # p1_reward_deque.clear()
+            # p1_action_deque.clear()
 
         if (len(p1_replay_buffer) > args.rl_start and
             frame_idx % args.train_freq == 0):
@@ -104,7 +109,7 @@ def train(env, args, writer, model_path):
             p1_rl_loss_list.append(p1_rl_loss.item())
 
             if frame_idx % args.max_tag_interval == 0:  # not log at every step
-                writer.add_scalar("p1/rl_loss", p1_rl_loss.item(), frame_idx)
+                writer.add_scalar("p1/rl_loss", p1_rl_loss.item(), frame_idx*args.num_envs)
 
         if frame_idx % args.update_target == 0:
             update_target(p1_current_model, p1_target_model)
@@ -112,7 +117,7 @@ def train(env, args, writer, model_path):
 
         # Logging and Saving models
         if frame_idx % args.evaluation_interval == 0:
-            print(f"Frame: {frame_idx}, Avg. Reward: {np.mean(p1_reward_list):.3f}, Avg. RL Loss: {np.mean(p1_rl_loss_list):.3f}, Avg. Length: {np.mean(length_list):.1f}")
+            print(f"Frame: {frame_idx*args.num_envs}, Avg. Reward: {np.mean(p1_reward_list):.3f}, Avg. RL Loss: {np.mean(p1_rl_loss_list):.3f}, Avg. Length: {np.mean(length_list):.1f}")
             p1_reward_list.clear(), length_list.clear()
             p1_rl_loss_list.clear()
             prev_frame = frame_idx
@@ -132,7 +137,7 @@ def train(env, args, writer, model_path):
 def compute_rl_loss(current_model, target_model, replay_buffer, optimizer, args):
     state, action, reward, next_state, done = replay_buffer.sample(args.batch_size)
     weights = torch.ones(args.batch_size)
-
+    # print(state.shape)
     state = torch.FloatTensor(np.float32(state)).to(args.device)
     next_state = torch.FloatTensor(np.float32(next_state)).to(args.device)
     action = torch.LongTensor(action).to(args.device)
@@ -208,7 +213,11 @@ def main():
     if not args.evaluate:
         writer = SummaryWriter(log_dir)
     SEED = 721
-    env = make_env(args)  # "SlimeVolley-v0", "SlimeVolleyPixel-v0" 'Pong-ram-v0'
+    if args.num_envs == 1 or args.evaluate:
+        env = make_env(args)  # "SlimeVolley-v0", "SlimeVolleyPixel-v0" 'Pong-ram-v0'
+    else:
+        VectorEnv = [DummyVectorEnv, SubprocVectorEnv][1]  # https://github.com/thu-ml/tianshou/blob/master/tianshou/env/venvs.py
+        env = VectorEnv([lambda: make_env(args) for _ in range(args.num_envs)])
     print(env.observation_space, env.action_space)
 
     set_global_seeds(args.seed)
