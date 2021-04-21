@@ -86,12 +86,12 @@ def train(env, args, writer, model_path, num_agents=2):
             episode_reward[i] += np.mean(rewards[:, i])  # mean over envs
         tag_interval_length += 1
 
-        if np.all(done):
+        if np.any(done):  # TODO if use np.all(done), pettingzoo env will not provide obs for env after done
             length_list.append(tag_interval_length)
             tag_interval_length = 0
 
         # Episode done. Reset environment and clear logging records
-        if np.all(done) or tag_interval_length >= args.max_tag_interval:
+        if np.any(done) or tag_interval_length >= args.max_tag_interval:
             states =  env.reset()  # p1_state=p2_state
             for i in range(num_agents):
                 reward_list[i].append(episode_reward[i])
@@ -113,7 +113,6 @@ def train(env, args, writer, model_path, num_agents=2):
         if frame_idx % args.update_target == 0:
             for i in range(num_agents):
                 update_target(agent_list[i].current_model, agent_list[i].target_model)
-
 
         # Logging and Saving models
         if frame_idx % args.evaluation_interval == 0:
@@ -163,7 +162,7 @@ def compute_rl_loss(current_model, target_model, replay_buffer, optimizer, args)
     optimizer.step()
     return loss
 
-def test(env, args, model_path): 
+def test(env, args, model_path, num_agents=2): 
     agent_list = []
     for i in range(num_agents):
         agent = ParallelNashAgent(env, i, args)
@@ -182,11 +181,12 @@ def test(env, args, model_path):
         while True:
             if args.render:
                 env.render()
-                time.sleep(0.05)
+                # time.sleep(0.05)
             actions = []
             for i in range(num_agents):
-                action = agent_list[i].current_model.act(torch.FloatTensor(states[i]).to(args.device), epsilon)
+                action = agent_list[i].current_model.act(torch.FloatTensor(states[i]).to(args.device), 0.)  # greedy action
                 actions.append(action)
+            print(actions)
             actions = {"first_0": actions[0], "second_0": actions[1]}  # a replicate of actions, actually the learnable agent is "second_0"
             next_states, reward, done, _ = env.step(actions)
 

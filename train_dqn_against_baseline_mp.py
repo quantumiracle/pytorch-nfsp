@@ -87,14 +87,12 @@ def train(env, args, writer, model_path):
         p1_episode_reward += np.mean(reward) # mean over envs
         tag_interval_length += 1
 
-        # if np.all(done):
-        if np.any(done):
+        if np.all(done):
             length_list.append(tag_interval_length)
             tag_interval_length = 0
 
         # Episode done. Reset environment and clear logging records
-        # if np.all(done) or tag_interval_length >= args.max_tag_interval:
-        if np.any(done) or tag_interval_length >= args.max_tag_interval:
+        if np.all(done) or tag_interval_length >= args.max_tag_interval:
             states = env.reset()  # p1_state=p2_state
             p1_reward_list.append(p1_episode_reward)
             writer.add_scalar("p1/episode_reward", p1_episode_reward, frame_idx*args.num_envs)
