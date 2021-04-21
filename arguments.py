@@ -29,8 +29,8 @@ def get_args():
                         help='How many steps of the model to collect transitions for before RL starts')
     parser.add_argument('--sl-start', type=int, default=1000,
                         help='How many steps of the model to collect transitions for before SL starts')
-    parser.add_argument('--num-envs', type=int, default=2,
-                        help='Number of environments for parallel sampling (needs to be >1)')
+    parser.add_argument('--num-envs', type=int, default=1,
+                        help='Number of environments for parallel sampling (needs to be >1 when specified)')
 
     # Algorithm Arguments
     parser.add_argument('--hidden-dim', type=int, default=64,

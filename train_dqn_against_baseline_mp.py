@@ -38,9 +38,9 @@ def train(env, args, writer, model_path):
     p1_replay_buffer = ParallelReplayBuffer(args.buffer_size)
 
     # Deque data structure for multi-step learning
-    p1_state_deque = deque(maxlen=args.multi_step)
-    p1_reward_deque = deque(maxlen=args.multi_step)
-    p1_action_deque = deque(maxlen=args.multi_step)
+    # p1_state_deque = deque(maxlen=args.multi_step)
+    # p1_reward_deque = deque(maxlen=args.multi_step)
+    # p1_action_deque = deque(maxlen=args.multi_step)
 
     # RL Optimizer for Player 0, 1
     p1_rl_optimizer = optim.Adam(p1_current_model.parameters(), lr=args.lr)
@@ -55,6 +55,7 @@ def train(env, args, writer, model_path):
 
     # Main Loop
     states =  env.reset()
+    
     for frame_idx in range(1, args.max_frames + 1): # each step contains args.num_envs steps actually due to parallel envs
         epsilon = epsilon_by_frame(frame_idx)
         p1_state = states[:, 1]  # obs: (env, agent, obs_dim)
@@ -80,18 +81,20 @@ def train(env, args, writer, model_path):
         #     n_action = p1_action_deque[0]
         #     p1_replay_buffer.push(n_state, n_action, n_reward, p1_next_state, np.float32(done))
 
-        p1_state = p1_next_state
+        states = next_states
 
         # Logging
         p1_episode_reward += np.mean(reward) # mean over envs
         tag_interval_length += 1
 
-        if np.all(done):
+        # if np.all(done):
+        if np.any(done):
             length_list.append(tag_interval_length)
             tag_interval_length = 0
 
         # Episode done. Reset environment and clear logging records
-        if np.all(done) or tag_interval_length >= args.max_tag_interval:
+        # if np.all(done) or tag_interval_length >= args.max_tag_interval:
+        if np.any(done) or tag_interval_length >= args.max_tag_interval:
             states = env.reset()  # p1_state=p2_state
             p1_reward_list.append(p1_episode_reward)
             writer.add_scalar("p1/episode_reward", p1_episode_reward, frame_idx*args.num_envs)

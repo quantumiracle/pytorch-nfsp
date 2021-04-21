@@ -135,6 +135,7 @@ class ParallelDQN(DQNBase):
         state       torch.Tensor with appropritate device type
         epsilon     epsilon for epsilon-greedy
         """
+        # print(torch.mean(state[0] - state[1]))
         if random.random() > epsilon:  # NoisyNet does not use e-greedy
             with torch.no_grad():
                 q_value = self.forward(state)

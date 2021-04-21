@@ -174,6 +174,11 @@ for env in AtariEnvs:
 
 def make_env(args):
     env_name = args.env
+    if args.num_envs > 1:
+        keep_info = True  # keep_info True to maintain dict type for parallel envs (otherwise cannot pass VectorEnv wrapper)
+    else:
+        keep_info = False
+
     '''https://www.pettingzoo.ml/atari'''
     if "slimevolley" in env_name or "SlimeVolley" in env_name:
         print(f'Load SlimeVolley env: {env_name}')
@@ -192,10 +197,7 @@ def make_env(args):
             env = FrameStack(env, 4)
 
         env = SlimeVolleyWrapper(env, args.against_baseline)  # slimevolley to pettingzoo style
-        if args.num_envs > 1:
-            env = NFSPPettingZooWrapper(env, keep_info=True)  # pettingzoo to nfsp style 
-        else:
-            env = NFSPPettingZooWrapper(env)
+        env = NFSPPettingZooWrapper(env, keep_info=keep_info)  # pettingzoo to nfsp style, keep_info True to maintain dict type for parallel envs
 
     elif env_name in AtariEnvs: # PettingZoo envs
         print(f'Load PettingZoo env: {env_name}')
@@ -229,7 +231,7 @@ def make_env(args):
         # assign observation and action spaces
         env.observation_space = list(env.observation_spaces.values())[0]
         env.action_space = list(env.action_spaces.values())[0]
-        env = NFSPPettingZooWrapper(env)
+        env = NFSPPettingZooWrapper(env, keep_info=keep_info)  # pettingzoo to nfsp style, keep_info True to maintain dict type for parallel envs)
 
     elif "LaserTag" in env_name: # LaserTag: https://github.com/younggyoseo/pytorch-nfsp
         print(f'Load LaserTag env: {env_name}')
@@ -242,16 +244,17 @@ def make_env(args):
             env = gym.make(env_name)
         except:
             print(f"Error: No such env: {env_name}!")
-        env = NFSPAtariWrapper(env)
+        env = NFSPAtariWrapper(env, keep_info = keep_info)
 
     env.seed(args.seed)
     return env
 
 class NFSPAtariWrapper():
     """ Wrap single agent OpenAI gym atari game to be two-agent version """
-    def __init__(self, env):
+    def __init__(self, env, keep_info=False):
         super(NFSPAtariWrapper, self).__init__()
         self.env = env
+        self.keep_info = keep_info
         self.agents = ['first_0', 'second_0']
         self.observation_space = self.env.observation_space
         self.observation_spaces = {name: self.env.observation_space for name in self.agents}
@@ -268,10 +271,13 @@ class NFSPAtariWrapper():
     def render(self,):
         self.env.render()
 
-    def step(self, actions, against_baseline=False):
+    def step(self, actions):
         action = list(actions.values())[0]
         next_state, reward, done, info = self.env.step(action)
-        return [next_state, next_state], [reward, reward], done, [info, info]
+        if self.keep_info:
+            return [next_state, next_state], [reward, reward], done, info
+        else:
+            return [next_state, next_state], [reward, reward], done, [info, info]
 
     def close(self):
         self.env.close()

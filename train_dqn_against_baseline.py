@@ -139,6 +139,7 @@ def compute_rl_loss(current_model, target_model, replay_buffer, optimizer, args)
     reward = torch.FloatTensor(reward).to(args.device)
     done = torch.FloatTensor(done).to(args.device)
     weights = torch.FloatTensor(weights).to(args.device)
+    print(state.shape, action.shape, reward.shape, next_state.shape, done.shape)
 
     # Q-Learning with target network
     q_values = current_model(state)
