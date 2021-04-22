@@ -178,6 +178,7 @@ def test(env, args, model_path, num_agents=2):
         states = env.reset()
         episode_reward = [0 for _ in range(num_agents)]
         episode_length = 0
+        t = 0
         while True:
             if args.render:
                 env.render()
@@ -186,7 +187,6 @@ def test(env, args, model_path, num_agents=2):
             for i in range(num_agents):
                 action = agent_list[i].current_model.act(torch.FloatTensor(states[i]).to(args.device), 0.)  # greedy action
                 actions.append(action)
-            print(actions)
             actions = {"first_0": actions[0], "second_0": actions[1]}  # a replicate of actions, actually the learnable agent is "second_0"
             next_states, reward, done, _ = env.step(actions)
 
@@ -196,10 +196,12 @@ def test(env, args, model_path, num_agents=2):
             episode_length += 1
 
             if done:
+            # if done or t>=args.max_tag_interval:  # the pong game might get stuck after a while: https://github.com/PettingZoo-Team/PettingZoo/issues/357
                 for i in range(num_agents):
                     reward_list[i].append(episode_reward[i])
                 length_list.append(episode_length)
                 break
+            t += 1
     print("Test Result - Length {:.2f} ".format(np.mean(length_list))+\
         ''.join([f'P{i} Reward {np.mean(reward_list[i]):.2f}' for i in range(num_agents)]))
 

@@ -32,7 +32,7 @@ def train(env, args, writer, model_path):
 
     epsilon_by_frame = epsilon_scheduler(args.eps_start, args.eps_final, args.eps_decay)
 
-    # Replay Buffer for Reinforcement Learning - Best Response
+    # Replay Buffer for Reinforcement Learning
     p1_replay_buffer = ReplayBuffer(args.buffer_size)
 
     # Deque data structure for multi-step learning
@@ -139,7 +139,6 @@ def compute_rl_loss(current_model, target_model, replay_buffer, optimizer, args)
     reward = torch.FloatTensor(reward).to(args.device)
     done = torch.FloatTensor(done).to(args.device)
     weights = torch.FloatTensor(weights).to(args.device)
-    print(state.shape, action.shape, reward.shape, next_state.shape, done.shape)
 
     # Q-Learning with target network
     q_values = current_model(state)

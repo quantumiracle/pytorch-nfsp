@@ -482,7 +482,7 @@ class NFSPPettingZooWrapper():
         else:
             o = self.observation_swapaxis(tuple(obs.values()))
         r = list(rewards.values())
-        d = np.any(np.array(list(dones.values())))
+        d = np.any(np.array(list(dones.values())))  # if done is True for any player, it is done for the game
         if self.keep_info:  # a special case for VectorEnv
             info = infos
         else:

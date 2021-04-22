@@ -13,7 +13,7 @@ def get_args():
                         help='disables CUDA training')
 
     # Training Arguments
-    parser.add_argument('--max-frames', type=int, default=1400000,
+    parser.add_argument('--max-frames', type=int, default=20000000,
                         help='Number of frames to train')
     parser.add_argument('--buffer-size', type=int, default=100000,
                         help='Maximum memory buffer size')
@@ -65,7 +65,7 @@ def get_args():
     # Optimization Arguments
     parser.add_argument('--lr', type=float, default=1e-4,
                         help='Learning rate')
-    parser.add_argument('--max-tag-interval', type=int, default=1000,
+    parser.add_argument('--max-tag-interval', type=int, default=3000,
                         help='Maximum length of interval between tagging twice to prevent from non-action')
     parser.add_argument('--eps-start', type=float, default=1.0,
                         help='Start value of epsilon')

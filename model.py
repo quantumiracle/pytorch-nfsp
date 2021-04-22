@@ -16,8 +16,7 @@ def DQN(env, args):
             model = DQNBase(env, args.hidden_dim)
     else:
         if args.dueling:
-            # TODO
-            pass
+            model = ParallelDuelingDQN(env, args.hidden_dim, args.num_envs)
         else:
             model = ParallelDQN(env, args.hidden_dim, args.num_envs)
     return model
@@ -67,7 +66,8 @@ class DQNBase(nn.Module):
         )
         
     def forward(self, x):
-        x /= 255.
+        if len(x.shape)>2:  # image input: len(x.shape) == 4
+            x /= 255.
         x = self.features(x)
         x = self.flatten(x)
         x = self.fc(x)
@@ -98,8 +98,8 @@ class DuelingDQN(DQNBase):
     Dueling Network Architectures for Deep Reinforcement Learning
     https://arxiv.org/abs/1511.06581
     """
-    def __init__(self, env, hidden_dim=64):
-        super(DuelingDQN, self).__init__(env, hidden_dim)
+    def __init__(self, env, hidden_dim=64, **kw):
+        super(DuelingDQN, self).__init__(env, hidden_dim, **kw)
         self.advantage = self.fc
 
         self.value = nn.Sequential(
@@ -109,7 +109,8 @@ class DuelingDQN(DQNBase):
         )
     
     def forward(self, x):
-        x /= 255.
+        if len(x.shape)>2:  # image input: len(x.shape) == 4
+            x /= 255.
         x = self.features(x)
         x = self.flatten(x)
         advantage = self.advantage(x)
@@ -135,7 +136,6 @@ class ParallelDQN(DQNBase):
         state       torch.Tensor with appropritate device type
         epsilon     epsilon for epsilon-greedy
         """
-        # print(torch.mean(state[0] - state[1]))
         if random.random() > epsilon:  # NoisyNet does not use e-greedy
             with torch.no_grad():
                 q_value = self.forward(state)
@@ -143,7 +143,58 @@ class ParallelDQN(DQNBase):
         else:
             action = np.random.randint(self.num_actions, size=self.number_envs)
 
-        return action        
+        return action     
+
+class ParallelDuelingDQN(DuelingDQN, ParallelDQN):
+    """
+    DuelingDQN for parallel env sampling
+
+    parameters
+    ---------
+    env         environment(openai gym)
+
+    Note: for mulitple inheritance, see a minimal example:
+
+    class D:
+        def __init__(self,):
+            super(D, self).__init__()
+            self.a=1
+        def f(self):
+            pass
+                
+        def f1(self):
+            pass
+
+    class A(D):
+        def __init__(self,):
+            super(A, self).__init__()
+            self.a=1
+            
+        def f1(self):
+            self.a+=2
+            print(self.a)
+        
+    class B(D):
+        def __init__(self,):
+            super(B, self).__init__()
+            self.a=1
+        def f(self):
+            self.a-=1
+            print(self.a)
+        
+    class C(B,A):
+        def __init__(self,):
+            super(C, self).__init__()   
+            
+
+    c=C()
+    c.f1() 
+
+    => 3
+    """
+    def __init__(self, env, hidden_dim=64, number_envs=2):
+        super(ParallelDuelingDQN, self).__init__(env=env, hidden_dim=hidden_dim, number_envs=number_envs)
+     
 
 class Policy(DQNBase):
     """
