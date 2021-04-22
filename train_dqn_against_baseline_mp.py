@@ -99,7 +99,7 @@ def train(env, args, writer, model_path):
         tag_interval_length += 1
 
         # if np.all(done):
-        if np.any(done):
+        if np.any(done):  # TODO this need to be handled well, np.all() not work for SlimeVolley
             length_list.append(tag_interval_length)
             tag_interval_length = 0
 
