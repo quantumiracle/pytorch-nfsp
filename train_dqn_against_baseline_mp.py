@@ -36,9 +36,9 @@ def train(env, args, writer, model_path):
 
     # Replay Buffer for Reinforcement Learning
     p1_replay_buffer = ParallelReplayBuffer(args.buffer_size)
-    # p1_replay_buffer = ReplayBuffer(args.buffer_size)
 
     # Deque data structure for multi-step learning
+    # TODO to support this, it requires one queue for each env instance in parallel sampling
     # p1_state_deque = deque(maxlen=args.multi_step)
     # p1_reward_deque = deque(maxlen=args.multi_step)
     # p1_action_deque = deque(maxlen=args.multi_step)
@@ -60,24 +60,18 @@ def train(env, args, writer, model_path):
     for frame_idx in range(1, args.max_frames + 1): # each step contains args.num_envs steps actually due to parallel envs
         epsilon = epsilon_by_frame(frame_idx*args.num_envs)
         p1_state = states[:, 1]  # obs: (env, agent, obs_dim)
-        # p1_state = states[1]  # obs: (env, agent, obs_dim)
 
         p1_action = p1_current_model.act(torch.FloatTensor(p1_state).to(args.device), epsilon)
         actions = [{"first_0": a, "second_0": a} for a in p1_action] # a replicate of actions, actually the learnable agent is "second_0"
-        # actions = {"first_0": p1_action, "second_0": p1_action}  # a replicate of actions, actually the learnable agent is "second_0"
         next_states, rewards, dones, infos = env.step(actions)
         p1_next_state = next_states[:, 1]  # the second one is learnable
         reward = rewards[:, 1]
         done = [np.float32(d) for d in dones]
         info = [list(i.values())[1] for i in infos]  # infos is a list of dicts (env) of dicts (agents)
-        p1_replay_buffer.push(p1_state, p1_action, reward, p1_next_state, done)
 
-        # p1_next_state = next_states[1]  # the second one is learnable
-        # reward = rewards[1]
-        # done = dones
-        # info = infos[1]     
-        # p1_replay_buffer.push(p1_state, p1_action, reward, p1_next_state, done)
-
+        # filter out the samples of terminated env 
+        samples = [[p1_state[i], p1_action[i], reward[i], p1_next_state[i], d] for i, d in enumerate(done) if not d]
+        p1_replay_buffer.push(samples)
 
         # TODO multi-step reward needs to be implemented 
         # # Save current state, reward, action to deque for multi-step learning
@@ -98,14 +92,12 @@ def train(env, args, writer, model_path):
         p1_episode_reward += np.mean(reward) # mean over envs
         tag_interval_length += 1
 
-        # if np.all(done):
-        if np.any(done):
+        if np.all(done):  
             length_list.append(tag_interval_length)
             tag_interval_length = 0
 
         # Episode done. Reset environment and clear logging records
-        # if np.all(done) or tag_interval_length >= args.max_tag_interval:
-        if np.any(done) or tag_interval_length >= args.max_tag_interval:
+        if np.all(done) or tag_interval_length >= args.max_tag_interval: # np.all(done) will end episode when all envs end, np.any(done) will end when any env ends.
             states = env.reset()  # p1_state=p2_state
             p1_reward_list.append(p1_episode_reward)
             writer.add_scalar("p1/episode_reward", p1_episode_reward, frame_idx*args.num_envs)
