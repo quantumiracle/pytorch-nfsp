@@ -5,20 +5,27 @@ import torch.nn.functional as F
 import numpy as np
 import random
 import math
-
+import operator
 from functools import partial
 
-def DQN(env, args):
-    if args.num_envs == 1:
-        if args.dueling:
-            model = DuelingDQN(env, args.hidden_dim)
+def DQN(env, args, Nash=False):
+    if Nash:
+        if args.num_envs == 1:
+            pass # TODO
         else:
-            model = DQNBase(env, args.hidden_dim)
+            model = ParallelNashDQN(env, args.hidden_dim, args.num_envs)
+
     else:
-        if args.dueling:
-            model = ParallelDuelingDQN(env, args.hidden_dim, args.num_envs)
+        if args.num_envs == 1:
+            if args.dueling:
+                model = DuelingDQN(env, args.hidden_dim)
+            else:
+                model = DQNBase(env, args.hidden_dim)
         else:
-            model = ParallelDQN(env, args.hidden_dim, args.num_envs)
+            if args.dueling:
+                model = ParallelDuelingDQN(env, args.hidden_dim, args.num_envs)
+            else:
+                model = ParallelDQN(env, args.hidden_dim, args.num_envs)
     return model
 
 class DQNBase(nn.Module):
@@ -37,7 +44,10 @@ class DQNBase(nn.Module):
         except:
             self.input_shape = env.observation_space[0].shape
             self.num_actions = env.action_space[0].n
+        print(self.input_shape)
+        self.construct_net(hidden_dim)
 
+    def construct_net(self, hidden_dim):
         self.flatten = Flatten()
         self.hidden_dim = hidden_dim
         if len(self.input_shape) > 1: # image
@@ -142,8 +152,44 @@ class ParallelDQN(DQNBase):
                 action = q_value.max(1)[1].detach().cpu().numpy()
         else:
             action = np.random.randint(self.num_actions, size=self.number_envs)
+        return action
 
-        return action     
+class ParallelNashDQN(DQNBase):
+    """
+    Nash-DQN for parallel env sampling
+
+    parameters
+    ---------
+    env         environment(openai gym)
+    """
+    def __init__(self, env, hidden_dim=64, number_envs=2):
+        super(ParallelNashDQN, self).__init__(env, hidden_dim)
+        self.number_envs = number_envs
+        try:
+            self.input_shape = tuple(map(operator.add, env.observation_space.shape, env.observation_space.shape)) # double the shape
+            self.num_actions = (env.action_space.n)**2
+        except:
+            self.input_shape = tuple(map(operator.add, env.observation_space[0].shape, env.observation_space[0].shape)) # double the shape
+            self.num_actions = (env.action_space[0].n)**2
+        self.construct_net(hidden_dim)
+
+    def act(self, state, epsilon, q_value=True):
+        """
+        Parameters
+        ----------
+        state       torch.Tensor with appropritate device type
+        epsilon     epsilon for epsilon-greedy
+        """
+        if random.random() > epsilon:  # NoisyNet does not use e-greedy
+            with torch.no_grad():
+                q_value = self.forward(state)
+                action = q_value.max(1)[1].detach().cpu().numpy()
+        else:
+            action = np.random.randint(self.num_actions, size=self.number_envs)
+        if q_value:
+            return action, q_value
+        else:
+            return action   
 
 class ParallelDuelingDQN(DuelingDQN, ParallelDQN):
     """
