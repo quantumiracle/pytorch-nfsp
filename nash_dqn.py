@@ -47,14 +47,23 @@ class ParallelNashAgent():
         all_actions = []
         all_dists = []
         for qs in q_table:  # iterate over envs
-            ne = NashEquilibriaSolver(qs)
-            ne = ne[0]  # take the first Nash equilibria found
+            # ne = NashEquilibriaSolver(qs)
+            # ne = ne[0]  # take the first Nash equilibria found
+            # print(np.linalg.det(qs))
+            try:
+                ne = NashEquilibriumSolver(qs)
+            except:  # some cases NE cannot be solved
+                print(np.linalg.det(qs), qs)
+                num_player = 2
+                ne = num_player*[1./qs.shape[0]*np.ones(qs.shape[0])]  # use uniform distribution if no NE is found
             actions = []
+                
             all_dists.append(ne)
             for dist in ne:  # iterate over agents
                 try:
                     sample_hist = np.random.multinomial(1, dist)
                 except:
+                    print('Not a valid distribution from Nash equilibrium solution.')
                     print(qs, ne)
                     print(dist)
                 a = np.where(sample_hist>0)
@@ -79,9 +88,6 @@ class ParallelNashAgent():
             self.target_model.eval()
 
 def train(env, args, writer, model_path, num_agents=2):
-    # agent_list = []
-    # for i in range(num_agents):
-    #     agent_list.append(ParallelNashAgent(env, i, args))  # [p0, p1]
     agent = ParallelNashAgent(env, 0, args)
 
     # Logging
@@ -96,31 +102,17 @@ def train(env, args, writer, model_path, num_agents=2):
     # Main Loop
     states =  env.reset()
     for frame_idx in range(1, args.max_frames + 1): # each step contains args.num_envs steps actually due to parallel envs
-        # actions_ = []
-        # for i in range(num_agents):
-        #     epsilon = agent_list[i].epsilon_by_frame(frame_idx)
-        #     try:
-        #         state = states[:, i]  # obs: (env, agent, obs_dim)
-        #     except:
-        #         print('Number of envs needs to be larger than 1.')
-        #     action = agent_list[i].current_model.act(torch.FloatTensor(state).to(args.device), epsilon)
-        #     actions_.append(action)
         q_values = agent.current_model(torch.FloatTensor(states.reshape(states.shape[0], -1)).to(args.device)).detach().cpu().numpy() # concate states of all agents
         actions_ = agent.compute_nash(q_values)  
         assert num_agents == 2
         actions = [{"first_0": a0, "second_0": a1} for a0, a1 in zip(*actions_.T)] # a replicate of actions, actually the learnable agent is "second_0"
-        print(actions)
+        # print(frame_idx)
         next_states, rewards, dones, infos = env.step(actions)
         done = [np.float32(d) for d in dones]
 
         # states (env, agent, state_dim) -> (env, agent*state_dim), similar for actions_, rewards take the positive one in two agents 
         samples = [[states[j].reshape(-1), actions_[j].reshape(-1), rewards[j, 0], next_states[j].reshape(-1), d] for j, d in enumerate(done) if not np.all(d)]
         agent.replay_buffer.push(samples) 
-        
-        # for i in range(num_agents):
-        #     # filter out the samples of terminated env 
-        #     samples = [[states[j, i], actions_[i][j], rewards[j, i], next_states[j, i], d] for j, d in enumerate(done) if not d]
-        #     agent_list[i].replay_buffer.push(samples) 
         
         info = [list(i.values())[1] for i in infos]  # infos is a list of dicts (env) of dicts (agents)
         states = next_states
@@ -145,7 +137,6 @@ def train(env, args, writer, model_path, num_agents=2):
             episode_reward = [0 for _ in range(num_agents)]
 
         if frame_idx % args.train_freq == 0:
-            # for i in range(num_agents):
             if (len(agent.replay_buffer) > args.rl_start):
                 # Update Best Response with Reinforcement Learning
                 rl_loss = compute_rl_loss(agent, args)
@@ -155,8 +146,6 @@ def train(env, args, writer, model_path, num_agents=2):
                     writer.add_scalar(f"p{i}/rl_loss", rl_loss.item(), frame_idx*args.num_envs)
 
         if frame_idx % args.update_target == 0:
-            # for i in range(num_agents):
-            #     update_target(agent_list[i].current_model, agent_list[i].target_model)
             update_target(agent.current_model, agent.target_model)
 
         # Logging and Saving models
@@ -169,16 +158,12 @@ def train(env, args, writer, model_path, num_agents=2):
             prev_frame = frame_idx
             prev_time = time.time()
 
-            # for i in range(num_agents):
-                # agent_list[i].save_model(model_path)
             agent.save_model(model_path)
 
         # Render if rendering argument is on
         if args.render:
             env.render()
 
-    # for i in range(num_agents):
-    #     agent_list[i].save_model(model_path)
     agent.save_model(model_path)
 
 
@@ -214,6 +199,7 @@ def compute_rl_loss(agent, args):
     target_next_q_values_ = target_next_q_values_.reshape(-1, action_dim, action_dim)
     nash_actions_  = torch.FloatTensor(nash_actions).to(args.device)
     next_q_value = torch.einsum('bk,bk->b', torch.einsum('bj,bjk->bk', nash_actions_[:, 0], target_next_q_values_), nash_actions_[:, 1])
+    
     # 2. CCE
 
     expected_q_value = reward + (args.gamma ** args.multi_step) * next_q_value * (1 - done)
@@ -228,11 +214,6 @@ def compute_rl_loss(agent, args):
     return loss
 
 def test(env, args, model_path, num_agents=2): 
-    # agent_list = []
-    # for i in range(num_agents):
-    #     agent = ParallelNashAgent(env, i, args)
-    #     agent.load_model(model_path, eval=True, map_location='cuda:0')
-    #     agent_list.append(agent)  # [p0, p1]
     agent = ParallelNashAgent(env, 0, args)
     agent.load_model(model_path, eval=True, map_location='cuda:0')  
 
@@ -250,10 +231,6 @@ def test(env, args, model_path, num_agents=2):
             if args.render:
                 env.render()
                 # time.sleep(0.05)
-            # actions = []
-            # for i in range(num_agents):
-            #     action = agent_list[i].current_model.act(torch.FloatTensor(states[i]).to(args.device), 0.)  # greedy action
-            #     actions.append(action)
             q_values = agent.current_model(torch.FloatTensor(states.reshape(states.shape[0], -1)).to(args.device)).detach().cpu().numpy() # concate states of all agents
             actions = agent.compute_nash(q_values)  
             actions = {"first_0": actions[0], "second_0": actions[1]}  # a replicate of actions, actually the learnable agent is "second_0"
