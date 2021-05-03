@@ -248,8 +248,7 @@ def test(env, args, model_path, num_agents=2):
                 length_list.append(episode_length)
                 break
             t += 1
-    print("Test Result - Length {:.2f} ".format(np.mean(length_list))+\
-        ''.join([f'P{i} Reward {np.mean(reward_list[i]):.2f}' for i in range(num_agents)]))
+    print("Test Result - Length {:.2f} ".format(np.mean(length_list))+f'First Player Reward {np.mean(reward_list[i]):.2f}')
 
 def multi_step_reward(rewards, gamma):
     ret = 0.
