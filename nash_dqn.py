@@ -21,6 +21,7 @@ from common.wrappers import wrap_pytorch, make_env
 from arguments import get_args
 from common.env import DummyVectorEnv, SubprocVectorEnv
 from eq_solver import NashEquilibriaSolver, NashEquilibriumSolver
+from eq_LPsolver import NashEquilibriumLPSolver, CoarseCorrelatedEquilibriumLPSolver
 
 class ParallelNashAgent():
     def __init__(self, env, id, args):
@@ -51,7 +52,8 @@ class ParallelNashAgent():
             # ne = ne[0]  # take the first Nash equilibria found
             # print(np.linalg.det(qs))
             try:
-                ne = NashEquilibriumSolver(qs)
+                # ne = NashEquilibriumSolver(qs)
+                ne = NashEquilibriumLPSolver(qs)
             except:  # some cases NE cannot be solved
                 print(np.linalg.det(qs), qs)
                 num_player = 2
@@ -64,6 +66,7 @@ class ParallelNashAgent():
                     sample_hist = np.random.multinomial(1, dist)
                 except:
                     print('Not a valid distribution from Nash equilibrium solution.')
+                    print(sum(ne[0]), sum(ne[1]))
                     print(qs, ne)
                     print(dist)
                 a = np.where(sample_hist>0)
