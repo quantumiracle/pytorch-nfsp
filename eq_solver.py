@@ -65,7 +65,7 @@ if __name__ == "__main__":
     # nes = NashEquilibriaSolver(A)
     # print(nes)
 
-    ne = NashEquilibriumSolver(A, B)
+    ne = NashEquilibriumSolver(A)
     print(ne)
 
     # cce = getCorrelatedEquilibria(A, coarse=False)
