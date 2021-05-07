@@ -45,9 +45,9 @@ class DQNBase(nn.Module):
             self.input_shape = env.observation_space[0].shape
             self.num_actions = env.action_space[0].n
         print(self.input_shape)
-        self.construct_net(hidden_dim)
+        self.construct_net(hidden_dim, nn.Tanh())
 
-    def construct_net(self, hidden_dim):
+    def construct_net(self, hidden_dim, activation=nn.ReLU()):
         self.flatten = Flatten()
         self.hidden_dim = hidden_dim
         if len(self.input_shape) > 1: # image
@@ -62,16 +62,16 @@ class DQNBase(nn.Module):
         else:
             self.features = nn.Sequential(
                 nn.Linear(self.input_shape[0], hidden_dim),
-                nn.ReLU(),
+                activation,
                 nn.Linear(hidden_dim, hidden_dim),
-                nn.ReLU(),
-                nn.Linear(hidden_dim, int(hidden_dim/2)),
-                nn.ReLU(),
+                activation,
+                # nn.Linear(hidden_dim, int(hidden_dim/2)),
+                # nn.ReLU(),
             )
         
         self.fc = nn.Sequential(
             nn.Linear(self._feature_size(), int(hidden_dim/2)),
-            nn.ReLU(),
+            activation,
             nn.Linear(int(hidden_dim/2), self.num_actions)
         )
         
