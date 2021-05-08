@@ -12,7 +12,7 @@ from model import DQN, Policy
 from storage import ReplayBuffer, ReservoirBuffer
 
 import gym
-import lasertag
+# import lasertag
 import time, os
 from tensorboardX import SummaryWriter
 

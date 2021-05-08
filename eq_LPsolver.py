@@ -146,6 +146,7 @@ def CoarseCorrelatedEquilibriumLPSolver(A, B=None, vlim=10, verbose=False):
     result_joint_probs = np.append(result_joint_probs, 1-sum(result_joint_probs))
 
     print(result_marg_probs1, result_marg_probs2, result_joint_probs)
+    return result_marg_probs1, result_marg_probs2, result_joint_probs
 
 
 if __name__ == "__main__":

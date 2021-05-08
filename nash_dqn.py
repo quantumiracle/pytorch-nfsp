@@ -54,11 +54,58 @@ class ParallelNashAgent():
             try:
                 # ne = NashEquilibriumSolver(qs)
                 ne = NashEquilibriumLPSolver(qs)
+
             except:  # some cases NE cannot be solved
                 print(np.linalg.det(qs), qs)
                 num_player = 2
                 ne = num_player*[1./qs.shape[0]*np.ones(qs.shape[0])]  # use uniform distribution if no NE is found
             actions = []
+                
+            all_dists.append(ne)
+            for dist in ne:  # iterate over agents
+                try:
+                    sample_hist = np.random.multinomial(1, dist)
+                except:
+                    print('Not a valid distribution from Nash equilibrium solution.')
+                    print(sum(ne[0]), sum(ne[1]))
+                    print(qs, ne)
+                    print(dist)
+                a = np.where(sample_hist>0)
+                actions.append(a)
+            # print(actions)
+            all_actions.append(np.array(actions).reshape(-1))
+        # print(all_actions)
+        if return_dist:
+            return all_dists
+        else:
+            return np.array(all_actions)
+
+    def compute_CCE(self, q_values, return_dist=False):
+        """
+        Return actions as coarse correlated equilibrium of given payoff matrix, shape: [env, agent]
+        """
+        q_table = q_values.reshape(-1, self.env.action_space[0].n,  self.env.action_space[0].n)
+        print(q_values.shape, q_table.shape)
+        all_actions = []
+        all_dists = []
+        for qs in q_table:  # iterate over envs
+            # ne = NashEquilibriaSolver(qs)
+            # ne = ne[0]  # take the first Nash equilibria found
+            # print(np.linalg.det(qs))
+            try:
+                _, _, jnt_probs = CoarseCorrelatedEquilibriumLPSolver(qs)
+                jnt_probs.reshape(self.env.action_space[0].n,  self.env.action_space[0].n)
+
+            except:  # some cases NE cannot be solved
+                print(np.linalg.det(qs), qs)
+                num_player = 2
+                ne = num_player*[1./qs.shape[0]*np.ones(qs.shape[0])]  # use uniform distribution if no NE is found
+            actions = []
+
+
+            sample_hist = np.random.multinomial(1, jnt_probs)
+            a = np.where(sample_hist>0)[0]  # this encode actions of two players
+
                 
             all_dists.append(ne)
             for dist in ne:  # iterate over agents
