@@ -39,6 +39,8 @@ def get_args():
                         help='Enable Dueling Network')
     parser.add_argument('--multi-step', type=int, default=1,
                         help='N-Step Learning')
+    parser.add_argument('--cce', action='store_true',
+                        help='Use Coarse Correlated Equilibrium rather than Nash.')
 
     # Environment Arguments
     parser.add_argument('--env', type=str, default='LaserTag-small2-v0',

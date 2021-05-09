@@ -244,6 +244,8 @@ def make_env(args):
             env = gym.make(env_name)
         except:
             print(f"Error: No such env: {env_name}!")
+        # may need more wrappers here, e.g. Pong-ram-v0 need scaled observation
+        # Ref: https://towardsdatascience.com/deep-q-network-dqn-i-bce08bdf2af
         env = NFSPAtariWrapper(env, keep_info = keep_info)
 
     env.seed(args.seed)

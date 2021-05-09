@@ -56,7 +56,7 @@ class ParallelNashAgent():
                 ne = NashEquilibriumLPSolver(qs)
 
             except:  # some cases NE cannot be solved
-                print(np.linalg.det(qs), qs)
+                print('No Nash solution for: ', np.linalg.det(qs), qs)
                 num_player = 2
                 ne = num_player*[1./qs.shape[0]*np.ones(qs.shape[0])]  # use uniform distribution if no NE is found
             actions = []
@@ -80,47 +80,32 @@ class ParallelNashAgent():
         else:
             return np.array(all_actions)
 
-    def compute_CCE(self, q_values, return_dist=False):
+    def compute_cce(self, q_values, return_dist=False):
         """
         Return actions as coarse correlated equilibrium of given payoff matrix, shape: [env, agent]
         """
         q_table = q_values.reshape(-1, self.env.action_space[0].n,  self.env.action_space[0].n)
-        print(q_values.shape, q_table.shape)
         all_actions = []
         all_dists = []
         for qs in q_table:  # iterate over envs
-            # ne = NashEquilibriaSolver(qs)
-            # ne = ne[0]  # take the first Nash equilibria found
-            # print(np.linalg.det(qs))
             try:
                 _, _, jnt_probs = CoarseCorrelatedEquilibriumLPSolver(qs)
-                jnt_probs.reshape(self.env.action_space[0].n,  self.env.action_space[0].n)
 
             except:  # some cases NE cannot be solved
-                print(np.linalg.det(qs), qs)
+                print('No CCE solution for: ', np.linalg.det(qs), qs)
                 num_player = 2
-                ne = num_player*[1./qs.shape[0]*np.ones(qs.shape[0])]  # use uniform distribution if no NE is found
-            actions = []
-
-
-            sample_hist = np.random.multinomial(1, jnt_probs)
-            a = np.where(sample_hist>0)[0]  # this encode actions of two players
-
-                
-            all_dists.append(ne)
-            for dist in ne:  # iterate over agents
-                try:
-                    sample_hist = np.random.multinomial(1, dist)
-                except:
-                    print('Not a valid distribution from Nash equilibrium solution.')
-                    print(sum(ne[0]), sum(ne[1]))
-                    print(qs, ne)
-                    print(dist)
-                a = np.where(sample_hist>0)
-                actions.append(a)
-            # print(actions)
-            all_actions.append(np.array(actions).reshape(-1))
-        # print(all_actions)
+                jnt_probs = 1./(qs.shape[0]*qs.shape[1])*np.ones(qs.shape[0]*qs.shape[1])  # use uniform distribution if no NE is found
+            
+            try:
+                sample_hist = np.random.multinomial(1, jnt_probs)  # a joint probability matrix for all players
+            except:
+                print('Not a valid distribution from Nash equilibrium solution.')
+                print(sum(jnt_probs), sum(abs(jnt_probs)))
+                print(qs, jnt_probs)
+            sample_hist = sample_hist.reshape(self.env.action_space[0].n,  self.env.action_space[0].n)
+            a = np.where(sample_hist>0)  # the actions for two players
+            all_actions.append(np.array(a).reshape(-1))
+            all_dists.append(jnt_probs)
         if return_dist:
             return all_dists
         else:
@@ -151,11 +136,23 @@ def train(env, args, writer, model_path, num_agents=2):
 
     # Main Loop
     states =  env.reset()
+    t0=time.time()
     for frame_idx in range(1, args.max_frames + 1): # each step contains args.num_envs steps actually due to parallel envs
+        t0=time.time()
         q_values = agent.current_model(torch.FloatTensor(states.reshape(states.shape[0], -1)).to(args.device)).detach().cpu().numpy() # concate states of all agents
-        actions_ = agent.compute_nash(q_values)  
+        t1=time.time()
+        # actions_=[]
+        # for qs in q_values:
+        #     maxid = np.argmax(qs.reshape(6,6))
+        #     actions_.append([maxid//6, maxid%6])
+        # actions_ = np.array(actions_)
+        if args.cce:
+            actions_ = agent.compute_cce(q_values)
+        else:
+            actions_ = agent.compute_nash(q_values)  
+        t2=time.time()
         assert num_agents == 2
-        actions = [{"first_0": a0, "second_0": a1} for a0, a1 in zip(*actions_.T)] # a replicate of actions, actually the learnable agent is "second_0"
+        actions = [{"first_0": a0, "second_0": a1} for a0, a1 in zip(*actions_.T)] 
         # print(frame_idx)
         next_states, rewards, dones, infos = env.step(actions)
         done = [np.float32(d) for d in dones]
@@ -213,6 +210,8 @@ def train(env, args, writer, model_path, num_agents=2):
         # Render if rendering argument is on
         if args.render:
             env.render()
+        t3=time.time()
+        print((t2-t1)/(t3-t0))
 
     agent.save_model(model_path)
 
@@ -244,14 +243,19 @@ def compute_rl_loss(agent, args):
     # next_q_value = target_next_q_values.max(1)[0]  # original one, get the maximum of target Q
 
     # compute CCE or NE
-    # 1. NE
-    nash_actions = agent.compute_nash(target_next_q_values, return_dist=True)  # get the mixed strategy Nash rather than specific actions
-    target_next_q_values_ = target_next_q_values_.reshape(-1, action_dim, action_dim)
-    nash_actions_  = torch.FloatTensor(nash_actions).to(args.device)
-    next_q_value = torch.einsum('bk,bk->b', torch.einsum('bj,bjk->bk', nash_actions_[:, 0], target_next_q_values_), nash_actions_[:, 1])
-    
-    # 2. CCE
+    if args.cce: # Coarse Correlated Equilibrium
+        cce_dists = agent.compute_cce(target_next_q_values, return_dist=True)
+        target_next_q_values_ = target_next_q_values_.reshape(-1, action_dim, action_dim)
+        cce_dists_  = torch.FloatTensor(cce_dists).to(args.device)
+        next_q_value = torch.einsum('bij,bij->b', cce_dists_, target_next_q_values_)
+        print('value: ', reward.shape, next_q_value)
 
+    else: # Nash Equilibrium
+        nash_dists = agent.compute_nash(target_next_q_values, return_dist=True)  # get the mixed strategy Nash rather than specific actions
+        target_next_q_values_ = target_next_q_values_.reshape(-1, action_dim, action_dim)
+        nash_dists_  = torch.FloatTensor(nash_dists).to(args.device)
+        next_q_value = torch.einsum('bk,bk->b', torch.einsum('bj,bjk->bk', nash_dists_[:, 0], target_next_q_values_), nash_dists_[:, 1])
+        
     expected_q_value = reward + (args.gamma ** args.multi_step) * next_q_value * (1 - done)
 
     # Huber Loss
@@ -282,7 +286,10 @@ def test(env, args, model_path, num_agents=2):
                 env.render()
                 # time.sleep(0.05)
             q_values = agent.current_model(torch.FloatTensor(states.reshape(states.shape[0], -1)).to(args.device)).detach().cpu().numpy() # concate states of all agents
-            actions = agent.compute_nash(q_values)  
+            if args.cce:
+                actions = agent.compute_cce(q_values)
+            else:
+                actions = agent.compute_nash(q_values)  
             actions = {"first_0": actions[0], "second_0": actions[1]}  # a replicate of actions, actually the learnable agent is "second_0"
             next_states, reward, done, _ = env.step(actions)
 

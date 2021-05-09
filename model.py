@@ -108,13 +108,13 @@ class DuelingDQN(DQNBase):
     Dueling Network Architectures for Deep Reinforcement Learning
     https://arxiv.org/abs/1511.06581
     """
-    def __init__(self, env, hidden_dim=64, **kw):
+    def __init__(self, env, hidden_dim=64, activation=nn.Tanh(), **kw):
         super(DuelingDQN, self).__init__(env, hidden_dim, **kw)
         self.advantage = self.fc
 
         self.value = nn.Sequential(
             nn.Linear(self._feature_size(), int(hidden_dim/2)),
-            nn.ReLU(),
+            activation,
             nn.Linear(int(hidden_dim/2), 1)
         )
     

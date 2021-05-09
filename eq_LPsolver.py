@@ -138,14 +138,26 @@ def CoarseCorrelatedEquilibriumLPSolver(A, B=None, vlim=10, verbose=False):
     # solve the LP
     status = prob.solve(pulp.PULP_CBC_CMD(msg=False)) # this will prevent unnecessary info report
 
-    result_marg_probs1 = np.array([value(marg_probs1[r]) for r in range(rows-1)])
-    result_marg_probs1 = np.append(result_marg_probs1, 1-sum(result_marg_probs1))
-    result_marg_probs2 = np.array([value(marg_probs2[c]) for c in range(cols-1)])
-    result_marg_probs2 = np.append(result_marg_probs2, 1-sum(result_marg_probs2))
-    result_joint_probs = np.array([value(joint_probs[i]) for i in range(len(joint_probs))])
-    result_joint_probs = np.append(result_joint_probs, 1-sum(result_joint_probs))
+    def append_last(l):
+        """ 
+        Need to check whether the sum of previous variables is larger than 1., since the constraint can be not strict.
+        """
+        # handle the exception that sum of all vars except the last is larger than 1 (usually by small value e-8)
+        partial_sum = sum(l)
+        if partial_sum > 1.:
+            l[np.where(l>0)[0]]-=(partial_sum-1.)  # reduce the value exceeding 1. from the first positive value
+            l = np.append(l, 0)
+        else:
+            l = np.append(l, 1-sum(l))  # add the last one
+        return l
 
-    print(result_marg_probs1, result_marg_probs2, result_joint_probs)
+    result_marg_probs1 = np.array([value(marg_probs1[r]) for r in range(rows-1)])
+    result_marg_probs1 = append_last(result_marg_probs1)
+    result_marg_probs2 = np.array([value(marg_probs2[c]) for c in range(cols-1)])
+    result_marg_probs2 = append_last(result_marg_probs2)
+    result_joint_probs = np.array([value(joint_probs[i]) for i in range(len(joint_probs))])
+    result_joint_probs = append_last(result_joint_probs)
+
     return result_marg_probs1, result_marg_probs2, result_joint_probs
 
 
