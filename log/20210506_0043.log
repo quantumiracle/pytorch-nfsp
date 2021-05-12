@@ -167,4 +167,6 @@ Not a valid distribution from Nash equilibrium solution.
  [-0.635 -0.681 -0.234 -0.155 -0.41  -0.729]
  [-0.596 -0.596 -0.572  0.482 -0.246 -0.62 ]] (array([0.18 , 0.   , 0.   , 0.607, 0.   , 0.213]), array([-0.   ,  0.358,  0.   ,  0.   ,  0.   ,  0.642]))
 [-0.     0.358  0.     0.     0.     0.642]
-Frame: 540000, Avg. Length: 589.2, P0 Avg. Reward: 0.157, P0 Avg. RL Loss: nan, P1 Avg. Reward: -0.157, P1 Avg. RL Loss: 0.011
+Frame: 540000, Avg. Length: 589.2, P0 Avg. Reward: 0.157, P0 Avg. RL Loss: nan, P1 Avg. Reward: -0.157, P1 Avg. RL Loss: 0.011Load SlimeVolley env: SlimeVolley-v0
+Load SlimeVolley env: SlimeVolley-v0
+Load SlimeVolley env: SlimeVolley-v0

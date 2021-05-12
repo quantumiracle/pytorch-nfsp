@@ -1485,4 +1485,13 @@ Frame: 144800000, Avg. Reward: 0.233, Avg. RL Loss: 0.001, Avg. Length: 3000.0
 Frame: 144900000, Avg. Reward: -0.050, Avg. RL Loss: 0.001, Avg. Length: 3000.0
 Frame: 145000000, Avg. Reward: -0.067, Avg. RL Loss: 0.001, Avg. Length: 3000.0
 Frame: 145100000, Avg. Reward: -0.167, Avg. RL Loss: 0.001, Avg. Length: 3000.0
-Frame: 145200000, Avg. Reward: 0.125, Avg. RL Loss: 0.001, Avg. Length: 3000.0
+Frame: 145200000, Avg. Reward: 0.125, Avg. RL Loss: 0.001, Avg. Length: 3000.0Load SlimeVolley env: SlimeVolley-v0
+Load SlimeVolley env: SlimeVolley-v0
+Load SlimeVolley env: SlimeVolley-v0
+Load SlimeVolley env: SlimeVolley-v0
+Load SlimeVolley env: SlimeVolley-v0
+Load SlimeVolley env: SlimeVolley-v0
+Load SlimeVolley env: SlimeVolley-v0
+Load SlimeVolley env: SlimeVolley-v0
+Load SlimeVolley env: SlimeVolley-v0
+Load SlimeVolley env: SlimeVolley-v0
