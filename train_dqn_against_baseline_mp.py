@@ -6,6 +6,7 @@ import time, os
 import random
 import numpy as np
 from collections import deque
+from datetime import datetime
 
 from common.utils import epsilon_scheduler, update_target, print_log, load_model, save_model
 from model import DQN, Policy
@@ -22,7 +23,7 @@ from arguments import get_args
 from common.env import DummyVectorEnv, SubprocVectorEnv
 
 
-def train(env, args, writer, model_path):
+def train(env, eval_env, args, writer, model_path):
     # RL Model for Player 1
     p1_current_model = DQN(env, args).to(args.device)
     p1_target_model = DQN(env, args).to(args.device)
@@ -88,6 +89,10 @@ def train(env, args, writer, model_path):
 
         states = next_states
 
+        # Render if rendering argument is on
+        if args.render:
+            env.render()
+
         # Logging
         p1_episode_reward += np.mean(reward) # mean over envs
         tag_interval_length += 1
@@ -120,10 +125,11 @@ def train(env, args, writer, model_path):
         if frame_idx % args.update_target == 0:
             update_target(p1_current_model, p1_target_model)
 
-
         # Logging and Saving models
         if frame_idx % args.evaluation_interval == 0:
-            print(f"Frame: {frame_idx*args.num_envs}, Avg. Reward: {np.mean(p1_reward_list):.3f}, Avg. RL Loss: {np.mean(p1_rl_loss_list):.3f}, Avg. Length: {np.mean(length_list):.1f}")
+            eval_p1_reward_list, eval_length_list = evaluate(eval_env, p1_current_model, args) # evaluate the model with purely greedy actions
+            print(f"Frame: {frame_idx*args.num_envs}, Avg. Reward: {np.mean(eval_p1_reward_list):.3f}, Avg. RL Loss: {np.mean(p1_rl_loss_list):.3f}, Avg. Length: {np.mean(eval_length_list):.1f}")
+            # print(f"Frame: {frame_idx*args.num_envs}, Avg. Reward: {np.mean(p1_reward_list):.3f}, Avg. RL Loss: {np.mean(p1_rl_loss_list):.3f}, Avg. Length: {np.mean(length_list):.1f}")
             p1_reward_list.clear(), length_list.clear()
             p1_rl_loss_list.clear()
             prev_frame = frame_idx
@@ -131,10 +137,6 @@ def train(env, args, writer, model_path):
 
             torch.save(p1_current_model.state_dict(), model_path+'/dqn')
             torch.save(p1_target_model.state_dict(), model_path+'/dqn_target')
-
-        # Render if rendering argument is on
-        if args.render:
-            env.render()
 
     torch.save(p1_current_model.state_dict(), model_path+'/dqn')
     torch.save(p1_target_model.state_dict(), model_path+'/dqn_target')
@@ -168,36 +170,35 @@ def compute_rl_loss(current_model, target_model, replay_buffer, optimizer, args)
     optimizer.step()
     return loss
 
+def evaluate(env, model, args, episodes=10):
+    p1_reward_list = []
+    length_list = []
+    for _ in range(episodes):
+        (p1_state, p2_state) = env.reset()
+        p1_episode_reward = 0
+        episode_length = 0
+        while True:
+            p1_action = model.act(torch.FloatTensor([p1_state]).to(args.device), 0.)[0]  # greedy action
+            actions = {"first_0": p1_action, "second_0": p1_action}  
+            (p1_next_state, p2_next_state), reward, done, _ = env.step(actions)
+
+            (p1_state, p2_state) = (p1_next_state, p2_next_state)
+            p1_episode_reward += reward[1]  # the second one is learnable
+            episode_length += 1
+
+            if done:
+                p1_reward_list.append(p1_episode_reward)
+                length_list.append(episode_length)
+                break  
+    return p1_reward_list, length_list
+
 def test(env, args, model_path): 
     p1_current_model = DQN(env, args).to(args.device)
     p1_current_model.eval()
     print('Load model from: ', model_path)
     p1_current_model.load_state_dict(torch.load(model_path+'/dqn', map_location='cuda:0'))
 
-    p1_reward_list = []
-    length_list = []
-
-    for _ in range(30):
-        (p1_state, p2_state) = env.reset()
-        p1_episode_reward = 0
-        episode_length = 0
-        while True:
-            if args.render:
-                env.render()
-                # time.sleep(0.05)
-            p1_action = p1_current_model.act(torch.FloatTensor(p1_state).to(args.device), 0.)  # greedy action
-            actions = {"first_0": p1_action, "second_0": p1_action}  # a replicate of actions, actually the learnable agent is "second_0"
-            (p1_next_state, p2_next_state), reward, done, _ = env.step(actions, against_baseline=True)
-
-            (p1_state, p2_state) = (p1_next_state, p2_next_state)
-            p1_episode_reward += reward[0]
-            episode_length += 1
-
-            if done:
-                p1_reward_list.append(p1_episode_reward)
-                length_list.append(episode_length)
-                break
-    
+    p1_reward_list, length_list = evaluate(env, p1_current_model, args)
     print("Test Result - Length {:.2f} Reward {:.2f}".format(
         np.mean(length_list), np.mean(p1_reward_list)))
     
@@ -212,29 +213,31 @@ def main():
     args = get_args()
     args.against_baseline = True
     print_args(args)
-    model_path = f'models/train_dqn_against_baseline/{args.env}'
+    DATE=datetime.now().strftime("%Y%m%d%H%M")
+    model_path = f'models/train_dqn_against_baseline/{args.env}/{DATE}'
     os.makedirs(model_path, exist_ok=True)
 
     log_dir = create_log_dir(args)
     if not args.evaluate:
         writer = SummaryWriter(log_dir)
     SEED = 721
-    if args.evaluate or args.num_envs == 1:
+    if args.num_envs == 1:
         env = make_env(args)  # "SlimeVolley-v0", "SlimeVolleyPixel-v0" 'Pong-ram-v0'
     else:
         VectorEnv = [DummyVectorEnv, SubprocVectorEnv][1]  # https://github.com/thu-ml/tianshou/blob/master/tianshou/env/venvs.py
         env = VectorEnv([lambda: make_env(args) for _ in range(args.num_envs)])
+    eval_env = make_env(args)
     print(env.observation_space, env.action_space)
 
     set_global_seeds(args.seed)
     env.seed(args.seed)
 
     if args.evaluate:
-        test(env, args, model_path)
+        test(eval_env, args, model_path)
         env.close()
         return
-
-    train(env, args, writer, model_path)
+    else:
+        train(env, eval_env, args, writer, model_path)
 
     # writer.export_scalars_to_json(os.path.join(log_dir, "all_scalars.json"))
     writer.close()

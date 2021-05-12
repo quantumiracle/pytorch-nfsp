@@ -1,7 +1,7 @@
 """ Solve equilibrium (Nash/Correlated) with Linear Programming in zero-sum games. """
 import numpy as np
 from pulp import *
-
+import time
 
 def NashEquilibriumLPSolver(A, B=None, vlim=10, verbose=False):
     """ 
@@ -14,6 +14,7 @@ def NashEquilibriumLPSolver(A, B=None, vlim=10, verbose=False):
         vlim: this is the absolute value range of objective variable z, it should be of a similar magnitude of the payoff values. 
     """
     def solve_one_side(A):
+        t0 = time.time()
         rows = A.shape[0]
         cols = A.shape[1]
         value_range = [-vlim, vlim]
@@ -46,9 +47,10 @@ def NashEquilibriumLPSolver(A, B=None, vlim=10, verbose=False):
         constr = f"prob+={last_var}>=0" # last prob is non-negative
         exec(constr) 
         if verbose: print(constr)
-
+        t1 = time.time()
         # solve the LP
         status = prob.solve(pulp.PULP_CBC_CMD(msg=False)) 
+        t2 = time.time()
 
         v_list = np.array([value(var_list[r]) for r in range(rows-1)])
 
@@ -61,6 +63,7 @@ def NashEquilibriumLPSolver(A, B=None, vlim=10, verbose=False):
             v_list = np.append(v_list, 1-sum(v_list))  # add the last one
         
         if verbose: print("Prob Values: ", v_list, ", Objective Value: ", value(var_list[-1]))
+        print('time: ',(t1-t0)/(t2-t0), (t2-t1)/(t2-t0))
         return v_list, value(var_list[-1])
     
     if verbose: print('Player 1:')
