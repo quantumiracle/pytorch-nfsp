@@ -6,6 +6,7 @@ import time, os
 import random
 import numpy as np
 from collections import deque
+from datetime import datetime
 
 from common.utils import epsilon_scheduler, update_target, print_log, load_model, save_model
 from model import DQN, Policy
@@ -212,7 +213,8 @@ def main():
     args = get_args()
     args.against_baseline = True
     print_args(args)
-    model_path = f'models/train_dqn_against_baseline/{args.env}'
+    DATE=datetime.now().strftime("%Y%m%d%H%M")
+    model_path = f'models/train_dqn_against_baseline/{args.env}/{DATE}'
     os.makedirs(model_path, exist_ok=True)
 
     log_dir = create_log_dir(args)
