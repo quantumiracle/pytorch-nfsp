@@ -63,7 +63,7 @@ def NashEquilibriumLPSolver(A, B=None, vlim=10, verbose=False):
             v_list = np.append(v_list, 1-sum(v_list))  # add the last one
         
         if verbose: print("Prob Values: ", v_list, ", Objective Value: ", value(var_list[-1]))
-        print('time: ',(t1-t0)/(t2-t0), (t2-t1)/(t2-t0))
+        # print('time: ',(t1-t0)/(t2-t0), (t2-t1)/(t2-t0))
         return v_list, value(var_list[-1])
     
     if verbose: print('Player 1:')

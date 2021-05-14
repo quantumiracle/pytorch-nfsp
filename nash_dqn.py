@@ -153,7 +153,7 @@ def train(env, args, writer, model_path, num_agents=2):
         t2=time.time()
         assert num_agents == 2
         actions = [{"first_0": a0, "second_0": a1} for a0, a1 in zip(*actions_.T)] 
-        # print(frame_idx)
+        print(frame_idx)
         next_states, rewards, dones, infos = env.step(actions)
         done = [np.float32(d) for d in dones]
 
@@ -211,7 +211,7 @@ def train(env, args, writer, model_path, num_agents=2):
         if args.render:
             env.render()
         t3=time.time()
-        print((t2-t1)/(t3-t0))
+        # print((t2-t1)/(t3-t0))
 
     agent.save_model(model_path)
 
