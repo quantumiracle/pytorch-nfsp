@@ -178,13 +178,15 @@ def evaluate(env, model, args, episodes=10):
         p1_episode_reward = 0
         episode_length = 0
         while True:
-            p1_action = model.act(torch.FloatTensor([p1_state]).to(args.device), 0.)[0]  # greedy action
+            p1_action = model.act(torch.FloatTensor(p1_state).to(args.device), 0.)  # greedy action
             actions = {"first_0": p1_action, "second_0": p1_action}  
             (p1_next_state, p2_next_state), reward, done, _ = env.step(actions)
 
             (p1_state, p2_state) = (p1_next_state, p2_next_state)
             p1_episode_reward += reward[1]  # the second one is learnable
             episode_length += 1
+            if args.render:
+                env.render()
 
             if done:
                 p1_reward_list.append(p1_episode_reward)
@@ -194,9 +196,10 @@ def evaluate(env, model, args, episodes=10):
 
 def test(env, args, model_path): 
     p1_current_model = DQN(env, args).to(args.device)
-    p1_current_model.eval()
     print('Load model from: ', model_path)
-    p1_current_model.load_state_dict(torch.load(model_path+'/dqn', map_location='cuda:0'))
+    # p1_current_model.load_state_dict(torch.load(model_path+'/dqn', map_location='cuda:0'))
+    p1_current_model.load_state_dict(torch.load(model_path+'/dqn', map_location='cpu'))
+    p1_current_model.eval()
 
     p1_reward_list, length_list = evaluate(env, p1_current_model, args)
     print("Test Result - Length {:.2f} Reward {:.2f}".format(
@@ -213,9 +216,7 @@ def main():
     args = get_args()
     args.against_baseline = True
     print_args(args)
-    DATE=datetime.now().strftime("%Y%m%d%H%M")
-    model_path = f'models/train_dqn_against_baseline/{args.env}/{DATE}'
-    os.makedirs(model_path, exist_ok=True)
+    DATE=datetime.now().strftime("%Y%m%d_%H%M")
 
     log_dir = create_log_dir(args)
     if not args.evaluate:
@@ -233,10 +234,13 @@ def main():
     env.seed(args.seed)
 
     if args.evaluate:
+        model_path = f'models/train_dqn_against_baseline/{args.env}/{args.load_model}'
         test(eval_env, args, model_path)
         env.close()
         return
     else:
+        model_path = f'models/train_dqn_against_baseline/{args.env}/{DATE}'
+        os.makedirs(model_path, exist_ok=True)
         train(env, eval_env, args, writer, model_path)
 
     # writer.export_scalars_to_json(os.path.join(log_dir, "all_scalars.json"))

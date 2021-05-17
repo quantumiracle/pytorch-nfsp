@@ -85,7 +85,7 @@ def train(env, args, writer, model_path, num_agents=2):
         
         info = [list(i.values())[1] for i in infos]  # infos is a list of dicts (env) of dicts (agents)
         states = next_states
-
+        # print(frame_idx)
         # Logging
         for i in range(num_agents):
             episode_reward[i] += np.mean(rewards[:, i])  # mean over envs

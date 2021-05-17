@@ -22,6 +22,7 @@ from arguments import get_args
 from common.env import DummyVectorEnv, SubprocVectorEnv
 from eq_solver import NashEquilibriaSolver, NashEquilibriumSolver
 from eq_LPsolver import NashEquilibriumLPSolver, CoarseCorrelatedEquilibriumLPSolver
+from eq_CVXPYsolver import NashEquilibriumCVXPYSolver
 
 class ParallelNashAgent():
     def __init__(self, env, id, args):
@@ -48,17 +49,22 @@ class ParallelNashAgent():
         all_actions = []
         all_dists = []
         for qs in q_table:  # iterate over envs
-            # ne = NashEquilibriaSolver(qs)
-            # ne = ne[0]  # take the first Nash equilibria found
-            # print(np.linalg.det(qs))
+            t0 = time.time()
             try:
+                # ne = NashEquilibriaSolver(qs)
+                # ne = ne[0]  # take the first Nash equilibria found
+                # print(np.linalg.det(qs))
                 # ne = NashEquilibriumSolver(qs)
                 ne = NashEquilibriumLPSolver(qs)
+                ne = NashEquilibriumCVXPYSolver(qs)
 
             except:  # some cases NE cannot be solved
                 print('No Nash solution for: ', np.linalg.det(qs), qs)
                 num_player = 2
                 ne = num_player*[1./qs.shape[0]*np.ones(qs.shape[0])]  # use uniform distribution if no NE is found
+            t1 = time.time()
+            # print(t1-t0)
+            
             actions = []
                 
             all_dists.append(ne)
@@ -211,7 +217,7 @@ def train(env, args, writer, model_path, num_agents=2):
         if args.render:
             env.render()
         t3=time.time()
-        # print((t2-t1)/(t3-t0))
+        print((t2-t1)/(t3-t0))
 
     agent.save_model(model_path)
 
