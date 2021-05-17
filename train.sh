@@ -11,7 +11,7 @@ echo "Save as: " $DATE
 #python train_dqn_against_baseline.py --env SlimeVolleyNoFrameskip-v0 --hidden-dim 512 --max-frames 30000000 > log/$DATE$RAND.log &
 # python train_dqn_against_baseline_mp.py --env SlimeVolley-v0 --num-envs 5 --hidden-dim 256 --train-freq 100 --batch-size 1024 --max-frames 500000000 > log/$DATE$RAND.log &
 # python train_dqn_against_baseline_mp.py --env SlimeVolley-v0 --gamma 0.99 --eps-decay 1000000 --buffer-size 1000000 --num-envs 10 --hidden-dim 256 --train-freq 10 --batch-size 1024 --max-frames 500000000 > log/$DATE$RAND.log &
-python train_dqn_against_baseline_mp.py --env SlimeVolley-v0 --dueling --eps-final 0.01 --gamma 0.99 --eps-decay 1000000 --buffer-size 1000000 --num-envs 10 --hidden-dim 256 --train-freq 10 --batch-size 1024 --max-frames 500000000 > log/$DATE$RAND.log &
+# python train_dqn_against_baseline_mp.py --env SlimeVolley-v0 --dueling --eps-final 0.01 --gamma 0.99 --eps-decay 1000000 --buffer-size 1000000 --num-envs 10 --hidden-dim 256 --train-freq 10 --batch-size 1024 --max-frames 500000000 > log/$DATE$RAND.log &
 
-# python nash_dqn.py --env SlimeVolley-v0 --num-envs 3  --hidden-dim 256 --train-freq 100 --batch-size 1024 --max-frames 500000000 > log/$DATE$RAND.log &
+python nash_dqn.py --env SlimeVolley-v0 --num-envs 3  --hidden-dim 256 --evaluation-interval 2000 --train-freq 100 --batch-size 1024 --max-frames 500000000 -eps-final 0.01 --gamma 0.99 --eps-decay 1000000> log/$DATE$RAND.log &
 # python train_dqn_against_baseline.py  --env Pong-ram-v0 --hidden-dim 64  --max-tag-interval 10000   > log/$DATE$RAND.log &

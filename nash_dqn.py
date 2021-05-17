@@ -30,6 +30,7 @@ class ParallelNashAgent():
         self.id = id
         self.env = env
         self.args = args
+        self.action_dims = self.env.action_space[0].n
         self.current_model = DQN(env, args, Nash=True).to(args.device)
         self.target_model = DQN(env, args, Nash=True).to(args.device)
         update_target(self.current_model, self.target_model)
@@ -45,7 +46,7 @@ class ParallelNashAgent():
         """
         Return actions as Nash equilibrium of given payoff matrix, shape: [env, agent]
         """
-        q_table = q_values.reshape(-1, self.env.action_space[0].n,  self.env.action_space[0].n)
+        q_table = q_values.reshape(-1, self.action_dims,  self.action_dims)
         all_actions = []
         all_dists = []
         for qs in q_table:  # iterate over envs
@@ -55,7 +56,7 @@ class ParallelNashAgent():
                 # ne = ne[0]  # take the first Nash equilibria found
                 # print(np.linalg.det(qs))
                 # ne = NashEquilibriumSolver(qs)
-                ne = NashEquilibriumLPSolver(qs)
+                # ne = NashEquilibriumLPSolver(qs)
                 ne = NashEquilibriumCVXPYSolver(qs)
 
             except:  # some cases NE cannot be solved
@@ -90,7 +91,7 @@ class ParallelNashAgent():
         """
         Return actions as coarse correlated equilibrium of given payoff matrix, shape: [env, agent]
         """
-        q_table = q_values.reshape(-1, self.env.action_space[0].n,  self.env.action_space[0].n)
+        q_table = q_values.reshape(-1, self.action_dims,  self.action_dims)
         all_actions = []
         all_dists = []
         for qs in q_table:  # iterate over envs
@@ -108,7 +109,7 @@ class ParallelNashAgent():
                 print('Not a valid distribution from Nash equilibrium solution.')
                 print(sum(jnt_probs), sum(abs(jnt_probs)))
                 print(qs, jnt_probs)
-            sample_hist = sample_hist.reshape(self.env.action_space[0].n,  self.env.action_space[0].n)
+            sample_hist = sample_hist.reshape(self.action_dims,  self.action_dims)
             a = np.where(sample_hist>0)  # the actions for two players
             all_actions.append(np.array(a).reshape(-1))
             all_dists.append(jnt_probs)
@@ -116,6 +117,22 @@ class ParallelNashAgent():
             return all_dists
         else:
             return np.array(all_actions)
+
+    def act(self, states, epsilon):
+        states = torch.FloatTensor(states).to(self.args.device)
+
+        if random.random() > epsilon:  # NoisyNet does not use e-greedy
+            with torch.no_grad():
+                q_values = self.current_model(states).detach().cpu().numpy()
+            if self.args.cce:
+                actions = self.compute_cce(q_values)
+            else:
+                actions = self.compute_nash(q_values) 
+
+        else:
+            num_player = 2
+            actions = np.random.randint(self.action_dims, size=(states.shape[0], num_player))
+        return actions
 
     def save_model(self, model_path):
         torch.save(self.current_model.state_dict(), model_path+f'/{self.id}_dqn')
@@ -134,7 +151,7 @@ def train(env, args, writer, model_path, num_agents=2):
     # Logging
     length_list = []
     reward_list = [[] for _ in range(num_agents)]
-    rl_loss_list = [[] for _ in range(num_agents)]
+    rl_loss_list = []  # b.c. using the nash Q value, share for two players
     episode_reward = [0 for _ in range(num_agents)]
     tag_interval_length = 0
     prev_time = time.time()
@@ -145,21 +162,16 @@ def train(env, args, writer, model_path, num_agents=2):
     t0=time.time()
     for frame_idx in range(1, args.max_frames + 1): # each step contains args.num_envs steps actually due to parallel envs
         t0=time.time()
-        q_values = agent.current_model(torch.FloatTensor(states.reshape(states.shape[0], -1)).to(args.device)).detach().cpu().numpy() # concate states of all agents
-        t1=time.time()
-        # actions_=[]
+        epsilon = agent.epsilon_by_frame(frame_idx)
+        actions_ = agent.act(states.reshape(states.shape[0], -1), epsilon)  # concate states of all agents
         # for qs in q_values:
         #     maxid = np.argmax(qs.reshape(6,6))
         #     actions_.append([maxid//6, maxid%6])
-        # actions_ = np.array(actions_)
-        if args.cce:
-            actions_ = agent.compute_cce(q_values)
-        else:
-            actions_ = agent.compute_nash(q_values)  
+        # actions_ = np.array(actions_)  
         t2=time.time()
         assert num_agents == 2
         actions = [{"first_0": a0, "second_0": a1} for a0, a1 in zip(*actions_.T)] 
-        print(frame_idx)
+        # print(frame_idx)
         next_states, rewards, dones, infos = env.step(actions)
         done = [np.float32(d) for d in dones]
 
@@ -193,7 +205,7 @@ def train(env, args, writer, model_path, num_agents=2):
             if (len(agent.replay_buffer) > args.rl_start):
                 # Update Best Response with Reinforcement Learning
                 rl_loss = compute_rl_loss(agent, args)
-                rl_loss_list[i].append(rl_loss.item())
+                rl_loss_list.append(rl_loss.item())
 
                 if frame_idx % args.max_tag_interval == 0:  # not log at every step
                     writer.add_scalar(f"p{i}/rl_loss", rl_loss.item(), frame_idx*args.num_envs)
@@ -203,10 +215,10 @@ def train(env, args, writer, model_path, num_agents=2):
 
         # Logging and Saving models
         if frame_idx % args.evaluation_interval == 0:
-            print(f"Frame: {frame_idx*args.num_envs}, Avg. Length: {np.mean(length_list):.1f}"+\
-                ''.join([f", P{i} Avg. Reward: {np.mean(reward_list[i]):.3f}, P{i} Avg. RL Loss: {np.mean(rl_loss_list[i]):.3f}" for i in range(num_agents)]))
+            print(f"Frame: {frame_idx*args.num_envs}, Avg. RL Loss: {np.mean(rl_loss_list):.3f}, Avg. Length: {np.mean(length_list):.1f}"+\
+                ''.join([f", P{i} Avg. Reward: {np.mean(reward_list[i]):.3f}" for i in range(num_agents)]))
             reward_list = [[] for _ in range(num_agents)]
-            rl_loss_list = [[] for _ in range(num_agents)]
+            rl_loss_list = []
             length_list.clear()
             prev_frame = frame_idx
             prev_time = time.time()
@@ -217,7 +229,7 @@ def train(env, args, writer, model_path, num_agents=2):
         if args.render:
             env.render()
         t3=time.time()
-        print((t2-t1)/(t3-t0))
+        # print((t2-t1)/(t3-t0))
 
     agent.save_model(model_path)
 
@@ -254,7 +266,7 @@ def compute_rl_loss(agent, args):
         target_next_q_values_ = target_next_q_values_.reshape(-1, action_dim, action_dim)
         cce_dists_  = torch.FloatTensor(cce_dists).to(args.device)
         next_q_value = torch.einsum('bij,bij->b', cce_dists_, target_next_q_values_)
-        print('value: ', reward.shape, next_q_value)
+        # print('value: ', reward.shape, next_q_value)
 
     else: # Nash Equilibrium
         nash_dists = agent.compute_nash(target_next_q_values, return_dist=True)  # get the mixed strategy Nash rather than specific actions
