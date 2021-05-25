@@ -91,12 +91,10 @@ def train(env, args, writer, model_path, num_agents=2):
             episode_reward[i] += np.mean(rewards[:, i])  # mean over envs
         tag_interval_length += 1
 
-        if np.any(done):  # TODO if use np.all(done), pettingzoo env will not provide obs for env after done
+        # Episode done. Reset environment and clear logging records
+        if np.any(done) or tag_interval_length >= args.max_tag_interval:  # TODO if use np.all(done), pettingzoo env will not provide obs for env after done
             length_list.append(tag_interval_length)
             tag_interval_length = 0
-
-        # Episode done. Reset environment and clear logging records
-        if np.any(done) or tag_interval_length >= args.max_tag_interval:
             states =  env.reset()  # p1_state=p2_state
             for i in range(num_agents):
                 reward_list[i].append(episode_reward[i])
@@ -121,6 +119,7 @@ def train(env, args, writer, model_path, num_agents=2):
 
         # Logging and Saving models
         if frame_idx % args.evaluation_interval == 0:
+            print(length_list)
             print(f"Frame: {frame_idx*args.num_envs}, Avg. Length: {np.mean(length_list):.1f}"+\
                 ''.join([f", P{i} Avg. Reward: {np.mean(reward_list[i]):.3f}, P{i} Avg. RL Loss: {np.mean(rl_loss_list[i]):.3f}" for i in range(num_agents)]))
             reward_list = [[] for _ in range(num_agents)]

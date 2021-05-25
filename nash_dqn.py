@@ -191,12 +191,10 @@ def train(env, args, writer, model_path, num_agents=2):
             episode_reward[i] += np.mean(rewards[:, i])  # mean over envs
         tag_interval_length += 1
 
-        if np.any(done):  # TODO if use np.all(done), pettingzoo env will not provide obs for env after done
+        # Episode done. Reset environment and clear logging records
+        if np.any(done) or tag_interval_length >= args.max_tag_interval:  # TODO if use np.all(done), pettingzoo env will not provide obs for env after done
             length_list.append(tag_interval_length)
             tag_interval_length = 0
-
-        # Episode done. Reset environment and clear logging records
-        if np.any(done) or tag_interval_length >= args.max_tag_interval:
             states =  env.reset()  # p1_state=p2_state
             for i in range(num_agents):
                 reward_list[i].append(episode_reward[i])
