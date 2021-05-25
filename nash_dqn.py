@@ -286,9 +286,15 @@ def compute_rl_loss(agent, args):
         # next_q_value = torch.einsum('bk,bk->b', torch.einsum('bj,bjk->bk', nash_dists_[:, 0], target_next_q_values_), nash_dists_[:, 1])
         # next_q_value = torch.zeros_like(q_value) # test for rock-paper-scissor (stage game)
 
-        # greedy Q estimation
+        # greedy Q estimation (cause overestimation, increasing Q value)
+        # next_q_value = torch.FloatTensor(target_next_q_values).to(args.device)
+        # next_q_value = torch.max(next_q_value, dim=-1)[0]
+
+        # softmax prob average
+        softmax = torch.nn.Softmax(dim=-1)
         next_q_value = torch.FloatTensor(target_next_q_values).to(args.device)
-        next_q_value = torch.max(next_q_value, dim=-1)[0]
+        prob = softmax(next_q_value)
+        next_q_value = torch.sum(next_q_value*prob, dim=-1)
 
     expected_q_value = reward + (args.gamma ** args.multi_step) * next_q_value * (1 - done)
 
