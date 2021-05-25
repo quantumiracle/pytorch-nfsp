@@ -23,6 +23,7 @@ from common.env import DummyVectorEnv, SubprocVectorEnv
 from eq_solver import NashEquilibriaSolver, NashEquilibriumSolver
 from eq_LPsolver import NashEquilibriumLPSolver, CoarseCorrelatedEquilibriumLPSolver
 from eq_CVXPYsolver import NashEquilibriumCVXPYSolver
+from eq_GUROBIsolver import NashEquilibriumGUROBISolver
 
 class ParallelNashAgent():
     def __init__(self, env, id, args):
@@ -58,6 +59,7 @@ class ParallelNashAgent():
                 # ne = NashEquilibriumSolver(qs)
                 # ne = NashEquilibriumLPSolver(qs)
                 ne = NashEquilibriumCVXPYSolver(qs)
+                # ne = NashEquilibriumGUROBISolver(qs)
 
             except:  # some cases NE cannot be solved
                 print('No Nash solution for: ', np.linalg.det(qs), qs)
@@ -71,7 +73,7 @@ class ParallelNashAgent():
             all_dists.append(ne)
             for dist in ne:  # iterate over agents
                 try:
-                    sample_hist = np.random.multinomial(1, dist)
+                    sample_hist = np.random.multinomial(1, dist)  # return one-hot vectors as sample from multinomial
                 except:
                     print('Not a valid distribution from Nash equilibrium solution.')
                     print(sum(ne[0]), sum(ne[1]))
@@ -152,6 +154,7 @@ def train(env, args, writer, model_path, num_agents=2):
     length_list = []
     reward_list = [[] for _ in range(num_agents)]
     rl_loss_list = []  # b.c. using the nash Q value, share for two players
+    q_list = []
     episode_reward = [0 for _ in range(num_agents)]
     tag_interval_length = 0
     prev_time = time.time()
@@ -160,8 +163,9 @@ def train(env, args, writer, model_path, num_agents=2):
     # Main Loop
     states =  env.reset()
     t0=time.time()
+    [n0, n1] = env.agents[0] # agents name in one env, 2-player game
     for frame_idx in range(1, args.max_frames + 1): # each step contains args.num_envs steps actually due to parallel envs
-        t0=time.time()
+        t1=time.time()
         epsilon = agent.epsilon_by_frame(frame_idx)
         actions_ = agent.act(states.reshape(states.shape[0], -1), epsilon)  # concate states of all agents
         # for qs in q_values:
@@ -170,7 +174,7 @@ def train(env, args, writer, model_path, num_agents=2):
         # actions_ = np.array(actions_)  
         t2=time.time()
         assert num_agents == 2
-        actions = [{"first_0": a0, "second_0": a1} for a0, a1 in zip(*actions_.T)] 
+        actions = [{n0: a0, n1: a1} for a0, a1 in zip(*actions_.T)] 
         # print(frame_idx)
         next_states, rewards, dones, infos = env.step(actions)
         done = [np.float32(d) for d in dones]
@@ -204,8 +208,9 @@ def train(env, args, writer, model_path, num_agents=2):
         if frame_idx % args.train_freq == 0:
             if (len(agent.replay_buffer) > args.rl_start):
                 # Update Best Response with Reinforcement Learning
-                rl_loss = compute_rl_loss(agent, args)
+                rl_loss, qs = compute_rl_loss(agent, args)
                 rl_loss_list.append(rl_loss.item())
+                q_list.append(qs.item())
 
                 if frame_idx % args.max_tag_interval == 0:  # not log at every step
                     writer.add_scalar(f"p{i}/rl_loss", rl_loss.item(), frame_idx*args.num_envs)
@@ -215,21 +220,27 @@ def train(env, args, writer, model_path, num_agents=2):
 
         # Logging and Saving models
         if frame_idx % args.evaluation_interval == 0:
-            print(f"Frame: {frame_idx*args.num_envs}, Avg. RL Loss: {np.mean(rl_loss_list):.3f}, Avg. Length: {np.mean(length_list):.1f}"+\
+            print(f"Frame: {frame_idx*args.num_envs}, Avg. RL Loss: {np.mean(rl_loss_list):.3f}, Avg. Q value: {np.mean(q_list):.3f}, Avg. Length: {np.mean(length_list):.1f}"+\
                 ''.join([f", P{i} Avg. Reward: {np.mean(reward_list[i]):.3f}" for i in range(num_agents)]))
             reward_list = [[] for _ in range(num_agents)]
             rl_loss_list = []
+            q_list = []
             length_list.clear()
             prev_frame = frame_idx
             prev_time = time.time()
 
             agent.save_model(model_path)
+            # evaluate the model, output one Q table
+            q = agent.current_model(torch.FloatTensor([states[0].reshape(-1)]).to(args.device)).detach().cpu().numpy()
+            print('Q table: \n', q.reshape(env.action_space[0].n, -1))
+            dist = agent.compute_nash(np.array([q]), return_dist=True)
+            print('Nash policies: ', dist)
 
         # Render if rendering argument is on
         if args.render:
             env.render()
         t3=time.time()
-        # print((t2-t1)/(t3-t0))
+        # print((t2-t1)/(t3-t1))
 
     agent.save_model(model_path)
 
@@ -269,11 +280,16 @@ def compute_rl_loss(agent, args):
         # print('value: ', reward.shape, next_q_value)
 
     else: # Nash Equilibrium
-        nash_dists = agent.compute_nash(target_next_q_values, return_dist=True)  # get the mixed strategy Nash rather than specific actions
-        target_next_q_values_ = target_next_q_values_.reshape(-1, action_dim, action_dim)
-        nash_dists_  = torch.FloatTensor(nash_dists).to(args.device)
-        next_q_value = torch.einsum('bk,bk->b', torch.einsum('bj,bjk->bk', nash_dists_[:, 0], target_next_q_values_), nash_dists_[:, 1])
-        
+        # nash_dists = agent.compute_nash(target_next_q_values, return_dist=True)  # get the mixed strategy Nash rather than specific actions
+        # target_next_q_values_ = target_next_q_values_.reshape(-1, action_dim, action_dim)
+        # nash_dists_  = torch.FloatTensor(nash_dists).to(args.device)
+        # next_q_value = torch.einsum('bk,bk->b', torch.einsum('bj,bjk->bk', nash_dists_[:, 0], target_next_q_values_), nash_dists_[:, 1])
+        # next_q_value = torch.zeros_like(q_value) # test for rock-paper-scissor (stage game)
+
+        # greedy Q estimation
+        next_q_value = torch.FloatTensor(target_next_q_values).to(args.device)
+        next_q_value = torch.max(next_q_value, dim=-1)[0]
+
     expected_q_value = reward + (args.gamma ** args.multi_step) * next_q_value * (1 - done)
 
     # Huber Loss
@@ -283,7 +299,7 @@ def compute_rl_loss(agent, args):
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
-    return loss
+    return loss, torch.mean(q_value)  # return the q value to see whether overestimation
 
 def test(env, args, model_path, num_agents=2): 
     agent = ParallelNashAgent(env, 0, args)

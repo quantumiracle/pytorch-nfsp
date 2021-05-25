@@ -50,16 +50,18 @@ class DQNBase(nn.Module):
     def construct_net(self, hidden_dim, activation=nn.ReLU()):
         self.flatten = Flatten()
         self.hidden_dim = hidden_dim
-        if len(self.input_shape) > 1: # image
-            self.features = nn.Sequential(
-                nn.Conv2d(self.input_shape[0], 8, kernel_size=4, stride=2),
-                cReLU(),
-                nn.Conv2d(16, 8, kernel_size=5, stride=1),
-                cReLU(),
-                nn.Conv2d(16, 8, kernel_size=3, stride=1),
-                cReLU()
-            )
-        else:
+        # if isinstance(self.input_shape, int):  # discrete observation
+        #     self.features = nn.Sequential(
+        #         nn.Linear(self.input_shape, hidden_dim),
+        #         activation,
+        #         nn.Linear(hidden_dim, hidden_dim),
+        #         activation,
+        #         # nn.Linear(hidden_dim, int(hidden_dim/2)),
+        #         # nn.ReLU(),
+        #     )
+        # elif not len(self.input_shape) > 1: # not image
+        
+        if not len(self.input_shape) > 1: # not image
             self.features = nn.Sequential(
                 nn.Linear(self.input_shape[0], hidden_dim),
                 activation,
@@ -67,6 +69,15 @@ class DQNBase(nn.Module):
                 activation,
                 # nn.Linear(hidden_dim, int(hidden_dim/2)),
                 # nn.ReLU(),
+            )
+        else:
+            self.features = nn.Sequential(
+                nn.Conv2d(self.input_shape[0], 8, kernel_size=4, stride=2),
+                cReLU(),
+                nn.Conv2d(16, 8, kernel_size=5, stride=1),
+                cReLU(),
+                nn.Conv2d(16, 8, kernel_size=3, stride=1),
+                cReLU()
             )
         
         self.fc = nn.Sequential(
@@ -85,7 +96,10 @@ class DQNBase(nn.Module):
     
     def _feature_size(self):
         # print(torch.zeros(1, *self.input_shape).shape)
-        return self.features(torch.zeros(1, *self.input_shape)).view(1, -1).size(1)
+        if isinstance(self.input_shape, int):
+            return self.features(torch.zeros(1, self.input_shape)).view(1, -1).size(1)
+        else:
+            return self.features(torch.zeros(1, *self.input_shape)).view(1, -1).size(1)
     
     def act(self, state, epsilon):
         """

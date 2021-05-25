@@ -25,6 +25,10 @@ For training DQN against the environment baseline:
 
 For two agents zero-sum game with Nash DQN:
 
+Test with rps_v1 (gamma is set 0 b.c. it is a repeated stage game):
+
+`python nash_dqn.py --env rps_v1 --num-envs 2 --hidden-dim 64 --evaluation-interval 500 --rl-start 1000 --lr 0.0001 --gamma 0`
+
 `python nash_dqn.py  --env SlimeVolley-v0 --hidden-dim 256 --num_envs 5 --max-tag-interval 3000`
 
 `python nash_dqn.py  --env pong_v1 --ram --hidden-dim 32 --num_envs 2 --max-tag-interval 10000` 

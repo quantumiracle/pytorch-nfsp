@@ -5,6 +5,7 @@ from gym import spaces
 import slimevolleygym
 import cv2
 from collections import deque
+import random
 
 
 class ImageToPyTorch(gym.ObservationWrapper):
@@ -168,9 +169,15 @@ AtariEnvs = ['basketball_pong_v1', 'boxing_v1', 'combat_plane_v1', 'combat_tank_
   'pong_v1', 'quadrapong_v2', 'space_invaders_v1', 'space_war_v1', 'surround_v1', 'tennis_v2', 
   'video_checkers_v3', 'volleyball_pong_v1', 'warlords_v2', 'wizard_of_wor_v2']
 
+ClassicEnvs = ['dou_dizhu_v3', 'go_v3', 'leduc_holdem_v3', 'rps_v1', 'rpsls_v1', 'texas_holdem_no_limit_v3'
+, 'texas_holdem_v3', 'tictactoe_v3', 'uno_v3']
+
 # import envs: multi-agent environments in PettingZoo Atari (both competitive and coorperative)
 for env in AtariEnvs:   
     exec("from pettingzoo.atari import {}".format(env)) 
+# import envs: multi-agent environments PettingZoo Classic
+for env in ClassicEnvs:   
+    exec("from pettingzoo.classic import {}".format(env)) 
 
 def make_env(args):
     env_name = args.env
@@ -199,8 +206,8 @@ def make_env(args):
         env = SlimeVolleyWrapper(env, args.against_baseline)  # slimevolley to pettingzoo style
         env = NFSPPettingZooWrapper(env, keep_info=keep_info)  # pettingzoo to nfsp style, keep_info True to maintain dict type for parallel envs
 
-    elif env_name in AtariEnvs: # PettingZoo envs
-        print(f'Load PettingZoo env: {env_name}')
+    elif env_name in AtariEnvs: # PettingZoo Atari envs
+        print(f'Load PettingZoo Atari env: {env_name}')
         if args.ram:
             obs_type = 'ram'
         else:
@@ -233,6 +240,17 @@ def make_env(args):
         env.action_space = list(env.action_spaces.values())[0]
         env = NFSPPettingZooWrapper(env, keep_info=keep_info)  # pettingzoo to nfsp style, keep_info True to maintain dict type for parallel envs)
 
+    elif env_name in ClassicEnvs: # PettingZoo Classic envs
+        print(f'Load PettingZoo Classic env: {env_name}')
+        if env_name in ['rps_v1', 'rpsls_v1']:
+            env = eval(env_name).parallel_env()
+            env = PettingzooClassicWrapper(env, observation_mask=1.)
+        else: # only rps_v1 can use parallel_env at present
+            env = eval(env_name).env()
+            env = PettingzooClassic_Iterate2Parallel(env, observation_mask=None)  # since Classic games do not support Parallel API yet
+            
+        env = NFSPPettingZooWrapper(env, keep_info=keep_info)
+    
     elif "LaserTag" in env_name: # LaserTag: https://github.com/younggyoseo/pytorch-nfsp
         print(f'Load LaserTag env: {env_name}')
         env = gym.make(env_name)
@@ -250,6 +268,119 @@ def make_env(args):
 
     env.seed(args.seed)
     return env
+
+class PettingzooClassic_Iterate2Parallel():
+    def __init__(self, env, observation_mask=1.):  
+        """
+        Args:
+
+            observation_mask: mask the observation to be anyvalue, if None, no mask. 
+        """
+        super(PettingzooClassic_Iterate2Parallel, self).__init__()
+        self.env = env
+        self.observation_mask = observation_mask
+        self.action_spaces = self.env.action_spaces
+        self.action_space = list(self.action_spaces.values())[0]
+        self.agents = list(self.action_spaces.keys())
+
+        # for rps_v1, discrete to box, fake space
+        # self.observation_space = gym.spaces.Box(low=0.0, high=1.0, shape=(1,), dtype=np.uint8)
+        # self.observation_spaces = {a:self.observation_space for a in self.agents}
+
+        # for holdem
+        # obs_space = list(self.env.observation_spaces.values())[0]['observation']
+        # obs_len = obs_space.shape[0]-self.action_space.n
+        # self.observation_space = gym.spaces.Box(shape=(obs_len,),low=obs_space.low[:obs_len],high=obs_space.high[:obs_len])
+        self.observation_space = list(self.env.observation_spaces.values())[0]['observation']
+        self.observation_spaces = {a:self.observation_space for a in self.agents}
+
+    def reset(self, observation=None):
+        obs = self.env.reset()
+        if self.observation_mask is not None:
+            return {a: self.observation_mask for a in self.agents}
+        else:
+            if obs is None:
+                return {a:np.zeros(self.observation_space.shape[0]) for a in self.agents} # return zeros
+            else:
+                return {a: obs[a]['observation'] for a in self.agents}
+
+    def seed(self, SEED):
+        self.env.seed(SEED)
+
+    def render(self,):
+        self.env.render()
+
+    def close(self):
+        self.env.close()
+
+    def step(self, action_dict):
+        obs_dict, reward_dict, done_dict, info_dict = {}, {}, {}, {}
+        for agent, action in action_dict.items():
+            observation, reward, done, info = self.env.last()  # observation is the last action of opponent
+            valid_actions = np.where(observation['action_mask'])[0]
+            if done: 
+                action = None  # for classic game: if one player done (requires to set action None), another is not, it causes problem when using parallel API
+            elif action not in valid_actions:
+                action = random.choice(valid_actions) # randomly select a valid action
+            self.env.step(action)
+            if self.observation_mask is not None:  # masked zero/ones observation
+                obs_dict[agent] = self.observation_mask
+            else:
+                obs_dict[agent] = observation['observation']  # observation contains {'observation': ..., 'action_mask': ...}
+            # the returned done from env.last() does not work; reward is for the last step (one-step delayed)
+            # reward_dict[agent] = reward
+            # done_dict[agent] = done
+            reward_dict[agent] = self.env.rewards[agent]
+            done_dict[agent] = self.env.dones[agent]  # the returned done from env.last() does not work
+            info_dict[agent] = info
+
+        return obs_dict, reward_dict, done_dict, info_dict
+
+class PettingzooClassicWrapper():
+    def __init__(self, env, observation_mask=1.):  
+        """
+        Args:
+
+            observation_mask: mask the observation to be anyvalue, if None, no mask. 
+        """
+        super(PettingzooClassicWrapper, self).__init__()
+        self.env = env
+        self.observation_mask = observation_mask
+        self.action_spaces = self.env.action_spaces
+        self.action_space = list(self.action_spaces.values())[0]
+        self.agents = list(self.action_spaces.keys())
+
+        # for rps_v1, discrete to box, fake space
+        self.observation_space = gym.spaces.Box(low=0.0, high=1.0, shape=(1,), dtype=np.uint8)
+        self.observation_spaces = {a:self.observation_space for a in self.agents}
+
+        # for holdem
+        # obs_space = self.env.observation_spaces.values()
+        # obs_len = obs_space.shape[0]-action_space.n
+        # self.observation_spaces = Box(shape=(obs_len,),low=obs_space.low[:obs_len],high=obs_space.high[:obs_len])
+
+    def reset(self, observation=None):
+        obs = self.env.reset()
+        if self.observation_mask is not None:
+            return {a: self.observation_mask for a in self.agents}
+        else:
+            return obs
+
+    def seed(self, SEED):
+        self.env.seed(SEED)
+
+    def render(self,):
+        self.env.render()
+
+    def close(self):
+        self.env.close()
+
+    def step(self, action):
+        observation, reward, done, info = self.env.step(action)
+        if self.observation_mask is not None:  # masked observation with a certain value
+            observation = {a:self.observation_mask for a in observation.keys()}
+        return observation, reward, done, info
+
 
 class NFSPAtariWrapper():
     """ Wrap single agent OpenAI gym atari game to be two-agent version """
@@ -461,6 +592,7 @@ class NFSPPettingZooWrapper():
         self.action_space = env.action_space
         fake_env = gym.make('Pong-v0')
         self.spec = fake_env.spec
+        self.agents = env.agents
         try:
             self.spec.id = env.env.spec.id
         except:
