@@ -11,7 +11,8 @@ from functools import partial
 def DQN(env, args, Nash=False):
     if Nash:
         if args.num_envs == 1:
-            pass # TODO
+            # pass # TODO
+            model = ParallelNashDQN(env, args.hidden_dim, args.num_envs)
         else:
             model = ParallelNashDQN(env, args.hidden_dim, args.num_envs)
 

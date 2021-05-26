@@ -8,7 +8,7 @@ import numpy as np
 from collections import deque
 
 from common.utils import epsilon_scheduler, update_target, print_log, load_model, save_model
-from model import DQN, Policy
+from model import DQN, Policy, ParallelNashDQN
 from storage import ParallelReplayBuffer, ReservoirBuffer
 
 import gym
@@ -31,7 +31,11 @@ class ParallelNashAgent():
         self.id = id
         self.env = env
         self.args = args
-        self.action_dims = self.env.action_space[0].n
+        print(args.num_envs)
+        try:
+            self.action_dims = self.env.action_space[0].n
+        except:
+            self.action_dims = self.env.action_space.n
         self.current_model = DQN(env, args, Nash=True).to(args.device)
         self.target_model = DQN(env, args, Nash=True).to(args.device)
         update_target(self.current_model, self.target_model)
@@ -278,10 +282,10 @@ def compute_rl_loss(agent, args):
         # print('value: ', reward.shape, next_q_value)
 
     else: # Nash Equilibrium
-        # nash_dists = agent.compute_nash(target_next_q_values, return_dist=True)  # get the mixed strategy Nash rather than specific actions
-        # target_next_q_values_ = target_next_q_values_.reshape(-1, action_dim, action_dim)
-        # nash_dists_  = torch.FloatTensor(nash_dists).to(args.device)
-        # next_q_value = torch.einsum('bk,bk->b', torch.einsum('bj,bjk->bk', nash_dists_[:, 0], target_next_q_values_), nash_dists_[:, 1])
+        nash_dists = agent.compute_nash(target_next_q_values, return_dist=True)  # get the mixed strategy Nash rather than specific actions
+        target_next_q_values_ = target_next_q_values_.reshape(-1, action_dim, action_dim)
+        nash_dists_  = torch.FloatTensor(nash_dists).to(args.device)
+        next_q_value = torch.einsum('bk,bk->b', torch.einsum('bj,bjk->bk', nash_dists_[:, 0], target_next_q_values_), nash_dists_[:, 1])
         # next_q_value = torch.zeros_like(q_value) # test for rock-paper-scissor (stage game)
 
         # greedy Q estimation (cause overestimation, increasing Q value)
@@ -289,10 +293,10 @@ def compute_rl_loss(agent, args):
         # next_q_value = torch.max(next_q_value, dim=-1)[0]
 
         # softmax prob average
-        softmax = torch.nn.Softmax(dim=-1)
-        next_q_value = torch.FloatTensor(target_next_q_values).to(args.device)
-        prob = softmax(next_q_value)
-        next_q_value = torch.sum(next_q_value*prob, dim=-1)
+        # softmax = torch.nn.Softmax(dim=-1)
+        # next_q_value = torch.FloatTensor(target_next_q_values).to(args.device)
+        # prob = softmax(next_q_value)
+        # next_q_value = torch.sum(next_q_value*prob, dim=-1)
 
     expected_q_value = reward + (args.gamma ** args.multi_step) * next_q_value * (1 - done)
 
@@ -313,29 +317,28 @@ def test(env, args, model_path, num_agents=2):
 
     reward_list = [[] for _ in range(num_agents)]
     length_list = []
-
-    for _ in range(30):
+    [n0, n1] = env.agents # agents name in one env, 2-player game
+    for i in range(3):
+        print('Episode: ', i)
         states = env.reset()
         episode_reward = [0 for _ in range(num_agents)]
         episode_length = 0
         t = 0
         while True:
             if args.render:
-                env.render()
-                # time.sleep(0.05)
-            q_values = agent.current_model(torch.FloatTensor(states.reshape(states.shape[0], -1)).to(args.device)).detach().cpu().numpy() # concate states of all agents
-            if args.cce:
-                actions = agent.compute_cce(q_values)
-            else:
-                actions = agent.compute_nash(q_values)  
-            actions = {"first_0": actions[0], "second_0": actions[1]}  # a replicate of actions, actually the learnable agent is "second_0"
+                env.render() 
+            actions_ = agent.act(torch.FloatTensor(states).reshape(-1).unsqueeze(0), 0.)  # epsilon=0, greedy action
+            assert num_agents == 2
+            actions = [{n0: a0, n1: a1} for a0, a1 in zip(*actions_.T)][0]
+            # print(actions)
             next_states, reward, done, _ = env.step(actions)
 
             states = next_states
             for i in range(num_agents):
                 episode_reward[i] += reward[i]
             episode_length += 1
-
+            print(episode_length)
+            print(done)
             if done:
             # if done or t>=args.max_tag_interval:  # the pong game might get stuck after a while: https://github.com/PettingZoo-Team/PettingZoo/issues/357
                 for i in range(num_agents):
