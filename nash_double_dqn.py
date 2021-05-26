@@ -38,7 +38,10 @@ class ParallelNashAgent():
             self.action_dims = self.env.action_space.n
         self.current_model = DQN(env, args, Nash=True).to(args.device)
         self.target_model = DQN(env, args, Nash=True).to(args.device)
+        self.current_model2 = DQN(env, args, Nash=True).to(args.device)
+        self.target_model2 = DQN(env, args, Nash=True).to(args.device)
         update_target(self.current_model, self.target_model)
+        update_target(self.current_model2, self.target_model2)
 
         if args.load_model and os.path.isfile(args.load_model):
             self.load_model(model_path)
@@ -46,6 +49,7 @@ class ParallelNashAgent():
         self.epsilon_by_frame = epsilon_scheduler(args.eps_start, args.eps_final, args.eps_decay)
         self.replay_buffer = ParallelReplayBuffer(args.buffer_size)
         self.rl_optimizer = optim.Adam(self.current_model.parameters(), lr=args.lr)
+        self.rl_optimizer2 = optim.Adam(self.current_model2.parameters(), lr=args.lr)
 
     def compute_nash(self, q_values, return_dist=False):
         """
@@ -246,7 +250,8 @@ def train(env, args, writer, model_path, num_agents=2):
 
 
 def compute_rl_loss(agent, args):
-    current_model, target_model, replay_buffer, optimizer = agent.current_model, agent.target_model, agent.replay_buffer, agent.rl_optimizer
+    replay_buffer, current_model, target_model, optimizer, current_model2, target_model2, optimizer2 \
+        = agent.replay_buffer, agent.current_model, agent.target_model, agent.rl_optimizer, agent.current_model2, agent.target_model2,  agent.rl_optimizer2
     state, action, reward, next_state, done = replay_buffer.sample(args.batch_size)
     weights = torch.ones(args.batch_size)
     # print(state.shape)
@@ -259,8 +264,12 @@ def compute_rl_loss(agent, args):
 
     # Q-Learning with target network
     q_values = current_model(state)
+    q_values2 = current_model2(state)
+
     target_next_q_values_ = target_model(next_state)
     target_next_q_values = target_next_q_values_.detach().cpu().numpy()
+    target_next_q_values2_ = target_model2(next_state)
+    target_next_q_values2 = target_next_q_values2_.detach().cpu().numpy()
     # print(q_values.shape)
 
     action_dim = int(np.sqrt(q_values.shape[-1])) # for two-symmetric-agent case only
@@ -268,6 +277,7 @@ def compute_rl_loss(agent, args):
     # print(action.shape)
 
     q_value = q_values.gather(1, action.unsqueeze(1)).squeeze(1)
+    q_value2 = q_values2.gather(1, action.unsqueeze(1)).squeeze(1)
 
     # next_q_value = target_next_q_values.max(1)[0]  # original one, get the maximum of target Q
 
@@ -280,10 +290,10 @@ def compute_rl_loss(agent, args):
         # print('value: ', reward.shape, next_q_value)
 
     else: # Nash Equilibrium
-        nash_dists = agent.compute_nash(target_next_q_values, return_dist=True)  # get the mixed strategy Nash rather than specific actions
-        target_next_q_values_ = target_next_q_values_.reshape(-1, action_dim, action_dim)
-        nash_dists_  = torch.FloatTensor(nash_dists).to(args.device)
-        next_q_value = torch.einsum('bk,bk->b', torch.einsum('bj,bjk->bk', nash_dists_[:, 0], target_next_q_values_), nash_dists_[:, 1])
+        # nash_dists = agent.compute_nash(target_next_q_values, return_dist=True)  # get the mixed strategy Nash rather than specific actions
+        # target_next_q_values_ = target_next_q_values_.reshape(-1, action_dim, action_dim)
+        # nash_dists_  = torch.FloatTensor(nash_dists).to(args.device)
+        # next_q_value = torch.einsum('bk,bk->b', torch.einsum('bj,bjk->bk', nash_dists_[:, 0], target_next_q_values_), nash_dists_[:, 1])
         # next_q_value = torch.zeros_like(q_value) # test for rock-paper-scissor (stage game)
 
         # greedy Q estimation (cause overestimation, increasing Q value)
@@ -291,21 +301,33 @@ def compute_rl_loss(agent, args):
         # next_q_value = torch.max(next_q_value, dim=-1)[0]
 
         # softmax prob average
-        # softmax = torch.nn.Softmax(dim=-1)
-        # next_q_value = torch.FloatTensor(target_next_q_values).to(args.device)
-        # prob = softmax(next_q_value)
-        # next_q_value = torch.sum(next_q_value*prob, dim=-1)
+        softmax = torch.nn.Softmax(dim=-1)
+        next_q_value = torch.FloatTensor(target_next_q_values).to(args.device)
+        prob = softmax(next_q_value)
+        next_q_value = torch.sum(next_q_value*prob, dim=-1)
 
-    expected_q_value = reward + (args.gamma ** args.multi_step) * next_q_value * (1 - done)
+        next_q_value2 = torch.FloatTensor(target_next_q_values2).to(args.device)
+        prob2 = softmax(next_q_value2)
+        next_q_value2 = torch.sum(next_q_value2*prob2, dim=-1)
+
+        min_next_q_value = torch.min(next_q_value, next_q_value2)  # clipped double Q-learning (TD3) for overestimation
+
+    expected_q_value = reward + (args.gamma ** args.multi_step) * min_next_q_value * (1 - done)
 
     # Huber Loss
     loss = F.smooth_l1_loss(q_value, expected_q_value.detach(), reduction='none')
     loss = (loss * weights).mean()
-
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
-    return loss, torch.mean(q_value)  # return the q value to see whether overestimation
+
+    loss2 = F.smooth_l1_loss(q_value2, expected_q_value.detach(), reduction='none')
+    loss2 = (loss2 * weights).mean()
+    optimizer2.zero_grad()
+    loss2.backward()
+    optimizer2.step()
+
+    return loss+loss2, torch.mean(q_value)  # return the q value to see whether overestimation
 
 def test(env, args, model_path, num_agents=2): 
     agent = ParallelNashAgent(env, 0, args)
@@ -353,7 +375,7 @@ def multi_step_reward(rewards, gamma):
 def main():
     args = get_args()
     print_args(args)
-    model_path = f'models/nash_dqn/{args.env}'
+    model_path = f'models/nash_double_dqn/{args.env}'
     os.makedirs(model_path, exist_ok=True)
 
     log_dir = create_log_dir(args)

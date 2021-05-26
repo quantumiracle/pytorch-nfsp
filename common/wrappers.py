@@ -632,3 +632,25 @@ class NFSPPettingZooWrapper():
 
     def close(self):
         self.env.close()
+
+
+if __name__ == "__main__":
+    import sys
+    sys.path.append("..")
+    from arguments import get_args
+    args = get_args()
+    env = make_env(args)
+
+    for _ in range(3):
+            observation = env.reset()
+            # for t in range(1000):
+            while True:
+                actions = {agent: 1 for agent in env.agents}
+                # actions = {'player_0': 0, 'player_1': 1}
+                # actions = {n: random.choice(np.arange(env.action_space.n)) for n in ['player_0', 'player_1']}
+                observation, reward, done, info = env.step(actions)
+                print(done)
+                env.render()  # not sure how to render in parallel
+                # action = policy(observation, agent)
+                if done:
+                    break

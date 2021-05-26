@@ -199,7 +199,7 @@ def test(env, args, model_path, num_agents=2):
                 episode_reward[i] += reward[i]
             episode_length += 1
 
-            if done:
+            if done or t >= args.max_tag_interval:
             # if done or t>=args.max_tag_interval:  # the pong game might get stuck after a while: https://github.com/PettingZoo-Team/PettingZoo/issues/357
                 for i in range(num_agents):
                     reward_list[i].append(episode_reward[i])

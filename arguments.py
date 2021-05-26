@@ -67,7 +67,7 @@ def get_args():
     # Optimization Arguments
     parser.add_argument('--lr', type=float, default=1e-4,
                         help='Learning rate')
-    parser.add_argument('--max-tag-interval', type=int, default=3000,
+    parser.add_argument('--max-tag-interval', type=int, default=10000,
                         help='Maximum length of interval between tagging twice to prevent from non-action, \
                             needs to be larger or (better) equal than maximal episode length of the game!')
     parser.add_argument('--eps-start', type=float, default=1.0,
