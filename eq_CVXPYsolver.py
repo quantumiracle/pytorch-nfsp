@@ -16,6 +16,7 @@ def NashEquilibriumCVXPYSolver(A, verbose=False):
     prob = cp.Problem(cp.Maximize(z),
                   [A.T @ x >= z, 0 <= x, x <= 1, multi @ x == 1])
     prob.solve()
+    # prob.solve(solver="ECOS")  # may be faster, not significantly. https://github.com/embotech/ecos-python
 
     p1_value = x.value
     p2_value = prob.constraints[0].dual_value

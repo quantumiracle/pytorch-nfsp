@@ -24,6 +24,7 @@ from eq_solver import NashEquilibriaSolver, NashEquilibriumSolver
 from eq_LPsolver import NashEquilibriumLPSolver, CoarseCorrelatedEquilibriumLPSolver
 from eq_CVXPYsolver import NashEquilibriumCVXPYSolver
 from eq_GUROBIsolver import NashEquilibriumGUROBISolver
+from eq_ECOSsolver import NashEquilibriumECOSSolver
 
 class ParallelNashAgent():
     def __init__(self, env, id, args):
@@ -62,8 +63,9 @@ class ParallelNashAgent():
                 # print(np.linalg.det(qs))
                 # ne = NashEquilibriumSolver(qs)
                 # ne = NashEquilibriumLPSolver(qs)
-                ne = NashEquilibriumCVXPYSolver(qs)
+                # ne = NashEquilibriumCVXPYSolver(qs)
                 # ne = NashEquilibriumGUROBISolver(qs)
+                ne = NashEquilibriumECOSSolver(qs)
 
             except:  # some cases NE cannot be solved
                 print('No Nash solution for: ', np.linalg.det(qs), qs)
@@ -179,8 +181,8 @@ def train(env, args, writer, model_path, num_agents=2):
         t2=time.time()
         assert num_agents == 2
         actions = [{n0: a0, n1: a1} for a0, a1 in zip(*actions_.T)] 
-        # print(frame_idx)
         next_states, rewards, dones, infos = env.step(actions)
+        # print(frame_idx, rewards)
         done = [np.float32(d) for d in dones]
 
         # states (env, agent, state_dim) -> (env, agent*state_dim), similar for actions_, rewards take the positive one in two agents 
@@ -335,8 +337,7 @@ def test(env, args, model_path, num_agents=2):
             for i in range(num_agents):
                 episode_reward[i] += reward[i]
             episode_length += 1
-            if done or t >= args.max_tag_interval:
-            # if done or t>=args.max_tag_interval:  # the pong game might get stuck after a while: https://github.com/PettingZoo-Team/PettingZoo/issues/357
+            if done or t>=args.max_tag_interval:  # the pong game might get stuck after a while: https://github.com/PettingZoo-Team/PettingZoo/issues/357
                 for i in range(num_agents):
                     reward_list[i].append(episode_reward[i])
                 length_list.append(episode_length)

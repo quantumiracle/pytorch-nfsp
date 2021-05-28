@@ -592,7 +592,10 @@ class NFSPPettingZooWrapper():
         self.action_space = env.action_space
         fake_env = gym.make('Pong-v0')
         self.spec = fake_env.spec
-        self.agents = env.unwrapped.agents
+        try:
+            self.agents = env.unwrapped.agents
+        except: # slimevolley
+            self.agents = env.agents
         try:
             self.spec.id = env.env.spec.id
         except:
