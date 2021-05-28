@@ -1076,3 +1076,627 @@ Frame: 31080000, Avg. Length: 4625.0, P0 Avg. Reward: 5.733, P0 Avg. RL Loss: 0.
 Frame: 31140000, Avg. Length: 5391.0, P0 Avg. Reward: 5.111, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -5.111, P1 Avg. RL Loss: 0.004
 [5031, 4317, 6555, 4130]
 Frame: 31200000, Avg. Length: 5008.2, P0 Avg. Reward: 2.167, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -2.167, P1 Avg. RL Loss: 0.004
+[6225, 6275, 5209, 5305]
+Frame: 31260000, Avg. Length: 5753.5, P0 Avg. Reward: -1.083, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 1.083, P1 Avg. RL Loss: 0.004
+[5751, 3999, 6049]
+Frame: 31320000, Avg. Length: 5266.3, P0 Avg. Reward: -0.111, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 0.111, P1 Avg. RL Loss: 0.004
+[5769, 4124, 4622, 6026, 3632]
+Frame: 31380000, Avg. Length: 4834.6, P0 Avg. Reward: 6.400, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -6.400, P1 Avg. RL Loss: 0.004
+[5141, 3128, 5239, 4787]
+Frame: 31440000, Avg. Length: 4573.8, P0 Avg. Reward: 8.083, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -8.083, P1 Avg. RL Loss: 0.004
+[3821, 5454, 6050, 4213]
+Frame: 31500000, Avg. Length: 4884.5, P0 Avg. Reward: -1.167, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 1.167, P1 Avg. RL Loss: 0.004
+[4724, 5434, 5223, 5178]
+Frame: 31560000, Avg. Length: 5139.8, P0 Avg. Reward: 3.917, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -3.917, P1 Avg. RL Loss: 0.004
+[4399, 5405, 6318, 3797]
+Frame: 31620000, Avg. Length: 4979.8, P0 Avg. Reward: 0.417, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -0.417, P1 Avg. RL Loss: 0.004
+[4442, 4342, 4672, 6424]
+Frame: 31680000, Avg. Length: 4970.0, P0 Avg. Reward: 3.000, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -3.000, P1 Avg. RL Loss: 0.004
+[3952, 4212, 4887, 6395]
+Frame: 31740000, Avg. Length: 4861.5, P0 Avg. Reward: 7.417, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -7.417, P1 Avg. RL Loss: 0.004
+[4646, 6049, 6629, 3931]
+Frame: 31800000, Avg. Length: 5313.8, P0 Avg. Reward: 0.500, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -0.500, P1 Avg. RL Loss: 0.004
+[5805, 4427, 4107, 3823, 3954]
+Frame: 31860000, Avg. Length: 4423.2, P0 Avg. Reward: 3.333, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -3.333, P1 Avg. RL Loss: 0.004
+[5297, 6866, 4285]
+Frame: 31920000, Avg. Length: 5482.7, P0 Avg. Reward: 5.556, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -5.556, P1 Avg. RL Loss: 0.004
+[5717, 5857, 5551, 3276]
+Frame: 31980000, Avg. Length: 5100.2, P0 Avg. Reward: 4.833, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -4.833, P1 Avg. RL Loss: 0.004
+[4014, 4473, 4232, 5182]
+Frame: 32040000, Avg. Length: 4475.2, P0 Avg. Reward: -3.833, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 3.833, P1 Avg. RL Loss: 0.004
+[5800, 5654, 4990, 3809]
+Frame: 32100000, Avg. Length: 5063.2, P0 Avg. Reward: 4.167, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -4.167, P1 Avg. RL Loss: 0.004
+[6117, 3550, 4774, 4821, 5066]
+Frame: 32160000, Avg. Length: 4865.6, P0 Avg. Reward: 2.133, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -2.133, P1 Avg. RL Loss: 0.004
+[3616, 4167, 3929, 3691]
+Frame: 32220000, Avg. Length: 3850.8, P0 Avg. Reward: 2.667, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -2.667, P1 Avg. RL Loss: 0.004
+[5981, 4894, 5814, 5716]
+Frame: 32280000, Avg. Length: 5601.2, P0 Avg. Reward: 1.667, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -1.667, P1 Avg. RL Loss: 0.004
+[6265, 5739, 5478, 5685]
+Frame: 32340000, Avg. Length: 5791.8, P0 Avg. Reward: 0.250, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -0.250, P1 Avg. RL Loss: 0.004
+[5536, 4267, 5316]
+Frame: 32400000, Avg. Length: 5039.7, P0 Avg. Reward: -1.111, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 1.111, P1 Avg. RL Loss: 0.004
+[5403, 3037, 5367, 4615, 4925]
+Frame: 32460000, Avg. Length: 4669.4, P0 Avg. Reward: 1.467, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -1.467, P1 Avg. RL Loss: 0.004
+[6374, 6914, 3924]
+Frame: 32520000, Avg. Length: 5737.3, P0 Avg. Reward: -2.000, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 2.000, P1 Avg. RL Loss: 0.004
+[4721, 6297, 5604, 5414]
+Frame: 32580000, Avg. Length: 5509.0, P0 Avg. Reward: 2.250, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -2.250, P1 Avg. RL Loss: 0.004
+[3909, 3703, 5606, 6162]
+Frame: 32640000, Avg. Length: 4845.0, P0 Avg. Reward: 2.250, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -2.250, P1 Avg. RL Loss: 0.004
+[6701, 3273, 4432, 4821]
+Frame: 32700000, Avg. Length: 4806.8, P0 Avg. Reward: -5.167, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 5.167, P1 Avg. RL Loss: 0.004
+[6439, 5154, 4183, 4629]
+Frame: 32760000, Avg. Length: 5101.2, P0 Avg. Reward: 6.000, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -6.000, P1 Avg. RL Loss: 0.004
+[6606, 4973, 5537, 5022]
+Frame: 32820000, Avg. Length: 5534.5, P0 Avg. Reward: 2.583, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -2.583, P1 Avg. RL Loss: 0.004
+[4106, 4346, 4085, 3501, 4201]
+Frame: 32880000, Avg. Length: 4047.8, P0 Avg. Reward: -7.867, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 7.867, P1 Avg. RL Loss: 0.004
+[3915, 4352, 4561, 6622]
+Frame: 32940000, Avg. Length: 4862.5, P0 Avg. Reward: 6.583, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -6.583, P1 Avg. RL Loss: 0.004
+[5452, 5235, 3853, 5565]
+Frame: 33000000, Avg. Length: 5026.2, P0 Avg. Reward: -5.583, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 5.583, P1 Avg. RL Loss: 0.004
+[4432, 3109, 3947, 5702]
+Frame: 33060000, Avg. Length: 4297.5, P0 Avg. Reward: 9.333, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -9.333, P1 Avg. RL Loss: 0.004
+[5848, 5148, 4063, 4412]
+Frame: 33120000, Avg. Length: 4867.8, P0 Avg. Reward: 0.583, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -0.583, P1 Avg. RL Loss: 0.004
+[7090, 5201, 6485, 3267]
+Frame: 33180000, Avg. Length: 5510.8, P0 Avg. Reward: 8.000, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -8.000, P1 Avg. RL Loss: 0.004
+[5916, 5204, 4456, 3976]
+Frame: 33240000, Avg. Length: 4888.0, P0 Avg. Reward: 1.250, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -1.250, P1 Avg. RL Loss: 0.004
+[5609, 5960, 4175, 4707]
+Frame: 33300000, Avg. Length: 5112.8, P0 Avg. Reward: -3.083, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 3.083, P1 Avg. RL Loss: 0.004
+[5319, 6143, 4681, 3996]
+Frame: 33360000, Avg. Length: 5034.8, P0 Avg. Reward: -4.417, P0 Avg. RL Loss: 0.005, P1 Avg. Reward: 4.417, P1 Avg. RL Loss: 0.004
+[4391, 4938, 3277, 3985, 4280]
+Frame: 33420000, Avg. Length: 4174.2, P0 Avg. Reward: 0.133, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -0.133, P1 Avg. RL Loss: 0.004
+[6088, 5735, 4769, 4683]
+Frame: 33480000, Avg. Length: 5318.8, P0 Avg. Reward: -4.250, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 4.250, P1 Avg. RL Loss: 0.004
+[3407, 4933, 4448, 4809]
+Frame: 33540000, Avg. Length: 4399.2, P0 Avg. Reward: 2.833, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -2.833, P1 Avg. RL Loss: 0.004
+[4926, 5168, 4795, 4753]
+Frame: 33600000, Avg. Length: 4910.5, P0 Avg. Reward: -2.667, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 2.667, P1 Avg. RL Loss: 0.004
+[6196, 3903, 6218, 4724]
+Frame: 33660000, Avg. Length: 5260.2, P0 Avg. Reward: 1.500, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -1.500, P1 Avg. RL Loss: 0.004
+[5550, 4157, 5101, 3940]
+Frame: 33720000, Avg. Length: 4687.0, P0 Avg. Reward: 1.917, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -1.917, P1 Avg. RL Loss: 0.004
+[3535, 4820, 3239, 6027, 4209]
+Frame: 33780000, Avg. Length: 4366.0, P0 Avg. Reward: -5.333, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 5.333, P1 Avg. RL Loss: 0.004
+[4282, 3008, 5899, 6653]
+Frame: 33840000, Avg. Length: 4960.5, P0 Avg. Reward: 4.833, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -4.833, P1 Avg. RL Loss: 0.004
+[4283, 6538, 4690, 4830]
+Frame: 33900000, Avg. Length: 5085.2, P0 Avg. Reward: -7.833, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 7.833, P1 Avg. RL Loss: 0.004
+[6579, 5422, 6568]
+Frame: 33960000, Avg. Length: 6189.7, P0 Avg. Reward: 1.556, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -1.556, P1 Avg. RL Loss: 0.004
+[3912, 4581, 5126, 4909]
+Frame: 34020000, Avg. Length: 4632.0, P0 Avg. Reward: 5.750, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -5.750, P1 Avg. RL Loss: 0.004
+[5799, 6098, 3770, 3483]
+Frame: 34080000, Avg. Length: 4787.5, P0 Avg. Reward: -2.500, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 2.500, P1 Avg. RL Loss: 0.004
+[5117, 5438, 3522, 5426]
+Frame: 34140000, Avg. Length: 4875.8, P0 Avg. Reward: 0.750, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -0.750, P1 Avg. RL Loss: 0.004
+[6225, 5672, 4665, 5827]
+Frame: 34200000, Avg. Length: 5597.2, P0 Avg. Reward: -4.500, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 4.500, P1 Avg. RL Loss: 0.004
+[4781, 5303, 5960, 4361]
+Frame: 34260000, Avg. Length: 5101.2, P0 Avg. Reward: -5.417, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 5.417, P1 Avg. RL Loss: 0.004
+[6161, 5798, 5419, 3969]
+Frame: 34320000, Avg. Length: 5336.8, P0 Avg. Reward: -4.667, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 4.667, P1 Avg. RL Loss: 0.004
+[4659, 4239, 5203, 4562]
+Frame: 34380000, Avg. Length: 4665.8, P0 Avg. Reward: 5.333, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -5.333, P1 Avg. RL Loss: 0.004
+[4351, 5888, 5149, 6386]
+Frame: 34440000, Avg. Length: 5443.5, P0 Avg. Reward: -3.667, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 3.667, P1 Avg. RL Loss: 0.004
+[5013, 3814, 5958, 5847]
+Frame: 34500000, Avg. Length: 5158.0, P0 Avg. Reward: 3.250, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -3.250, P1 Avg. RL Loss: 0.004
+[4948, 6016, 3248, 5113]
+Frame: 34560000, Avg. Length: 4831.2, P0 Avg. Reward: 0.083, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -0.083, P1 Avg. RL Loss: 0.004
+[5952, 4575, 5438, 4234]
+Frame: 34620000, Avg. Length: 5049.8, P0 Avg. Reward: 0.417, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -0.417, P1 Avg. RL Loss: 0.004
+[5120, 6815, 4983]
+Frame: 34680000, Avg. Length: 5639.3, P0 Avg. Reward: -1.333, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 1.333, P1 Avg. RL Loss: 0.004
+[4939, 6228, 5808, 4581]
+Frame: 34740000, Avg. Length: 5389.0, P0 Avg. Reward: -1.083, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 1.083, P1 Avg. RL Loss: 0.004
+[4567, 4565, 5063, 3323, 4077]
+Frame: 34800000, Avg. Length: 4319.0, P0 Avg. Reward: 3.333, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -3.333, P1 Avg. RL Loss: 0.004
+[4340, 5565, 4289, 4325]
+Frame: 34860000, Avg. Length: 4629.8, P0 Avg. Reward: 3.500, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -3.500, P1 Avg. RL Loss: 0.004
+[3430, 3250, 3892, 3425, 4433, 3029]
+Frame: 34920000, Avg. Length: 3576.5, P0 Avg. Reward: 7.500, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -7.500, P1 Avg. RL Loss: 0.004
+[4300, 4613, 3465, 4077]
+Frame: 34980000, Avg. Length: 4113.8, P0 Avg. Reward: 11.333, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -11.333, P1 Avg. RL Loss: 0.004
+[5466, 5376, 5720, 4374]
+Frame: 35040000, Avg. Length: 5234.0, P0 Avg. Reward: 4.083, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -4.083, P1 Avg. RL Loss: 0.004
+[5612, 5157, 5308, 4836]
+Frame: 35100000, Avg. Length: 5228.2, P0 Avg. Reward: -4.083, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 4.083, P1 Avg. RL Loss: 0.004
+[4932, 4009, 5093, 4037]
+Frame: 35160000, Avg. Length: 4517.8, P0 Avg. Reward: 1.250, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -1.250, P1 Avg. RL Loss: 0.004
+[4660, 4553, 4175, 4567, 4801]
+Frame: 35220000, Avg. Length: 4551.2, P0 Avg. Reward: -0.533, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 0.533, P1 Avg. RL Loss: 0.004
+[4817, 5396, 6203, 4937]
+Frame: 35280000, Avg. Length: 5338.2, P0 Avg. Reward: -2.167, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 2.167, P1 Avg. RL Loss: 0.004
+[3108, 6353, 4590, 4113]
+Frame: 35340000, Avg. Length: 4541.0, P0 Avg. Reward: 8.833, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -8.833, P1 Avg. RL Loss: 0.004
+[5026, 6031, 4809, 5748]
+Frame: 35400000, Avg. Length: 5403.5, P0 Avg. Reward: -0.333, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 0.333, P1 Avg. RL Loss: 0.004
+[4905, 4461, 6222]
+Frame: 35460000, Avg. Length: 5196.0, P0 Avg. Reward: -1.667, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 1.667, P1 Avg. RL Loss: 0.003
+[5423, 4247, 4423, 3076, 5976]
+Frame: 35520000, Avg. Length: 4629.0, P0 Avg. Reward: 6.200, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -6.200, P1 Avg. RL Loss: 0.004
+[3474, 4229, 4279, 3526, 4340]
+Frame: 35580000, Avg. Length: 3969.6, P0 Avg. Reward: -2.533, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 2.533, P1 Avg. RL Loss: 0.003
+[3906, 3743, 7399, 5069]
+Frame: 35640000, Avg. Length: 5029.2, P0 Avg. Reward: -5.917, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 5.917, P1 Avg. RL Loss: 0.003
+[4636, 5384, 5107, 4943]
+Frame: 35700000, Avg. Length: 5017.5, P0 Avg. Reward: 5.167, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -5.167, P1 Avg. RL Loss: 0.003
+[4019, 6338, 5105, 4021]
+Frame: 35760000, Avg. Length: 4870.8, P0 Avg. Reward: -9.667, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 9.667, P1 Avg. RL Loss: 0.003
+[4847, 4398, 5753, 4051]
+Frame: 35820000, Avg. Length: 4762.2, P0 Avg. Reward: -5.083, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 5.083, P1 Avg. RL Loss: 0.003
+[5797, 5419, 4068, 5030]
+Frame: 35880000, Avg. Length: 5078.5, P0 Avg. Reward: 0.750, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -0.750, P1 Avg. RL Loss: 0.003
+[5069, 3856, 6048, 3725]
+Frame: 35940000, Avg. Length: 4674.5, P0 Avg. Reward: -5.750, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 5.750, P1 Avg. RL Loss: 0.003
+[5483, 3150, 4368, 3651, 4513]
+Frame: 36000000, Avg. Length: 4233.0, P0 Avg. Reward: -0.267, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 0.267, P1 Avg. RL Loss: 0.003
+[3618, 6180, 5060, 5590]
+Frame: 36060000, Avg. Length: 5112.0, P0 Avg. Reward: -0.167, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 0.167, P1 Avg. RL Loss: 0.003
+[6201, 3463, 5191, 3330]
+Frame: 36120000, Avg. Length: 4546.2, P0 Avg. Reward: 7.833, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -7.833, P1 Avg. RL Loss: 0.003
+[5563, 4260, 4082, 4132, 4221]
+Frame: 36180000, Avg. Length: 4451.6, P0 Avg. Reward: -3.933, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 3.933, P1 Avg. RL Loss: 0.004
+[4600, 3766, 5842, 4330]
+Frame: 36240000, Avg. Length: 4634.5, P0 Avg. Reward: 6.250, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -6.250, P1 Avg. RL Loss: 0.003
+[5435, 4082, 6065, 6703]
+Frame: 36300000, Avg. Length: 5571.2, P0 Avg. Reward: 0.667, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -0.667, P1 Avg. RL Loss: 0.003
+[3630, 3130, 5812, 3751, 4098]
+Frame: 36360000, Avg. Length: 4084.2, P0 Avg. Reward: -2.667, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 2.667, P1 Avg. RL Loss: 0.003
+[3499, 3445, 4151, 4287]
+Frame: 36420000, Avg. Length: 3845.5, P0 Avg. Reward: -2.250, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 2.250, P1 Avg. RL Loss: 0.003
+[5739, 4738, 4329, 4602, 3600]
+Frame: 36480000, Avg. Length: 4601.6, P0 Avg. Reward: -1.333, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 1.333, P1 Avg. RL Loss: 0.003
+[4625, 4268, 4705, 2996, 3797]
+Frame: 36540000, Avg. Length: 4078.2, P0 Avg. Reward: 8.200, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -8.200, P1 Avg. RL Loss: 0.003
+[5305, 3821, 5244, 3878, 3396]
+Frame: 36600000, Avg. Length: 4328.8, P0 Avg. Reward: -1.933, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 1.933, P1 Avg. RL Loss: 0.003
+[3015, 5328, 4810, 3853, 3450]
+Frame: 36660000, Avg. Length: 4091.2, P0 Avg. Reward: -4.600, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 4.600, P1 Avg. RL Loss: 0.004
+[4213, 4500, 3204, 3055]
+Frame: 36720000, Avg. Length: 3743.0, P0 Avg. Reward: 8.417, P0 Avg. RL Loss: 0.005, P1 Avg. Reward: -8.417, P1 Avg. RL Loss: 0.003
+[5228, 5569, 5614, 4613, 3832]
+Frame: 36780000, Avg. Length: 4971.2, P0 Avg. Reward: 4.867, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -4.867, P1 Avg. RL Loss: 0.003
+[3843, 6027, 5405, 3210]
+Frame: 36840000, Avg. Length: 4621.2, P0 Avg. Reward: 3.417, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -3.417, P1 Avg. RL Loss: 0.003
+[3175, 3368, 3243, 6023, 3150]
+Frame: 36900000, Avg. Length: 3791.8, P0 Avg. Reward: 0.333, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -0.333, P1 Avg. RL Loss: 0.003
+[3420, 4462, 3628, 4972, 3667]
+Frame: 36960000, Avg. Length: 4029.8, P0 Avg. Reward: 5.133, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -5.133, P1 Avg. RL Loss: 0.003
+[4908, 3826, 4090, 4433, 3810]
+Frame: 37020000, Avg. Length: 4213.4, P0 Avg. Reward: -1.067, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 1.067, P1 Avg. RL Loss: 0.004
+[3274, 4836, 3772, 3835, 5688]
+Frame: 37080000, Avg. Length: 4281.0, P0 Avg. Reward: 10.533, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -10.533, P1 Avg. RL Loss: 0.004
+[3795, 4611, 5891, 4041]
+Frame: 37140000, Avg. Length: 4584.5, P0 Avg. Reward: -5.833, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 5.833, P1 Avg. RL Loss: 0.004
+[3926, 4720, 5232, 3952]
+Frame: 37200000, Avg. Length: 4457.5, P0 Avg. Reward: 5.167, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -5.167, P1 Avg. RL Loss: 0.003
+[5196, 5096, 4591, 4504, 4569]
+Frame: 37260000, Avg. Length: 4791.2, P0 Avg. Reward: 5.400, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -5.400, P1 Avg. RL Loss: 0.003
+[5660, 5878, 5861]
+Frame: 37320000, Avg. Length: 5799.7, P0 Avg. Reward: -1.222, P0 Avg. RL Loss: 0.005, P1 Avg. Reward: 1.222, P1 Avg. RL Loss: 0.004
+[3901, 4048, 4713, 5769]
+Frame: 37380000, Avg. Length: 4607.8, P0 Avg. Reward: -0.083, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 0.083, P1 Avg. RL Loss: 0.003
+[4408, 3992, 5638, 3411, 4263]
+Frame: 37440000, Avg. Length: 4342.4, P0 Avg. Reward: 4.000, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -4.000, P1 Avg. RL Loss: 0.003
+[5419, 6096, 6300]
+Frame: 37500000, Avg. Length: 5938.3, P0 Avg. Reward: 2.111, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -2.111, P1 Avg. RL Loss: 0.003
+[5632, 6101, 4725, 5288]
+Frame: 37560000, Avg. Length: 5436.5, P0 Avg. Reward: 4.667, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -4.667, P1 Avg. RL Loss: 0.004
+[4184, 3556, 4311, 3945, 4865]
+Frame: 37620000, Avg. Length: 4172.2, P0 Avg. Reward: 7.267, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -7.267, P1 Avg. RL Loss: 0.004
+[4456, 3511, 4684, 3234, 5616]
+Frame: 37680000, Avg. Length: 4300.2, P0 Avg. Reward: -1.400, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 1.400, P1 Avg. RL Loss: 0.003
+[5228, 4268, 5268, 3828]
+Frame: 37740000, Avg. Length: 4648.0, P0 Avg. Reward: -2.417, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 2.417, P1 Avg. RL Loss: 0.003
+[5237, 5327, 4021, 3293]
+Frame: 37800000, Avg. Length: 4469.5, P0 Avg. Reward: -3.583, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 3.583, P1 Avg. RL Loss: 0.003
+[4302, 6336, 3459, 4350, 4495]
+Frame: 37860000, Avg. Length: 4588.4, P0 Avg. Reward: 9.267, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -9.267, P1 Avg. RL Loss: 0.003
+[3854, 5649, 6462, 4108]
+Frame: 37920000, Avg. Length: 5018.2, P0 Avg. Reward: 5.417, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -5.417, P1 Avg. RL Loss: 0.003
+[4108, 3802, 3395, 5073, 3079]
+Frame: 37980000, Avg. Length: 3891.4, P0 Avg. Reward: 3.733, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -3.733, P1 Avg. RL Loss: 0.003
+[5152, 5222, 5391]
+Frame: 38040000, Avg. Length: 5255.0, P0 Avg. Reward: -0.889, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 0.889, P1 Avg. RL Loss: 0.003
+[6063, 3663, 5705, 6148]
+Frame: 38100000, Avg. Length: 5394.8, P0 Avg. Reward: 2.167, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -2.167, P1 Avg. RL Loss: 0.004
+[5214, 6000, 5714, 5389]
+Frame: 38160000, Avg. Length: 5579.2, P0 Avg. Reward: -2.167, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 2.167, P1 Avg. RL Loss: 0.004
+[5385, 4172, 3865, 6186]
+Frame: 38220000, Avg. Length: 4902.0, P0 Avg. Reward: 3.333, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -3.333, P1 Avg. RL Loss: 0.004
+[5595, 5879, 4173, 4673]
+Frame: 38280000, Avg. Length: 5080.0, P0 Avg. Reward: -5.417, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 5.417, P1 Avg. RL Loss: 0.003
+[5162, 4265, 3391, 4684]
+Frame: 38340000, Avg. Length: 4375.5, P0 Avg. Reward: 2.417, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -2.417, P1 Avg. RL Loss: 0.003
+[5095, 6826, 4236, 4343]
+Frame: 38400000, Avg. Length: 5125.0, P0 Avg. Reward: 2.583, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -2.583, P1 Avg. RL Loss: 0.004
+[4876, 4596, 4571, 3330, 3791]
+Frame: 38460000, Avg. Length: 4232.8, P0 Avg. Reward: -2.933, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 2.933, P1 Avg. RL Loss: 0.004
+[4354, 4095, 5221, 6239]
+Frame: 38520000, Avg. Length: 4977.2, P0 Avg. Reward: 4.000, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -4.000, P1 Avg. RL Loss: 0.003
+[5053, 4638, 4663, 3939]
+Frame: 38580000, Avg. Length: 4573.2, P0 Avg. Reward: -0.333, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 0.333, P1 Avg. RL Loss: 0.003
+[5225, 6119, 4528, 4209]
+Frame: 38640000, Avg. Length: 5020.2, P0 Avg. Reward: 2.917, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -2.917, P1 Avg. RL Loss: 0.003
+[4963, 3389, 6106, 4264, 3303]
+Frame: 38700000, Avg. Length: 4405.0, P0 Avg. Reward: 3.133, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -3.133, P1 Avg. RL Loss: 0.004
+[4371, 5142, 5259, 5295]
+Frame: 38760000, Avg. Length: 5016.8, P0 Avg. Reward: 1.417, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -1.417, P1 Avg. RL Loss: 0.003
+[4768, 3725, 5420, 4257, 3368]
+Frame: 38820000, Avg. Length: 4307.6, P0 Avg. Reward: -1.733, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 1.733, P1 Avg. RL Loss: 0.003
+[4206, 5111, 6132, 4620]
+Frame: 38880000, Avg. Length: 5017.2, P0 Avg. Reward: -0.500, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 0.500, P1 Avg. RL Loss: 0.003
+[3848, 4571, 4584, 6116]
+Frame: 38940000, Avg. Length: 4779.8, P0 Avg. Reward: -0.250, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 0.250, P1 Avg. RL Loss: 0.003
+[3764, 3435, 5597, 3964]
+Frame: 39000000, Avg. Length: 4190.0, P0 Avg. Reward: 1.833, P0 Avg. RL Loss: 0.005, P1 Avg. Reward: -1.833, P1 Avg. RL Loss: 0.003
+[5787, 5569, 4492, 6039]
+Frame: 39060000, Avg. Length: 5471.8, P0 Avg. Reward: -0.333, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 0.333, P1 Avg. RL Loss: 0.003
+[4263, 4391, 4923, 3681, 3725]
+Frame: 39120000, Avg. Length: 4196.6, P0 Avg. Reward: 1.200, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -1.200, P1 Avg. RL Loss: 0.003
+[6635, 5242, 3612, 4755]
+Frame: 39180000, Avg. Length: 5061.0, P0 Avg. Reward: 1.750, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -1.750, P1 Avg. RL Loss: 0.003
+[6182, 5364, 5748, 4083]
+Frame: 39240000, Avg. Length: 5344.2, P0 Avg. Reward: -4.000, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 4.000, P1 Avg. RL Loss: 0.003
+[5868, 4366, 3821, 4733]
+Frame: 39300000, Avg. Length: 4697.0, P0 Avg. Reward: -0.583, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 0.583, P1 Avg. RL Loss: 0.003
+[4702, 4130, 3048, 6514]
+Frame: 39360000, Avg. Length: 4598.5, P0 Avg. Reward: 4.000, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -4.000, P1 Avg. RL Loss: 0.003
+[5127, 4752, 4125, 4654, 3676]
+Frame: 39420000, Avg. Length: 4466.8, P0 Avg. Reward: 2.267, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -2.267, P1 Avg. RL Loss: 0.004
+[4516, 5388, 4643, 4858]
+Frame: 39480000, Avg. Length: 4851.2, P0 Avg. Reward: -0.750, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 0.750, P1 Avg. RL Loss: 0.003
+[5834, 4213, 4840, 5496]
+Frame: 39540000, Avg. Length: 5095.8, P0 Avg. Reward: 2.167, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -2.167, P1 Avg. RL Loss: 0.003
+[4844, 4948, 4002, 3270]
+Frame: 39600000, Avg. Length: 4266.0, P0 Avg. Reward: 7.917, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -7.917, P1 Avg. RL Loss: 0.003
+[4272, 4921, 6440, 5081]
+Frame: 39660000, Avg. Length: 5178.5, P0 Avg. Reward: -3.250, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 3.250, P1 Avg. RL Loss: 0.003
+[4789, 4537, 4923, 3703]
+Frame: 39720000, Avg. Length: 4488.0, P0 Avg. Reward: -3.583, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 3.583, P1 Avg. RL Loss: 0.003
+[6278, 3349, 3743, 4512, 3479]
+Frame: 39780000, Avg. Length: 4272.2, P0 Avg. Reward: -5.733, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 5.733, P1 Avg. RL Loss: 0.003
+[5042, 2986, 3537, 5636, 5016]
+Frame: 39840000, Avg. Length: 4443.4, P0 Avg. Reward: 7.667, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -7.667, P1 Avg. RL Loss: 0.003
+[6306, 3346, 3547, 5770]
+Frame: 39900000, Avg. Length: 4742.2, P0 Avg. Reward: 8.000, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -8.000, P1 Avg. RL Loss: 0.004
+[4625, 5213, 3385, 5719, 3412]
+Frame: 39960000, Avg. Length: 4470.8, P0 Avg. Reward: 4.600, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -4.600, P1 Avg. RL Loss: 0.004
+[5517, 3507, 3502, 3426]
+Frame: 40020000, Avg. Length: 3988.0, P0 Avg. Reward: -1.000, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 1.000, P1 Avg. RL Loss: 0.004
+[4793, 5742, 3531, 4333, 3042]
+Frame: 40080000, Avg. Length: 4288.2, P0 Avg. Reward: 9.800, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -9.800, P1 Avg. RL Loss: 0.004
+[4334, 3595, 5871, 5087]
+Frame: 40140000, Avg. Length: 4721.8, P0 Avg. Reward: -1.917, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 1.917, P1 Avg. RL Loss: 0.003
+[5396, 3767, 5055, 4305, 4886]
+Frame: 40200000, Avg. Length: 4681.8, P0 Avg. Reward: 7.733, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -7.733, P1 Avg. RL Loss: 0.004
+[5146, 4908, 4877, 4227]
+Frame: 40260000, Avg. Length: 4789.5, P0 Avg. Reward: -6.500, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 6.500, P1 Avg. RL Loss: 0.004
+[5010, 4749, 4549, 6206]
+Frame: 40320000, Avg. Length: 5128.5, P0 Avg. Reward: -1.000, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 1.000, P1 Avg. RL Loss: 0.003
+[5299, 5319, 5026, 4619]
+Frame: 40380000, Avg. Length: 5065.8, P0 Avg. Reward: 1.333, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -1.333, P1 Avg. RL Loss: 0.003
+[4638, 3030, 6312, 3700]
+Frame: 40440000, Avg. Length: 4420.0, P0 Avg. Reward: 7.083, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -7.083, P1 Avg. RL Loss: 0.004
+[4097, 3717, 4970, 4213, 4512]
+Frame: 40500000, Avg. Length: 4301.8, P0 Avg. Reward: -2.867, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 2.867, P1 Avg. RL Loss: 0.003
+[4337, 4405, 4731, 4399, 3565]
+Frame: 40560000, Avg. Length: 4287.4, P0 Avg. Reward: -1.267, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 1.267, P1 Avg. RL Loss: 0.003
+[4705, 4464, 5332, 3693]
+Frame: 40620000, Avg. Length: 4548.5, P0 Avg. Reward: 4.667, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -4.667, P1 Avg. RL Loss: 0.004
+[4742, 4049, 4415, 5421]
+Frame: 40680000, Avg. Length: 4656.8, P0 Avg. Reward: 0.917, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -0.917, P1 Avg. RL Loss: 0.004
+[4869, 5773, 5445, 3933]
+Frame: 40740000, Avg. Length: 5005.0, P0 Avg. Reward: -3.417, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 3.417, P1 Avg. RL Loss: 0.004
+[4527, 4123, 5348, 4124, 5343]
+Frame: 40800000, Avg. Length: 4693.0, P0 Avg. Reward: 3.133, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -3.133, P1 Avg. RL Loss: 0.003
+[5701, 5856, 3040, 3975]
+Frame: 40860000, Avg. Length: 4643.0, P0 Avg. Reward: 4.333, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -4.333, P1 Avg. RL Loss: 0.003
+[6055, 5274, 3723]
+Frame: 40920000, Avg. Length: 5017.3, P0 Avg. Reward: 3.889, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -3.889, P1 Avg. RL Loss: 0.003
+[6839, 4178, 4999, 4459, 5650]
+Frame: 40980000, Avg. Length: 5225.0, P0 Avg. Reward: 2.467, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -2.467, P1 Avg. RL Loss: 0.003
+[4173, 4746, 4666, 3440]
+Frame: 41040000, Avg. Length: 4256.2, P0 Avg. Reward: 1.667, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -1.667, P1 Avg. RL Loss: 0.003
+[3812, 3459, 5525, 6310]
+Frame: 41100000, Avg. Length: 4776.5, P0 Avg. Reward: -1.583, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 1.583, P1 Avg. RL Loss: 0.003
+[4640, 5630, 4877, 5895]
+Frame: 41160000, Avg. Length: 5260.5, P0 Avg. Reward: 1.917, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -1.917, P1 Avg. RL Loss: 0.003
+[3898, 5810, 4306, 5931]
+Frame: 41220000, Avg. Length: 4986.2, P0 Avg. Reward: 0.583, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -0.583, P1 Avg. RL Loss: 0.003
+[3642, 3600, 5149, 5051]
+Frame: 41280000, Avg. Length: 4360.5, P0 Avg. Reward: -4.500, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 4.500, P1 Avg. RL Loss: 0.003
+[5934, 6330, 5850, 3533]
+Frame: 41340000, Avg. Length: 5411.8, P0 Avg. Reward: 2.500, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -2.500, P1 Avg. RL Loss: 0.003
+[6564, 3683, 4216, 3850, 3685]
+Frame: 41400000, Avg. Length: 4399.6, P0 Avg. Reward: -6.600, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 6.600, P1 Avg. RL Loss: 0.003
+[5365, 5229, 4779, 3842]
+Frame: 41460000, Avg. Length: 4803.8, P0 Avg. Reward: 1.083, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -1.083, P1 Avg. RL Loss: 0.003
+[4879, 4237, 4904, 5268]
+Frame: 41520000, Avg. Length: 4822.0, P0 Avg. Reward: 5.417, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -5.417, P1 Avg. RL Loss: 0.003
+[3883, 4664, 5490, 4185, 3983]
+Frame: 41580000, Avg. Length: 4441.0, P0 Avg. Reward: 5.267, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -5.267, P1 Avg. RL Loss: 0.004
+[4655, 3559, 4818, 4955]
+Frame: 41640000, Avg. Length: 4496.8, P0 Avg. Reward: -1.000, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 1.000, P1 Avg. RL Loss: 0.003
+[5628, 4074, 4887, 5547]
+Frame: 41700000, Avg. Length: 5034.0, P0 Avg. Reward: 0.667, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -0.667, P1 Avg. RL Loss: 0.003
+[6156, 3547, 3607, 5884]
+Frame: 41760000, Avg. Length: 4798.5, P0 Avg. Reward: 0.417, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -0.417, P1 Avg. RL Loss: 0.003
+[4531, 4605, 4237, 3961, 5920]
+Frame: 41820000, Avg. Length: 4650.8, P0 Avg. Reward: -0.800, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 0.800, P1 Avg. RL Loss: 0.003
+[4610, 4685, 4602, 4558]
+Frame: 41880000, Avg. Length: 4613.8, P0 Avg. Reward: 5.250, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -5.250, P1 Avg. RL Loss: 0.003
+[4490, 3652, 4251, 5724, 3718]
+Frame: 41940000, Avg. Length: 4367.0, P0 Avg. Reward: -1.200, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 1.200, P1 Avg. RL Loss: 0.004
+[4715, 3695, 4832, 5123]
+Frame: 42000000, Avg. Length: 4591.2, P0 Avg. Reward: 0.833, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -0.833, P1 Avg. RL Loss: 0.003
+[5777, 4438, 3094, 3978, 4495]
+Frame: 42060000, Avg. Length: 4356.4, P0 Avg. Reward: 1.933, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -1.933, P1 Avg. RL Loss: 0.003
+[5656, 3303, 3918, 4172]
+Frame: 42120000, Avg. Length: 4262.2, P0 Avg. Reward: 5.167, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -5.167, P1 Avg. RL Loss: 0.003
+[4822, 4237, 4104, 5390]
+Frame: 42180000, Avg. Length: 4638.2, P0 Avg. Reward: 2.417, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -2.417, P1 Avg. RL Loss: 0.003
+[5100, 3660, 3254, 4128, 3719]
+Frame: 42240000, Avg. Length: 3972.2, P0 Avg. Reward: 6.000, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -6.000, P1 Avg. RL Loss: 0.003
+[5948, 6168, 3050, 4077, 4490]
+Frame: 42300000, Avg. Length: 4746.6, P0 Avg. Reward: 4.200, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -4.200, P1 Avg. RL Loss: 0.003
+[4082, 5243, 4502, 4560]
+Frame: 42360000, Avg. Length: 4596.8, P0 Avg. Reward: 7.500, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -7.500, P1 Avg. RL Loss: 0.004
+[4754, 6507, 4215, 5466]
+Frame: 42420000, Avg. Length: 5235.5, P0 Avg. Reward: -5.583, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 5.583, P1 Avg. RL Loss: 0.003
+[4773, 4824, 3079, 4035, 3547]
+Frame: 42480000, Avg. Length: 4051.6, P0 Avg. Reward: 0.333, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -0.333, P1 Avg. RL Loss: 0.003
+[3435, 4435, 4844, 4528]
+Frame: 42540000, Avg. Length: 4310.5, P0 Avg. Reward: 1.167, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -1.167, P1 Avg. RL Loss: 0.003
+[5807, 5209, 4235, 4345, 3919]
+Frame: 42600000, Avg. Length: 4703.0, P0 Avg. Reward: 1.600, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -1.600, P1 Avg. RL Loss: 0.004
+[5292, 4247, 4983, 5974]
+Frame: 42660000, Avg. Length: 5124.0, P0 Avg. Reward: 2.000, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -2.000, P1 Avg. RL Loss: 0.003
+[4264, 4525, 4412, 4072]
+Frame: 42720000, Avg. Length: 4318.2, P0 Avg. Reward: -1.667, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 1.667, P1 Avg. RL Loss: 0.003
+[3379, 4529, 4235, 3668, 5317]
+Frame: 42780000, Avg. Length: 4225.6, P0 Avg. Reward: 0.133, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -0.133, P1 Avg. RL Loss: 0.003
+[5919, 2982, 3480, 4002, 4379]
+Frame: 42840000, Avg. Length: 4152.4, P0 Avg. Reward: 5.800, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -5.800, P1 Avg. RL Loss: 0.003
+[4639, 4408, 5471, 5748]
+Frame: 42900000, Avg. Length: 5066.5, P0 Avg. Reward: -0.917, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 0.917, P1 Avg. RL Loss: 0.003
+[4855, 5131, 4388, 5638]
+Frame: 42960000, Avg. Length: 5003.0, P0 Avg. Reward: -0.417, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 0.417, P1 Avg. RL Loss: 0.003
+[4331, 5777, 4537, 6126]
+Frame: 43020000, Avg. Length: 5192.8, P0 Avg. Reward: 3.750, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -3.750, P1 Avg. RL Loss: 0.003
+[5239, 3877, 4107, 3591]
+Frame: 43080000, Avg. Length: 4203.5, P0 Avg. Reward: 2.250, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -2.250, P1 Avg. RL Loss: 0.003
+[5195, 3664, 5252, 3194]
+Frame: 43140000, Avg. Length: 4326.2, P0 Avg. Reward: 4.583, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -4.583, P1 Avg. RL Loss: 0.003
+[6350, 5586, 4282, 3596, 5116]
+Frame: 43200000, Avg. Length: 4986.0, P0 Avg. Reward: 1.600, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -1.600, P1 Avg. RL Loss: 0.003
+[6841, 5149, 4160, 4561]
+Frame: 43260000, Avg. Length: 5177.8, P0 Avg. Reward: -3.250, P0 Avg. RL Loss: 0.005, P1 Avg. Reward: 3.250, P1 Avg. RL Loss: 0.003
+[4411, 4854, 4741, 5624]
+Frame: 43320000, Avg. Length: 4907.5, P0 Avg. Reward: -2.000, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 2.000, P1 Avg. RL Loss: 0.003
+[5398, 3630, 3088, 3632, 3695]
+Frame: 43380000, Avg. Length: 3888.6, P0 Avg. Reward: 10.200, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -10.200, P1 Avg. RL Loss: 0.003
+[5754, 6243, 3482, 3226]
+Frame: 43440000, Avg. Length: 4676.2, P0 Avg. Reward: 7.750, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -7.750, P1 Avg. RL Loss: 0.003
+[6344, 3100, 6342, 4036]
+Frame: 43500000, Avg. Length: 4955.5, P0 Avg. Reward: 2.750, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -2.750, P1 Avg. RL Loss: 0.004
+[4851, 4233, 4450, 5126]
+Frame: 43560000, Avg. Length: 4665.0, P0 Avg. Reward: -0.750, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 0.750, P1 Avg. RL Loss: 0.003
+[5608, 4962, 5094, 5233]
+Frame: 43620000, Avg. Length: 5224.2, P0 Avg. Reward: 3.083, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -3.083, P1 Avg. RL Loss: 0.003
+[4053, 3637, 5853, 6172]
+Frame: 43680000, Avg. Length: 4928.8, P0 Avg. Reward: 0.833, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -0.833, P1 Avg. RL Loss: 0.003
+[4642, 6135, 4876, 3272]
+Frame: 43740000, Avg. Length: 4731.2, P0 Avg. Reward: 4.167, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -4.167, P1 Avg. RL Loss: 0.003
+[4807, 3571, 5567, 5172, 5360]
+Frame: 43800000, Avg. Length: 4895.4, P0 Avg. Reward: -2.467, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 2.467, P1 Avg. RL Loss: 0.003
+[3465, 4905, 3121, 6243]
+Frame: 43860000, Avg. Length: 4433.5, P0 Avg. Reward: -2.000, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 2.000, P1 Avg. RL Loss: 0.003
+[5144, 4701, 5755, 3835]
+Frame: 43920000, Avg. Length: 4858.8, P0 Avg. Reward: 0.750, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -0.750, P1 Avg. RL Loss: 0.003
+[3724, 4216, 3927, 5379, 3864]
+Frame: 43980000, Avg. Length: 4222.0, P0 Avg. Reward: 3.333, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -3.333, P1 Avg. RL Loss: 0.003
+[5499, 3724, 6368, 3755]
+Frame: 44040000, Avg. Length: 4836.5, P0 Avg. Reward: 3.167, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -3.167, P1 Avg. RL Loss: 0.004
+[3538, 3978, 5258, 6181]
+Frame: 44100000, Avg. Length: 4738.8, P0 Avg. Reward: 7.583, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -7.583, P1 Avg. RL Loss: 0.004
+[4428, 3204, 4030, 5143, 5007]
+Frame: 44160000, Avg. Length: 4362.4, P0 Avg. Reward: -5.267, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 5.267, P1 Avg. RL Loss: 0.003
+[4643, 5815, 4128, 6181]
+Frame: 44220000, Avg. Length: 5191.8, P0 Avg. Reward: 0.667, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -0.667, P1 Avg. RL Loss: 0.003
+[4207, 5856, 4210, 4351]
+Frame: 44280000, Avg. Length: 4656.0, P0 Avg. Reward: -6.667, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 6.667, P1 Avg. RL Loss: 0.003
+[5405, 4087, 3245, 6635]
+Frame: 44340000, Avg. Length: 4843.0, P0 Avg. Reward: 4.000, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -4.000, P1 Avg. RL Loss: 0.003
+[4810, 4903, 6965, 3149]
+Frame: 44400000, Avg. Length: 4956.8, P0 Avg. Reward: -0.667, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 0.667, P1 Avg. RL Loss: 0.004
+[4297, 3066, 5323, 4006, 5638]
+Frame: 44460000, Avg. Length: 4466.0, P0 Avg. Reward: 5.600, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -5.600, P1 Avg. RL Loss: 0.004
+[4215, 2997, 6437, 4996]
+Frame: 44520000, Avg. Length: 4661.2, P0 Avg. Reward: 6.500, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -6.500, P1 Avg. RL Loss: 0.003
+[4963, 3691, 5069, 5127]
+Frame: 44580000, Avg. Length: 4712.5, P0 Avg. Reward: -1.167, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 1.167, P1 Avg. RL Loss: 0.003
+[5399, 5024, 3559, 5616]
+Frame: 44640000, Avg. Length: 4899.5, P0 Avg. Reward: 3.583, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -3.583, P1 Avg. RL Loss: 0.003
+[5324, 4307, 4617, 4406]
+Frame: 44700000, Avg. Length: 4663.5, P0 Avg. Reward: 1.750, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -1.750, P1 Avg. RL Loss: 0.003
+[5930, 4790, 3679, 5647, 4869]
+Frame: 44760000, Avg. Length: 4983.0, P0 Avg. Reward: 2.667, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -2.667, P1 Avg. RL Loss: 0.003
+[3696, 4273, 3481, 5667]
+Frame: 44820000, Avg. Length: 4279.2, P0 Avg. Reward: 2.750, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -2.750, P1 Avg. RL Loss: 0.003
+[5581, 3629, 3841, 3046, 5131]
+Frame: 44880000, Avg. Length: 4245.6, P0 Avg. Reward: 8.800, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -8.800, P1 Avg. RL Loss: 0.003
+[6156, 2990, 5383, 3805]
+Frame: 44940000, Avg. Length: 4583.5, P0 Avg. Reward: 1.833, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -1.833, P1 Avg. RL Loss: 0.003
+[4748, 4780, 6423, 3061, 3713]
+Frame: 45000000, Avg. Length: 4545.0, P0 Avg. Reward: 1.400, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -1.400, P1 Avg. RL Loss: 0.003
+[4758, 5248, 5066, 4191]
+Frame: 45060000, Avg. Length: 4815.8, P0 Avg. Reward: 1.917, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -1.917, P1 Avg. RL Loss: 0.003
+[3834, 3540, 3268, 3902, 4038]
+Frame: 45120000, Avg. Length: 3716.4, P0 Avg. Reward: 5.467, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -5.467, P1 Avg. RL Loss: 0.003
+[4616, 4645, 4737, 4213]
+Frame: 45180000, Avg. Length: 4552.8, P0 Avg. Reward: 0.417, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -0.417, P1 Avg. RL Loss: 0.003
+[5682, 3096, 4013, 4928, 4257]
+Frame: 45240000, Avg. Length: 4395.2, P0 Avg. Reward: -3.800, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 3.800, P1 Avg. RL Loss: 0.003
+[3922, 4438, 3904, 6641]
+Frame: 45300000, Avg. Length: 4726.2, P0 Avg. Reward: 11.667, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -11.667, P1 Avg. RL Loss: 0.004
+[5974, 6580, 5430, 3297]
+Frame: 45360000, Avg. Length: 5320.2, P0 Avg. Reward: -4.000, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 4.000, P1 Avg. RL Loss: 0.004
+[3439, 5905, 3718, 6116]
+Frame: 45420000, Avg. Length: 4794.5, P0 Avg. Reward: -7.917, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 7.917, P1 Avg. RL Loss: 0.003
+[6128, 5341, 4180, 5368]
+Frame: 45480000, Avg. Length: 5254.2, P0 Avg. Reward: 5.917, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -5.917, P1 Avg. RL Loss: 0.003
+[5473, 3327, 6080, 4949]
+Frame: 45540000, Avg. Length: 4957.2, P0 Avg. Reward: 4.750, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -4.750, P1 Avg. RL Loss: 0.003
+[4487, 3839, 3829, 4778, 3088]
+Frame: 45600000, Avg. Length: 4004.2, P0 Avg. Reward: 6.600, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -6.600, P1 Avg. RL Loss: 0.004
+[4281, 5233, 4082, 6280]
+Frame: 45660000, Avg. Length: 4969.0, P0 Avg. Reward: 4.000, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -4.000, P1 Avg. RL Loss: 0.004
+[4501, 3725, 5604, 3356, 4082]
+Frame: 45720000, Avg. Length: 4253.6, P0 Avg. Reward: -0.600, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 0.600, P1 Avg. RL Loss: 0.004
+[4898, 6012, 6198]
+Frame: 45780000, Avg. Length: 5702.7, P0 Avg. Reward: -3.222, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 3.222, P1 Avg. RL Loss: 0.003
+[5369, 4936, 4896, 5045]
+Frame: 45840000, Avg. Length: 5061.5, P0 Avg. Reward: -0.583, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 0.583, P1 Avg. RL Loss: 0.003
+[4092, 5091, 4678, 4554, 4784]
+Frame: 45900000, Avg. Length: 4639.8, P0 Avg. Reward: -1.067, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 1.067, P1 Avg. RL Loss: 0.003
+[4734, 5675, 6004, 3992]
+Frame: 45960000, Avg. Length: 5101.2, P0 Avg. Reward: 2.083, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -2.083, P1 Avg. RL Loss: 0.004
+[4990, 4322, 4077, 3916]
+Frame: 46020000, Avg. Length: 4326.2, P0 Avg. Reward: -0.250, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 0.250, P1 Avg. RL Loss: 0.003
+[4825, 4396, 5872, 3002, 3544]
+Frame: 46080000, Avg. Length: 4327.8, P0 Avg. Reward: 7.333, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -7.333, P1 Avg. RL Loss: 0.003
+[3831, 3499, 4788, 3521, 4735]
+Frame: 46140000, Avg. Length: 4074.8, P0 Avg. Reward: -5.000, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 5.000, P1 Avg. RL Loss: 0.003
+[5111, 3050, 3550, 4194]
+Frame: 46200000, Avg. Length: 3976.2, P0 Avg. Reward: 0.250, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -0.250, P1 Avg. RL Loss: 0.003
+[5350, 5799, 5535, 5643]
+Frame: 46260000, Avg. Length: 5581.8, P0 Avg. Reward: 0.833, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -0.833, P1 Avg. RL Loss: 0.003
+[4413, 4606, 4485, 3276, 4265]
+Frame: 46320000, Avg. Length: 4209.0, P0 Avg. Reward: 2.133, P0 Avg. RL Loss: 0.005, P1 Avg. Reward: -2.133, P1 Avg. RL Loss: 0.003
+[4532, 3564, 6059, 5359]
+Frame: 46380000, Avg. Length: 4878.5, P0 Avg. Reward: -1.000, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 1.000, P1 Avg. RL Loss: 0.003
+[4008, 3568, 4314, 4619, 4110]
+Frame: 46440000, Avg. Length: 4123.8, P0 Avg. Reward: -4.933, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 4.933, P1 Avg. RL Loss: 0.003
+[3604, 3941, 4828, 5010]
+Frame: 46500000, Avg. Length: 4345.8, P0 Avg. Reward: -2.667, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 2.667, P1 Avg. RL Loss: 0.003
+[5037, 3481, 5034, 5688, 3859]
+Frame: 46560000, Avg. Length: 4619.8, P0 Avg. Reward: 8.133, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -8.133, P1 Avg. RL Loss: 0.003
+[4539, 5223, 3259, 4186, 3870]
+Frame: 46620000, Avg. Length: 4215.4, P0 Avg. Reward: 3.800, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -3.800, P1 Avg. RL Loss: 0.003
+[5364, 5909, 5565]
+Frame: 46680000, Avg. Length: 5612.7, P0 Avg. Reward: -0.556, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 0.556, P1 Avg. RL Loss: 0.004
+[4082, 6165, 4722, 5218, 3004]
+Frame: 46740000, Avg. Length: 4638.2, P0 Avg. Reward: 1.467, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -1.467, P1 Avg. RL Loss: 0.003
+[4311, 5258, 4501, 4520]
+Frame: 46800000, Avg. Length: 4647.5, P0 Avg. Reward: 3.167, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -3.167, P1 Avg. RL Loss: 0.003
+[6468, 5900, 5081]
+Frame: 46860000, Avg. Length: 5816.3, P0 Avg. Reward: -2.111, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 2.111, P1 Avg. RL Loss: 0.003
+[4402, 4070, 4557, 4572, 4044]
+Frame: 46920000, Avg. Length: 4329.0, P0 Avg. Reward: 6.933, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -6.933, P1 Avg. RL Loss: 0.004
+[3612, 3725, 4139, 4652, 5675]
+Frame: 46980000, Avg. Length: 4360.6, P0 Avg. Reward: 9.133, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -9.133, P1 Avg. RL Loss: 0.003
+[4723, 5914, 4382, 3340]
+Frame: 47040000, Avg. Length: 4589.8, P0 Avg. Reward: 7.750, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -7.750, P1 Avg. RL Loss: 0.004
+[3663, 4618, 6395, 5656]
+Frame: 47100000, Avg. Length: 5083.0, P0 Avg. Reward: 1.917, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -1.917, P1 Avg. RL Loss: 0.003
+[4747, 4007, 5254, 4765]
+Frame: 47160000, Avg. Length: 4693.2, P0 Avg. Reward: -10.083, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 10.083, P1 Avg. RL Loss: 0.003
+[3337, 4180, 4569, 5915]
+Frame: 47220000, Avg. Length: 4500.2, P0 Avg. Reward: -2.583, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 2.583, P1 Avg. RL Loss: 0.003
+[5772, 4827, 3501, 4938, 6006]
+Frame: 47280000, Avg. Length: 5008.8, P0 Avg. Reward: 1.467, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -1.467, P1 Avg. RL Loss: 0.003
+[4382, 5049, 5289, 3956]
+Frame: 47340000, Avg. Length: 4669.0, P0 Avg. Reward: -6.333, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 6.333, P1 Avg. RL Loss: 0.003
+[6598, 5029, 3037, 4981]
+Frame: 47400000, Avg. Length: 4911.2, P0 Avg. Reward: 6.583, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -6.583, P1 Avg. RL Loss: 0.003
+[3564, 3182, 4249, 5867]
+Frame: 47460000, Avg. Length: 4215.5, P0 Avg. Reward: 3.083, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -3.083, P1 Avg. RL Loss: 0.003
+[4950, 3573, 6404, 4920, 4378]
+Frame: 47520000, Avg. Length: 4845.0, P0 Avg. Reward: 8.067, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -8.067, P1 Avg. RL Loss: 0.003
+[6003, 4840, 3688, 4937]
+Frame: 47580000, Avg. Length: 4867.0, P0 Avg. Reward: 0.750, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -0.750, P1 Avg. RL Loss: 0.003
+[4976, 4446, 4055, 5703]
+Frame: 47640000, Avg. Length: 4795.0, P0 Avg. Reward: -0.167, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 0.167, P1 Avg. RL Loss: 0.003
+[4881, 3329, 4540, 3650, 3261]
+Frame: 47700000, Avg. Length: 3932.2, P0 Avg. Reward: 6.267, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -6.267, P1 Avg. RL Loss: 0.003
+[4387, 4224, 4795, 5802]
+Frame: 47760000, Avg. Length: 4802.0, P0 Avg. Reward: 4.250, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -4.250, P1 Avg. RL Loss: 0.003
+[4694, 5189, 4528, 4070, 3668]
+Frame: 47820000, Avg. Length: 4429.8, P0 Avg. Reward: 4.133, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -4.133, P1 Avg. RL Loss: 0.003
+[3284, 5253, 5593, 6335]
+Frame: 47880000, Avg. Length: 5116.2, P0 Avg. Reward: 8.500, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -8.500, P1 Avg. RL Loss: 0.003
+[4193, 4142, 4267, 3915]
+Frame: 47940000, Avg. Length: 4129.2, P0 Avg. Reward: -6.417, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 6.417, P1 Avg. RL Loss: 0.004
+[5790, 6121, 6362, 4697]
+Frame: 48000000, Avg. Length: 5742.5, P0 Avg. Reward: -1.750, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 1.750, P1 Avg. RL Loss: 0.003
+[3752, 4668, 4751, 4720]
+Frame: 48060000, Avg. Length: 4472.8, P0 Avg. Reward: 6.667, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -6.667, P1 Avg. RL Loss: 0.003
+[4979, 4617, 4047, 4623]
+Frame: 48120000, Avg. Length: 4566.5, P0 Avg. Reward: -3.333, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 3.333, P1 Avg. RL Loss: 0.003
+[5149, 4606, 5402, 5359]
+Frame: 48180000, Avg. Length: 5129.0, P0 Avg. Reward: -3.833, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 3.833, P1 Avg. RL Loss: 0.003
+[4696, 3303, 4336, 5482, 5518]
+Frame: 48240000, Avg. Length: 4667.0, P0 Avg. Reward: 1.000, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -1.000, P1 Avg. RL Loss: 0.003
+[4179, 6852, 3045, 3930]
+Frame: 48300000, Avg. Length: 4501.5, P0 Avg. Reward: 8.167, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -8.167, P1 Avg. RL Loss: 0.004
+[5098, 3986, 4733, 6369]
+Frame: 48360000, Avg. Length: 5046.5, P0 Avg. Reward: -7.583, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 7.583, P1 Avg. RL Loss: 0.004
+[3891, 5862, 6282, 3653]
+Frame: 48420000, Avg. Length: 4922.0, P0 Avg. Reward: 6.167, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -6.167, P1 Avg. RL Loss: 0.004
+[3977, 5761, 3406, 6415]
+Frame: 48480000, Avg. Length: 4889.8, P0 Avg. Reward: 1.833, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -1.833, P1 Avg. RL Loss: 0.004
+[4725, 4527, 5734, 4052]
+Frame: 48540000, Avg. Length: 4759.5, P0 Avg. Reward: 2.083, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -2.083, P1 Avg. RL Loss: 0.004
+[5777, 3529, 4049, 5712, 4145]
+Frame: 48600000, Avg. Length: 4642.4, P0 Avg. Reward: -3.133, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 3.133, P1 Avg. RL Loss: 0.003
+[3275, 4904, 4039, 3847, 4232]
+Frame: 48660000, Avg. Length: 4059.4, P0 Avg. Reward: 2.000, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -2.000, P1 Avg. RL Loss: 0.003
+[4164, 3700, 3352, 4351, 3065]
+Frame: 48720000, Avg. Length: 3726.4, P0 Avg. Reward: 10.800, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -10.800, P1 Avg. RL Loss: 0.003
+[4541, 4555, 5127, 3838, 3505]
+Frame: 48780000, Avg. Length: 4313.2, P0 Avg. Reward: 3.267, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -3.267, P1 Avg. RL Loss: 0.003
+[4052, 4007, 3062, 5320]
+Frame: 48840000, Avg. Length: 4110.2, P0 Avg. Reward: 9.250, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -9.250, P1 Avg. RL Loss: 0.003
+[5206, 4789, 6089, 4663]
+Frame: 48900000, Avg. Length: 5186.8, P0 Avg. Reward: 0.333, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -0.333, P1 Avg. RL Loss: 0.004
+[3719, 5771, 4511, 4659, 4071]
+Frame: 48960000, Avg. Length: 4546.2, P0 Avg. Reward: 3.267, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -3.267, P1 Avg. RL Loss: 0.004
+[4511, 4501, 3739, 4895]
+Frame: 49020000, Avg. Length: 4411.5, P0 Avg. Reward: 10.167, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -10.167, P1 Avg. RL Loss: 0.003
+[5320, 5225, 5477, 5868]
+Frame: 49080000, Avg. Length: 5472.5, P0 Avg. Reward: 4.083, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -4.083, P1 Avg. RL Loss: 0.004
+[5357, 5167, 3569, 4814]
+Frame: 49140000, Avg. Length: 4726.8, P0 Avg. Reward: -1.333, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 1.333, P1 Avg. RL Loss: 0.003
+[3262, 5965, 4503, 4935]
+Frame: 49200000, Avg. Length: 4666.2, P0 Avg. Reward: 2.750, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -2.750, P1 Avg. RL Loss: 0.003
+[3806, 6529, 3628, 4026, 4517]
+Frame: 49260000, Avg. Length: 4501.2, P0 Avg. Reward: -4.533, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 4.533, P1 Avg. RL Loss: 0.003
+[4497, 6698, 2975, 6469]
+Frame: 49320000, Avg. Length: 5159.8, P0 Avg. Reward: 6.583, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -6.583, P1 Avg. RL Loss: 0.003
+[4402, 3297, 4671, 4660]
+Frame: 49380000, Avg. Length: 4257.5, P0 Avg. Reward: 0.417, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -0.417, P1 Avg. RL Loss: 0.003
+[5553, 3218, 4895, 5904, 3608]
+Frame: 49440000, Avg. Length: 4635.6, P0 Avg. Reward: -1.200, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 1.200, P1 Avg. RL Loss: 0.003
+[3907, 3958, 4811, 5023]
+Frame: 49500000, Avg. Length: 4424.8, P0 Avg. Reward: 0.250, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -0.250, P1 Avg. RL Loss: 0.003
+[5219, 5178, 4981, 4466]
+Frame: 49560000, Avg. Length: 4961.0, P0 Avg. Reward: 6.833, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -6.833, P1 Avg. RL Loss: 0.003
+[5698, 4257, 4401, 4689]
+Frame: 49620000, Avg. Length: 4761.2, P0 Avg. Reward: -0.083, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 0.083, P1 Avg. RL Loss: 0.004
+[5911, 3915, 3449, 3951, 4218]
+Frame: 49680000, Avg. Length: 4288.8, P0 Avg. Reward: -4.200, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 4.200, P1 Avg. RL Loss: 0.003
+[4473, 3071, 5161, 4366]
+Frame: 49740000, Avg. Length: 4267.8, P0 Avg. Reward: 3.417, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -3.417, P1 Avg. RL Loss: 0.003
+[6443, 4576, 6385, 5683]
+Frame: 49800000, Avg. Length: 5771.8, P0 Avg. Reward: -0.667, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 0.667, P1 Avg. RL Loss: 0.004
+[3728, 3567, 4138, 5508, 4450]
+Frame: 49860000, Avg. Length: 4278.2, P0 Avg. Reward: 6.533, P0 Avg. RL Loss: 0.005, P1 Avg. Reward: -6.533, P1 Avg. RL Loss: 0.004
+[4482, 5147, 4813, 4642]
+Frame: 49920000, Avg. Length: 4771.0, P0 Avg. Reward: 2.167, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -2.167, P1 Avg. RL Loss: 0.004
