@@ -1907,4 +1907,6 @@ Frame: 56040000, Avg. Length: 5349.3, P0 Avg. Reward: 4.667, P0 Avg. RL Loss: 0.
 [6544, 6051, 4757, 4428]
 Frame: 56100000, Avg. Length: 5445.0, P0 Avg. Reward: -1.167, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: 1.167, P1 Avg. RL Loss: 0.004
 [4308, 6136, 5336, 3581]
-Frame: 56160000, Avg. Length: 4840.2, P0 Avg. Reward: 3.750, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -3.750, P1 Avg. RL Loss: 0.004
+Frame: 56160000, Avg. Length: 4840.2, P0 Avg. Reward: 3.750, P0 Avg. RL Loss: 0.004, P1 Avg. Reward: -3.750, P1 Avg. RL Loss: 0.004Load PettingZoo Atari env: pong_v1
+Load PettingZoo Atari env: pong_v1
+Load PettingZoo Atari env: pong_v1
