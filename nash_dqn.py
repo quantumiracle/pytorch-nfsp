@@ -31,6 +31,7 @@ class ParallelNashAgent():
         super(ParallelNashAgent, self).__init__()
         self.id = id
         self.env = env
+        self.num_player = len(env.agents)
         self.args = args
         print(args.num_envs)
         try:
@@ -69,8 +70,7 @@ class ParallelNashAgent():
 
             except:  # some cases NE cannot be solved
                 print('No Nash solution for: ', np.linalg.det(qs), qs)
-                num_player = 2
-                ne = num_player*[1./qs.shape[0]*np.ones(qs.shape[0])]  # use uniform distribution if no NE is found
+                ne = self.num_player*[1./qs.shape[0]*np.ones(qs.shape[0])]  # use uniform distribution if no NE is found
             t1 = time.time()
             # print(t1-t0)
             
@@ -108,7 +108,6 @@ class ParallelNashAgent():
 
             except:  # some cases NE cannot be solved
                 print('No CCE solution for: ', np.linalg.det(qs), qs)
-                num_player = 2
                 jnt_probs = 1./(qs.shape[0]*qs.shape[1])*np.ones(qs.shape[0]*qs.shape[1])  # use uniform distribution if no NE is found
             
             try:
@@ -138,8 +137,27 @@ class ParallelNashAgent():
                 actions = self.compute_nash(q_values) 
 
         else:
-            num_player = 2
-            actions = np.random.randint(self.action_dims, size=(states.shape[0], num_player))
+            actions = np.random.randint(self.action_dims, size=(states.shape[0], self.num_player))
+        return actions
+
+    def act_greedy(self, states, epsilon):
+        """
+        Take greedy actions with probability 1-epsilon, the 'greedy' means (for zero-sum game):
+        for player 1, take the action to maximize the Q value in whole table;
+        for player 2, take the action to minimize the Q value in whole table. 
+        """ 
+        states = torch.FloatTensor(states).to(self.args.device)
+
+        if random.random() > epsilon:  # NoisyNet does not use e-greedy
+            with torch.no_grad():
+                q_values = self.current_model(states).detach().cpu().numpy()
+                max_q_idx = np.argmax(q_values, axis=-1)   # first dimension of q_values is env
+                min_q_idx = np.argmin(q_values, axis=-1)
+                actions = np.stack((max_q_idx // self.action_dims, min_q_idx % self.action_dims), axis=1) # player 1 is row, player 2 is column
+                # with np.printoptions(threshold=np.inf):
+                #     print(q_values_, actions)
+        else:
+            actions = np.random.randint(self.action_dims, size=(states.shape[0], self.num_player))
         return actions
 
     def save_model(self, model_path):
@@ -162,6 +180,7 @@ def train(env, args, writer, model_path, num_agents=2):
     rl_loss_list = []  # b.c. using the nash Q value, share for two players
     q_list = []
     episode_reward = [0 for _ in range(num_agents)]
+    episode_reward_separate = [[0 for _ in range(num_agents)] for _ in range(args.num_envs)] # separate rewards for each env
     tag_interval_length = 0
     prev_time = time.time()
     prev_frame = 1
@@ -173,7 +192,8 @@ def train(env, args, writer, model_path, num_agents=2):
     for frame_idx in range(1, args.max_frames + 1): # each step contains args.num_envs steps actually due to parallel envs
         t1=time.time()
         epsilon = agent.epsilon_by_frame(frame_idx)
-        actions_ = agent.act(states.reshape(states.shape[0], -1), epsilon)  # concate states of all agents
+        # actions_ = agent.act(states.reshape(states.shape[0], -1), epsilon)  # concate states of all agents
+        actions_ = agent.act_greedy(states.reshape(states.shape[0], -1), epsilon)  # concate states of all agents
         # for qs in q_values:
         #     maxid = np.argmax(qs.reshape(6,6))
         #     actions_.append([maxid//6, maxid%6])
@@ -191,21 +211,26 @@ def train(env, args, writer, model_path, num_agents=2):
         
         info = [list(i.values())[1] for i in infos]  # infos is a list of dicts (env) of dicts (agents)
         states = next_states
-
         # Logging
         for i in range(num_agents):
             episode_reward[i] += np.mean(rewards[:, i])  # mean over envs
+            for j in range(args.num_envs):
+                episode_reward_separate[j][i] += rewards[j][i]
         tag_interval_length += 1
         # Episode done. Reset environment and clear logging records
         if np.any(done) or tag_interval_length >= args.max_tag_interval:  # TODO if use np.all(done), pettingzoo env will not provide obs for env after done
             length_list.append(tag_interval_length)
-            tag_interval_length = 0
             states =  env.reset()  # p1_state=p2_state
             for i in range(num_agents):
                 reward_list[i].append(episode_reward[i])
-                writer.add_scalar(f"p{i}/episode_reward", episode_reward[i], frame_idx*args.num_envs)
+                # writer.add_scalar(f"p{i}/episode_reward", episode_reward[i], frame_idx*args.num_envs)
+                for j in range(args.num_envs):
+                    writer.add_scalar(f"env{j} p{i}/episode_reward", episode_reward_separate[j][i], frame_idx*args.num_envs)
+
             writer.add_scalar("data/tag_interval_length", tag_interval_length, frame_idx*args.num_envs)
+            tag_interval_length = 0
             episode_reward = [0 for _ in range(num_agents)]
+            episode_reward_separate = [[0 for _ in range(num_agents)] for _ in range(args.num_envs)]
 
         if frame_idx % args.train_freq == 0:
             if (len(agent.replay_buffer) > args.rl_start):
