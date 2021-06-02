@@ -31,9 +31,8 @@ class ParallelNashAgent():
         super(ParallelNashAgent, self).__init__()
         self.id = id
         self.env = env
-        self.num_player = len(env.agents)
+        self.num_player = len(env.agents[0])  # env.agents: (envs, agents) when using parallel envs
         self.args = args
-        print(args.num_envs)
         try:
             self.action_dims = self.env.action_space[0].n
         except:
