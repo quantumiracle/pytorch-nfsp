@@ -169,7 +169,7 @@ AtariEnvs = ['basketball_pong_v1', 'boxing_v1', 'combat_plane_v1', 'combat_tank_
   'pong_v1', 'quadrapong_v2', 'space_invaders_v1', 'space_war_v1', 'surround_v1', 'tennis_v2', 
   'video_checkers_v3', 'volleyball_pong_v1', 'warlords_v2', 'wizard_of_wor_v2']
 
-ClassicEnvs = ['dou_dizhu_v3', 'go_v3', 'leduc_holdem_v3', 'rps_v1', 'rpsls_v1', 'texas_holdem_no_limit_v3'
+ClassicEnvs = ['dou_dizhu_v3', 'go_v3', 'leduc_holdem_v3', 'rps_v1', 'texas_holdem_no_limit_v3'
 , 'texas_holdem_v3', 'tictactoe_v3', 'uno_v3']
 
 # import envs: multi-agent environments in PettingZoo Atari (both competitive and coorperative)
