@@ -174,7 +174,10 @@ ClassicEnvs = ['dou_dizhu_v3', 'go_v3', 'leduc_holdem_v3', 'rps_v1', 'texas_hold
 
 # import envs: multi-agent environments in PettingZoo Atari (both competitive and coorperative)
 for env in AtariEnvs:   
-    exec("from pettingzoo.atari import {}".format(env)) 
+    try:
+        exec("from pettingzoo.atari import {}".format(env)) 
+    except:
+        print("Cannot import pettingzoo env: ", env)
 # import envs: multi-agent environments PettingZoo Classic
 for env in ClassicEnvs:   
     exec("from pettingzoo.classic import {}".format(env)) 
