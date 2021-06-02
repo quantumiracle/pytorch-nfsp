@@ -214,6 +214,7 @@ def make_env(args):
             obs_type = 'rgb_image'
 
         env = eval(env_name).parallel_env(obs_type=obs_type)
+        env_agents = env.unwrapped.agents  # this cannot go through supersuit wrapper, so get it first and reassign it
 
         if obs_type == 'rgb_image':
             # as per openai baseline's MaxAndSKip wrapper, maxes over the last 2 frames
@@ -238,6 +239,7 @@ def make_env(args):
         # assign observation and action spaces
         env.observation_space = list(env.observation_spaces.values())[0]
         env.action_space = list(env.action_spaces.values())[0]
+        env.agents = env_agents
         env = NFSPPettingZooWrapper(env, keep_info=keep_info)  # pettingzoo to nfsp style, keep_info True to maintain dict type for parallel envs)
 
     elif env_name in ClassicEnvs: # PettingZoo Classic envs
@@ -592,10 +594,10 @@ class NFSPPettingZooWrapper():
         self.action_space = env.action_space
         fake_env = gym.make('Pong-v0')
         self.spec = fake_env.spec
-        try:
-            self.agents = env.unwrapped.agents
-        except: # slimevolley
+        try:   # both pettingzoo and slimevolley can work with this
             self.agents = env.agents
+        except:
+            self.agents = env.unwrapped.agents
         try:
             self.spec.id = env.env.spec.id
         except:
