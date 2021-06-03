@@ -11,6 +11,8 @@ def get_args():
                         help='Batch size')
     parser.add_argument('--no-cuda', action='store_true', default=False,
                         help='disables CUDA training')
+    parser.add_argument('--training-id', type=str, default='0',
+                        help='ID for training instance')
 
     # Training Arguments
     parser.add_argument('--max-frames', type=int, default=20000000,

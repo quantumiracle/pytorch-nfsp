@@ -191,8 +191,8 @@ def train(env, args, writer, model_path, num_agents=2):
     for frame_idx in range(1, args.max_frames + 1): # each step contains args.num_envs steps actually due to parallel envs
         t1=time.time()
         epsilon = agent.epsilon_by_frame(frame_idx)
-        # actions_ = agent.act(states.reshape(states.shape[0], -1), epsilon)  # concate states of all agents
-        actions_ = agent.act_greedy(states.reshape(states.shape[0], -1), epsilon)  # concate states of all agents
+        actions_ = agent.act(states.reshape(states.shape[0], -1), epsilon)  # concate states of all agents
+        # actions_ = agent.act_greedy(states.reshape(states.shape[0], -1), epsilon)  # concate states of all agents
         # for qs in q_values:
         #     maxid = np.argmax(qs.reshape(6,6))
         #     actions_.append([maxid//6, maxid%6])
@@ -285,7 +285,8 @@ def compute_rl_loss(agent, args):
 
     # Q-Learning with target network
     q_values = current_model(state)
-    target_next_q_values_ = target_model(next_state)
+    # target_next_q_values_ = target_model(next_state)
+    target_next_q_values_ = current_model(next_state)  # target model causing inaccuracy in Q estimation
     target_next_q_values = target_next_q_values_.detach().cpu().numpy()
     # print(q_values.shape)
 
@@ -310,6 +311,7 @@ def compute_rl_loss(agent, args):
         target_next_q_values_ = target_next_q_values_.reshape(-1, action_dim, action_dim)
         nash_dists_  = torch.FloatTensor(nash_dists).to(args.device)
         next_q_value = torch.einsum('bk,bk->b', torch.einsum('bj,bjk->bk', nash_dists_[:, 0], target_next_q_values_), nash_dists_[:, 1])
+        # print(next_q_value, target_next_q_values_)
         
         # next_q_value = torch.zeros_like(q_value) # test for rock-paper-scissor (stage game)
 
@@ -379,7 +381,7 @@ def multi_step_reward(rewards, gamma):
 def main():
     args = get_args()
     print_args(args)
-    model_path = f'models/nash_dqn/{args.env}'
+    model_path = f'models/nash_dqn/{args.env}/{args.training_id}'
     os.makedirs(model_path, exist_ok=True)
 
     log_dir = create_log_dir(args)
