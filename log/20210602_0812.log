@@ -1,0 +1,38 @@
+Cannot import pettingzoo env:  pong_v2
+                          Options
+                          seed: 1122
+                          batch_size: 1024
+                          no_cuda: False
+                          max_frames: 500000000
+                          buffer_size: 100000
+                          update_target: 1000
+                          train_freq: 100
+                          gamma: 0.99
+                          eta: 0.1
+                          rl_start: 10000
+                          sl_start: 1000
+                          num_envs: 5
+                          hidden_dim: 256
+                          dueling: False
+                          multi_step: 1
+                          cce: False
+                          env: SlimeVolley-v0
+                          ram: False
+                          negative: False
+                          against_baseline: False
+                          load_model: None
+                          save_model: model
+                          evaluate: False
+                          render: False
+                          evaluation_interval: 50000
+                          lr: 0.0001
+                          max_tag_interval: 10000
+                          eps_start: 1.0
+                          eps_final: 0.01
+                          eps_decay: 1000000
+                          cuda: True
+                          device: cuda:0
+[Box(-3.4028234663852886e+38, 3.4028234663852886e+38, (12,), float32), Box(-3.4028234663852886e+38, 3.4028234663852886e+38, (12,), float32), Box(-3.4028234663852886e+38, 3.4028234663852886e+38, (12,), float32), Box(-3.4028234663852886e+38, 3.4028234663852886e+38, (12,), float32), Box(-3.4028234663852886e+38, 3.4028234663852886e+38, (12,), float32)] [Discrete(6), Discrete(6), Discrete(6), Discrete(6), Discrete(6)]
+5
+(12,)
+(12,)
