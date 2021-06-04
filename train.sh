@@ -17,6 +17,6 @@ echo "Save as: " $DATE
 # python train_dqn_against_baseline.py  --env Pong-ram-v0 --hidden-dim 64  --max-tag-interval 10000   > log/$DATE$RAND.log &
 # python nash_dqn.py --env rps_v1 --num-envs 2 --hidden-dim 64 --evaluation-interval 500 --rl-start 1000 > log/$DATE$RAND.log &
 # python bilateral_dqn.py --env pong_v1 --num-envs 3 --ram --evaluation-interval 20000 --max-tag-interval 10000 --max-frames 20000000  --hidden-dim 256 > log/$DATE$RAND.log &
-#python nash_dqn.py --env pong_v1 --num-envs 5 --ram --training-id $DATE --hidden-dim 256 --evaluation-interval 50000 --max-tag-interval 10000 --train-freq 100 --batch-size 1024 --max-frames 500000000 > log/$DATE$RAND.log &
-python nash_dqn.py --env boxing_v1 --num-envs 3 --training-id $DATE --ram --hidden-dim 256 --evaluation-interval 50000 --max-tag-interval 10000 --train-freq 100 --batch-size 1024 --max-frames 500000000 > log/$DATE$RAND.log &
+python nash_dqn.py --env pong_v1 --num-envs 5 --ram --training-id $DATE --hidden-dim 256 --evaluation-interval 50000 --max-tag-interval 10000 --train-freq 100 --batch-size 1024 --max-frames 500000000 > log/$DATE$RAND.log &
+#python nash_dqn.py --env boxing_v1 --num-envs 3 --training-id $DATE --ram --hidden-dim 256 --evaluation-interval 50000 --max-tag-interval 10000 --train-freq 100 --batch-size 1024 --max-frames 500000000 > log/$DATE$RAND.log &
 # python nash_double_dqn.py --env pong_v1 --num-envs 3 --ram --hidden-dim 256 --evaluation-interval 50000 --max-tag-interval 10000 --train-freq 100 --batch-size 1024 --max-frames 500000000 > log/$DATE$RAND.log &
