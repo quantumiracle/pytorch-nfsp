@@ -285,8 +285,8 @@ def compute_rl_loss(agent, args):
 
     # Q-Learning with target network
     q_values = current_model(state)
-    # target_next_q_values_ = target_model(next_state)
-    target_next_q_values_ = current_model(next_state)  # target model causing inaccuracy in Q estimation
+    target_next_q_values_ = target_model(next_state)
+    # target_next_q_values_ = current_model(next_state)  # target model causing inaccuracy in Q estimation
     target_next_q_values = target_next_q_values_.detach().cpu().numpy()
     # print(q_values.shape)
 
@@ -295,7 +295,6 @@ def compute_rl_loss(agent, args):
     # print(action.shape)
 
     q_value = q_values.gather(1, action.unsqueeze(1)).squeeze(1)
-
     # next_q_value = target_next_q_values.max(1)[0]  # original one, get the maximum of target Q
 
     # compute CCE or NE
@@ -307,13 +306,13 @@ def compute_rl_loss(agent, args):
         # print('value: ', reward.shape, next_q_value)
 
     else: # Nash Equilibrium
-        nash_dists = agent.compute_nash(target_next_q_values, return_dist=True)  # get the mixed strategy Nash rather than specific actions
-        target_next_q_values_ = target_next_q_values_.reshape(-1, action_dim, action_dim)
-        nash_dists_  = torch.FloatTensor(nash_dists).to(args.device)
-        next_q_value = torch.einsum('bk,bk->b', torch.einsum('bj,bjk->bk', nash_dists_[:, 0], target_next_q_values_), nash_dists_[:, 1])
+        # nash_dists = agent.compute_nash(target_next_q_values, return_dist=True)  # get the mixed strategy Nash rather than specific actions
+        # target_next_q_values_ = target_next_q_values_.reshape(-1, action_dim, action_dim)
+        # nash_dists_  = torch.FloatTensor(nash_dists).to(args.device)
+        # next_q_value = torch.einsum('bk,bk->b', torch.einsum('bj,bjk->bk', nash_dists_[:, 0], target_next_q_values_), nash_dists_[:, 1])
         # print(next_q_value, target_next_q_values_)
         
-        # next_q_value = torch.zeros_like(q_value) # test for rock-paper-scissor (stage game)
+        next_q_value = torch.zeros_like(q_value) # test for rock-paper-scissor (stage game)
 
         # greedy Q estimation (cause overestimation, increasing Q value)
         # next_q_value = torch.FloatTensor(target_next_q_values).to(args.device)
