@@ -239,6 +239,10 @@ def make_env(args):
 
         #   env = PettingZooWrapper(env)  # need to be put at the end
         
+        # normalize the observation of Atari for both image or RAM 
+        env = supersuit.dtype_v0(env, 'float32') # need to transform uint8 to float first for normalizing observation: https://github.com/PettingZoo-Team/SuperSuit
+        env = supersuit.normalize_obs_v0(env, env_min=0, env_max=1) # normalize the observation to (0,1)
+        
         # assign observation and action spaces
         env.observation_space = list(env.observation_spaces.values())[0]
         env.action_space = list(env.action_spaces.values())[0]
@@ -267,7 +271,7 @@ def make_env(args):
             env = gym.make(env_name)
         except:
             print(f"Error: No such env: {env_name}!")
-        # may need more wrappers here, e.g. Pong-ram-v0 need scaled observation
+        # may need more wrappers here, e.g. Pong-ram-v0 need scaled observation!
         # Ref: https://towardsdatascience.com/deep-q-network-dqn-i-bce08bdf2af
         env = NFSPAtariWrapper(env, keep_info = keep_info)
 

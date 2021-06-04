@@ -380,7 +380,7 @@ def multi_step_reward(rewards, gamma):
 def main():
     args = get_args()
     print_args(args)
-    model_path = f'models/nash_dqn/{args.env}/{args.training_id}'
+    model_path = f'models/nash_dqn/{args.env}/{args.save_model}'
     os.makedirs(model_path, exist_ok=True)
 
     log_dir = create_log_dir(args)
@@ -398,6 +398,7 @@ def main():
     env.seed(args.seed)
 
     if args.evaluate:
+        model_path = f'models/nash_dqn/{args.env}/{args.load_model}'
         test(env, args, model_path)
         env.close()
         return
