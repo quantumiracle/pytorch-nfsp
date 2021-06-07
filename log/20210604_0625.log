@@ -1,0 +1,40 @@
+Cannot import pettingzoo env:  pong_v2
+                          Options
+                          seed: 1122
+                          batch_size: 1024
+                          no_cuda: False
+                          training_id: 0
+                          max_frames: 500000000
+                          buffer_size: 100000
+                          update_target: 1000
+                          train_freq: 100
+                          gamma: 0.99
+                          eta: 0.1
+                          rl_start: 10000
+                          sl_start: 1000
+                          num_envs: 5
+                          hidden_dim: 256
+                          dueling: False
+                          multi_step: 1
+                          cce: False
+                          env: pong_v1
+                          ram: True
+                          negative: False
+                          against_baseline: False
+                          load_model: None
+                          save_model: 20210604_0625
+                          evaluate: False
+                          render: False
+                          evaluation_interval: 50000
+                          lr: 0.0001
+                          max_tag_interval: 10000
+                          eps_start: 1.0
+                          eps_final: 0.01
+                          eps_decay: 30000
+                          cuda: False
+                          device: cpu
+Load PettingZoo Atari env: pong_v1
+Load PettingZoo Atari env: pong_v1
+Load PettingZoo Atari env: pong_v1
+Load PettingZoo Atari env: pong_v1
+Load PettingZoo Atari env: pong_v1
