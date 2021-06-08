@@ -20,15 +20,12 @@ from common.utils import create_log_dir, print_args, set_global_seeds
 from common.wrappers import wrap_pytorch, make_env
 from arguments import get_args
 from common.env import DummyVectorEnv, SubprocVectorEnv
-from eq_solver import NashEquilibriaSolver, NashEquilibriumSolver
-from eq_LPsolver import NashEquilibriumLPSolver, CoarseCorrelatedEquilibriumLPSolver
-from eq_CVXPYsolver import NashEquilibriumCVXPYSolver
-from eq_GUROBIsolver import NashEquilibriumGUROBISolver
+from equilibrium_solver import * 
+
 
 class ParallelNashAgent():
-    def __init__(self, env, id, args):
+    def __init__(self, env, args):
         super(ParallelNashAgent, self).__init__()
-        self.id = id
         self.env = env
         self.args = args
         print(args.num_envs)
@@ -156,7 +153,7 @@ class ParallelNashAgent():
             self.target_model.eval()
 
 def train(env, args, writer, model_path, num_agents=2):
-    agent = ParallelNashAgent(env, 0, args)
+    agent = ParallelNashAgent(env, args)
 
     # Logging
     length_list = []
@@ -330,7 +327,7 @@ def compute_rl_loss(agent, args):
     return loss+loss2, torch.mean(q_value)  # return the q value to see whether overestimation
 
 def test(env, args, model_path, num_agents=2): 
-    agent = ParallelNashAgent(env, 0, args)
+    agent = ParallelNashAgent(env, args)
     agent.load_model(model_path, eval=True, map_location='cuda:0')  
 
     print('Load model from: ', model_path)

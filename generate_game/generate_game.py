@@ -10,18 +10,23 @@ def GenerateGeneralSumMatrixGame(matrix, name):
     Modified from prettingzoo rps.py
     Generate a general-sum bimatrix game like rock-paper-scissor.
     """
-    try:
+    assert isinstance(matrix, np.ndarray)
+    if len(matrix.shape) > 2: # bimatrix
+        row, col = matrix.shape[1:]
+        BIMATRIX = True
+    else:   # unimatrix, zero-sum
         row, col = matrix.shape
-    except:
-        row, col = np.array(matrix).shape
+        BIMATRIX = False
+
     assert row ==  col
     MOVES = [chr(65+i) for i in range(row)]  # ['A', 'B', ...]
     MOVES.append('None')
+    print(MOVES)
     for i in range(row):
-        exec(chr(65+i)+f'={i}')
+        exec(chr(65+i)+f'={i}', globals())  # default as locals() will not work
     NONE = row
     NUM_ITERS = 100
-
+    
 
     class raw_env(AECEnv):
         """Two-player environment for rock paper scissors.
@@ -86,9 +91,14 @@ def GenerateGeneralSumMatrixGame(matrix, name):
                 #     (SCISSORS, SCISSORS): (0, 0),
                 # }[(self.state[self.agents[0]], self.state[self.agents[1]])]
                 payoff_list=[]
-                for i in range(row):
-                    for j in range(row):
-                        payoff_list.append(f"({MOVES[i], MOVES[j]}): ({matrix[i][j], -matrix[i][j]})")
+                if BIMATRIX:
+                    for i in range(row):
+                        for j in range(row):
+                            payoff_list.append(f"({MOVES[i]}, {MOVES[j]}): ({matrix[0][i][j]}, {matrix[1][i][j]})")
+                else:
+                    for i in range(row):
+                        for j in range(row):
+                            payoff_list.append(f"({MOVES[i]}, {MOVES[j]}): ({matrix[i][j]}, -{matrix[i][j]})")
                 exec("self.rewards[self.agents[0]], self.rewards[self.agents[1]] = {"+','.join(payoff_list)+"}[(self.state[self.agents[0]], self.state[self.agents[1]])]")
 
                 self.num_moves += 1
@@ -113,12 +123,12 @@ def GenerateGeneralSumMatrixGame(matrix, name):
         return env
 
     parallel_env = parallel_wrapper_fn(env)
-
-    return parallel_env
+    return parallel_env()
 
 
 
 if __name__ == "__main__":
-    payoff_matrix = np.array([[0, -1, 1], [1, 0, -1], [-1, 1, 0]])
+    payoff_matrix = np.array([[0, -1, 1], [2, 0, -1], [-1, 1, 0]])
+    payoff_bimatrix = np.array([[[10, 0], [3, 2]],  [[9, 3], [0, 2]]])
     env = GenerateGeneralSumMatrixGame(payoff_matrix, 'random')
     print(env)
