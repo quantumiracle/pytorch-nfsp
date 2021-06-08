@@ -20,16 +20,11 @@ from common.utils import create_log_dir, print_args, set_global_seeds
 from common.wrappers import wrap_pytorch, make_env
 from arguments import get_args
 from common.env import DummyVectorEnv, SubprocVectorEnv
-from eq_solver import NashEquilibriaSolver, NashEquilibriumSolver
-# from eq_LPsolver import NashEquilibriumLPSolver, CoarseCorrelatedEquilibriumLPSolver
-# from eq_CVXPYsolver import NashEquilibriumCVXPYSolver
-from eq_GUROBIsolver import NashEquilibriumGUROBISolver
-from eq_ECOSsolver import NashEquilibriumECOSSolver
+from equilibrium_solver import * 
 
 class ParallelNashAgent():
-    def __init__(self, env, id, args):
+    def __init__(self, env, args):
         super(ParallelNashAgent, self).__init__()
-        self.id = id
         self.env = env
         self.num_player = len(env.agents[0])  # env.agents: (envs, agents) when using parallel envs
         self.args = args
@@ -160,18 +155,18 @@ class ParallelNashAgent():
         return actions
 
     def save_model(self, model_path):
-        torch.save(self.current_model.state_dict(), model_path+f'/{self.id}_dqn')
-        torch.save(self.target_model.state_dict(), model_path+f'/{self.id}_dqn_target')
+        torch.save(self.current_model.state_dict(), model_path+f'dqn')
+        torch.save(self.target_model.state_dict(), model_path+f'dqn_target')
 
     def load_model(self, model_path, eval=False, map_location=None):
-        self.current_model.load_state_dict(torch.load(model_path+f'/{self.id}_dqn', map_location=map_location))
-        self.target_model.load_state_dict(torch.load(model_path+f'/{self.id}_dqn_target', map_location=map_location))
+        self.current_model.load_state_dict(torch.load(model_path+f'dqn', map_location=map_location))
+        self.target_model.load_state_dict(torch.load(model_path+f'dqn_target', map_location=map_location))
         if eval:
             self.current_model.eval()
             self.target_model.eval()
 
 def train(env, args, writer, model_path, num_agents=2):
-    agent = ParallelNashAgent(env, 0, args)
+    agent = ParallelNashAgent(env, args)
 
     # Logging
     length_list = []
@@ -255,7 +250,7 @@ def train(env, args, writer, model_path, num_agents=2):
             prev_frame = frame_idx
             prev_time = time.time()
 
-            agent.save_model(model_path)
+            agent.save_model(model_path+f'/{frame_idx}_')
             # evaluate the model, output one Q table
             q = agent.current_model(torch.FloatTensor([states[0].reshape(-1)]).to(args.device)).detach().cpu().numpy()
             print('Q table: \n', q.reshape(env.action_space[0].n, -1))
@@ -268,7 +263,7 @@ def train(env, args, writer, model_path, num_agents=2):
         t3=time.time()
         # print((t2-t1)/(t3-t1))
 
-    agent.save_model(model_path)
+    agent.save_model(model_path+f'/{frame_idx}_')
 
 
 def compute_rl_loss(agent, args):
@@ -285,8 +280,8 @@ def compute_rl_loss(agent, args):
 
     # Q-Learning with target network
     q_values = current_model(state)
-    target_next_q_values_ = target_model(next_state)
-    # target_next_q_values_ = current_model(next_state)  # target model causing inaccuracy in Q estimation
+    # target_next_q_values_ = target_model(next_state)
+    target_next_q_values_ = current_model(next_state)  # target model causing inaccuracy in Q estimation
     target_next_q_values = target_next_q_values_.detach().cpu().numpy()
     # print(q_values.shape)
 
@@ -336,7 +331,7 @@ def compute_rl_loss(agent, args):
     return loss, torch.mean(q_value)  # return the q value to see whether overestimation
 
 def test(env, args, model_path, num_agents=2): 
-    agent = ParallelNashAgent(env, 0, args)
+    agent = ParallelNashAgent(env, args)
     agent.load_model(model_path, eval=True, map_location='cuda:0')  
 
     print('Load model from: ', model_path)
@@ -392,13 +387,27 @@ def main():
     else:
         VectorEnv = [DummyVectorEnv, SubprocVectorEnv][1]  # https://github.com/thu-ml/tianshou/blob/master/tianshou/env/venvs.py
         env = VectorEnv([lambda: make_env(args) for _ in range(args.num_envs)])
+
+        ### test an arbitrary stage game with given matrix/bimatrix ###
+        # from common.wrappers import PettingzooClassicWrapper, NFSPPettingZooWrapper
+        # from generate_game.generate_game import GenerateGeneralSumMatrixGame
+        # def create_env():
+        #     # payoff_matrix = np.array([[0., -1., 1.], [2, 0., -1.], [-1., 1., 0.]])
+        #     payoff_matrix = np.array([[3, -1], [-1, 1]])
+        #     # payoff_bimatrix = np.array([[[10, 0], [3, 2]],  [[9, 3], [0, 2]]])
+        #     env = GenerateGeneralSumMatrixGame(payoff_matrix, 'random')
+        #     env = PettingzooClassicWrapper(env, observation_mask=1.)
+        #     env = NFSPPettingZooWrapper(env, keep_info=True)
+        #     return env
+        # env = VectorEnv([lambda: create_env() for _ in range(args.num_envs)])
+
     print(env.observation_space, env.action_space)
 
     set_global_seeds(args.seed)
     env.seed(args.seed)
 
     if args.evaluate:
-        model_path = f'models/nash_dqn/{args.env}/{args.load_model}'
+        model_path = f'models/nash_dqn/{args.env}/{args.load_model}/'
         test(env, args, model_path)
         env.close()
         return
