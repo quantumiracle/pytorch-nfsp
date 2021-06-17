@@ -156,14 +156,14 @@ class ParallelNashAgent():
 
     def save_model(self, model_path):
         torch.save(self.current_model.state_dict(), model_path+f'dqn')
-        torch.save(self.target_model.state_dict(), model_path+f'dqn_target')
+        # torch.save(self.target_model.state_dict(), model_path+f'dqn_target')
 
     def load_model(self, model_path, eval=False, map_location=None):
         self.current_model.load_state_dict(torch.load(model_path+f'dqn', map_location=map_location))
-        self.target_model.load_state_dict(torch.load(model_path+f'dqn_target', map_location=map_location))
+        # self.target_model.load_state_dict(torch.load(model_path+f'dqn_target', map_location=map_location))
         if eval:
             self.current_model.eval()
-            self.target_model.eval()
+            # self.target_model.eval()
 
 def train(env, args, writer, model_path, num_agents=2):
     agent = ParallelNashAgent(env, args)
@@ -247,10 +247,9 @@ def train(env, args, writer, model_path, num_agents=2):
             rl_loss_list = []
             q_list = []
             length_list.clear()
-            prev_frame = frame_idx
-            prev_time = time.time()
 
-            agent.save_model(model_path+f'/{frame_idx}_')
+            # agent.save_model(model_path+f'/{frame_idx}_')
+            agent.save_model(model_path)
             # evaluate the model, output one Q table
             q = agent.current_model(torch.FloatTensor([states[0].reshape(-1)]).to(args.device)).detach().cpu().numpy()
             print('Q table: \n', q.reshape(env.action_space[0].n, -1))
@@ -332,6 +331,13 @@ def compute_rl_loss(agent, args):
 
 def test(env, args, model_path, num_agents=2): 
     agent = ParallelNashAgent(env, args)
+    # find the latest model
+    arr = os.listdir(model_path)
+    arrv = []
+    for f in arr:
+        arrv.append(int(f.split('_')[0]))
+    last_model_idx = max(arrv)
+    model_path += f'{last_model_idx}_'
     agent.load_model(model_path, eval=True, map_location='cuda:0')  
 
     print('Load model from: ', model_path)
