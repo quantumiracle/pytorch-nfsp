@@ -249,7 +249,7 @@ def train(env, args, writer, model_path, num_agents=2):
             length_list.clear()
 
             # agent.save_model(model_path+f'/{frame_idx}_')
-            agent.save_model(model_path)
+            agent.save_model(model_path+'/0_')
             # evaluate the model, output one Q table
             q = agent.current_model(torch.FloatTensor([states[0].reshape(-1)]).to(args.device)).detach().cpu().numpy()
             print('Q table: \n', q.reshape(env.action_space[0].n, -1))
@@ -355,6 +355,7 @@ def test(env, args, model_path, num_agents=2):
         while True:
             if args.render:
                 env.render() 
+                time.sleep(0.05)
             actions_ = agent.act(torch.FloatTensor(states).reshape(-1).unsqueeze(0), 0.)  # epsilon=0, greedy action
             assert num_agents == 2
             actions = [{n0: a0, n1: a1} for a0, a1 in zip(*actions_.T)][0]
@@ -387,25 +388,21 @@ def main():
     log_dir = create_log_dir(args)
     if not args.evaluate:
         writer = SummaryWriter(log_dir)
-    SEED = 721
-    if args.num_envs == 1 or args.evaluate:
-        env = make_env(args)  # "SlimeVolley-v0", "SlimeVolleyPixel-v0" 'Pong-ram-v0'
-    else:
-        VectorEnv = [DummyVectorEnv, SubprocVectorEnv][1]  # https://github.com/thu-ml/tianshou/blob/master/tianshou/env/venvs.py
-        env = VectorEnv([lambda: make_env(args) for _ in range(args.num_envs)])
 
-        ### test an arbitrary stage game with given matrix/bimatrix ###
-        # from common.wrappers import PettingzooClassicWrapper, NFSPPettingZooWrapper
-        # from generate_game.generate_game import GenerateGeneralSumMatrixGame
-        # def create_env():
-        #     # payoff_matrix = np.array([[0., -1., 1.], [2, 0., -1.], [-1., 1., 0.]])
-        #     payoff_matrix = np.array([[3, -1], [-1, 1]])
-        #     # payoff_bimatrix = np.array([[[10, 0], [3, 2]],  [[9, 3], [0, 2]]])
-        #     env = GenerateGeneralSumMatrixGame(payoff_matrix, 'random')
-        #     env = PettingzooClassicWrapper(env, observation_mask=1.)
-        #     env = NFSPPettingZooWrapper(env, keep_info=True)
-        #     return env
-        # env = VectorEnv([lambda: create_env() for _ in range(args.num_envs)])
+    env = make_env(args)  # "SlimeVolley-v0", "SlimeVolleyPixel-v0" 'Pong-ram-v0'
+
+    ### test an arbitrary stage game with given matrix/bimatrix ###
+    # from common.wrappers import PettingzooClassicWrapper, NFSPPettingZooWrapper
+    # from generate_game.generate_game import GenerateGeneralSumMatrixGame
+    # def create_env():
+    #     # payoff_matrix = np.array([[0., -1., 1.], [2, 0., -1.], [-1., 1., 0.]])
+    #     payoff_matrix = np.array([[3, -1], [-1, 1]])
+    #     # payoff_bimatrix = np.array([[[10, 0], [3, 2]],  [[9, 3], [0, 2]]])
+    #     env = GenerateGeneralSumMatrixGame(payoff_matrix, 'random')
+    #     env = PettingzooClassicWrapper(env, observation_mask=1.)
+    #     env = NFSPPettingZooWrapper(env, keep_info=True)
+    #     return env
+    # env = VectorEnv([lambda: create_env() for _ in range(args.num_envs)])
 
     print(env.observation_space, env.action_space)
 

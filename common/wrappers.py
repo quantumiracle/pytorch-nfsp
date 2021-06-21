@@ -6,8 +6,7 @@ import slimevolleygym
 import cv2
 from collections import deque
 import random
-
-
+from common.env import DummyVectorEnv, SubprocVectorEnv
 class ImageToPyTorch(gym.ObservationWrapper):
     """
     Image shape to num_channels x weight x height
@@ -183,6 +182,14 @@ for env in ClassicEnvs:
     exec("from pettingzoo.classic import {}".format(env)) 
 
 def make_env(args):
+    if args.num_envs == 1:
+        env = create_single_env(args)  # "SlimeVolley-v0", "SlimeVolleyPixel-v0" 'Pong-ram-v0'
+    else:
+        VectorEnv = [DummyVectorEnv, SubprocVectorEnv][1]  # https://github.com/thu-ml/tianshou/blob/master/tianshou/env/venvs.py
+        env = VectorEnv([lambda: create_single_env(args) for _ in range(args.num_envs)])
+    return env
+
+def create_single_env(args):
     env_name = args.env
     if args.num_envs > 1:
         keep_info = True  # keep_info True to maintain dict type for parallel envs (otherwise cannot pass VectorEnv wrapper)
