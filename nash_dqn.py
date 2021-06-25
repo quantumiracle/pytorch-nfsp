@@ -248,8 +248,8 @@ def train(env, args, writer, model_path, num_agents=2):
             q_list = []
             length_list.clear()
 
-            # agent.save_model(model_path+f'/{frame_idx}_')
-            agent.save_model(model_path+'/0_')
+            agent.save_model(model_path+f'/{frame_idx}_')
+            # agent.save_model(model_path+'/0_')
             # evaluate the model, output one Q table
             q = agent.current_model(torch.FloatTensor([states[0].reshape(-1)]).to(args.device)).detach().cpu().numpy()
             print('Q table: \n', q.reshape(env.action_space[0].n, -1))
@@ -335,7 +335,10 @@ def test(env, args, model_path, num_agents=2):
     arr = os.listdir(model_path)
     arrv = []
     for f in arr:
-        arrv.append(int(f.split('_')[0]))
+        try: 
+            arrv.append(int(f.split('_')[0]))
+        except:
+            print(f'{f} is not standard model file.')
     last_model_idx = max(arrv)
     model_path += f'{last_model_idx}_'
     agent.load_model(model_path, eval=True, map_location='cuda:0')  

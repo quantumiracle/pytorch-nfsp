@@ -63,8 +63,9 @@ class ParallelNashAgent():
                 # print(np.linalg.det(qs))
                 # ne = NashEquilibriumSolver(qs)
                 # ne = NashEquilibriumLPSolver(qs)
-                ne = NashEquilibriumCVXPYSolver(qs)
+                # ne = NashEquilibriumCVXPYSolver(qs)
                 # ne = NashEquilibriumGUROBISolver(qs)
+                ne = NashEquilibriumECOSSolver(qs)
 
             except:  # some cases NE cannot be solved
                 print('No Nash solution for: ', np.linalg.det(qs), qs)
@@ -142,15 +143,15 @@ class ParallelNashAgent():
         return actions
 
     def save_model(self, model_path):
-        torch.save(self.current_model.state_dict(), model_path+f'/{self.id}_dqn')
-        torch.save(self.target_model.state_dict(), model_path+f'/{self.id}_dqn_target')
+        torch.save(self.current_model.state_dict(), model_path+f'dqn')
+        # torch.save(self.target_model.state_dict(), model_path+f'dqn_target')
 
     def load_model(self, model_path, eval=False, map_location=None):
-        self.current_model.load_state_dict(torch.load(model_path+f'/{self.id}_dqn', map_location=map_location))
-        self.target_model.load_state_dict(torch.load(model_path+f'/{self.id}_dqn_target', map_location=map_location))
+        self.current_model.load_state_dict(torch.load(model_path+f'dqn', map_location=map_location))
+        # self.target_model.load_state_dict(torch.load(model_path+f'dqn_target', map_location=map_location))
         if eval:
             self.current_model.eval()
-            self.target_model.eval()
+            # self.target_model.eval()
 
 def train(env, args, writer, model_path, num_agents=2):
     agent = ParallelNashAgent(env, args)
@@ -372,18 +373,13 @@ def multi_step_reward(rewards, gamma):
 def main():
     args = get_args()
     print_args(args)
-    model_path = f'models/nash_double_dqn/{args.env}'
+    model_path = f'models/nash_double_dqn/{args.env}/'
     os.makedirs(model_path, exist_ok=True)
 
     log_dir = create_log_dir(args)
     if not args.evaluate:
         writer = SummaryWriter(log_dir)
-    SEED = 721
-    if args.num_envs == 1 or args.evaluate:
-        env = make_env(args)  # "SlimeVolley-v0", "SlimeVolleyPixel-v0" 'Pong-ram-v0'
-    else:
-        VectorEnv = [DummyVectorEnv, SubprocVectorEnv][1]  # https://github.com/thu-ml/tianshou/blob/master/tianshou/env/venvs.py
-        env = VectorEnv([lambda: make_env(args) for _ in range(args.num_envs)])
+    env = make_env(args)
     print(env.observation_space, env.action_space)
 
     set_global_seeds(args.seed)
