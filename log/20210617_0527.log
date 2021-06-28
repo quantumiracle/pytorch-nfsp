@@ -4455,4 +4455,8 @@ Q table:
  [-0.739 -0.676 -0.725 ... -0.668 -0.677 -0.727]
  [-0.801 -0.787 -0.775 ... -0.759 -0.809 -0.825]
  [-0.793 -0.753 -0.755 ... -0.672 -0.742 -0.725]]
-Nash policies:  [(array([0.   , 0.   , 0.   , 0.   , 0.163, 0.   , 0.   , 0.   , 0.   , 0.837, 0.   , 0.   , 0.   , 0.   , 0.   , 0.   , 0.   , 0.   ]), array([0.   , 0.   , 0.   , 0.   , 0.   , 0.634, 0.   , 0.366, 0.   , 0.   , 0.   , 0.   , 0.   , 0.   , 0.   , 0.   , 0.   , 0.   ]))]
+Nash policies:  [(array([0.   , 0.   , 0.   , 0.   , 0.163, 0.   , 0.   , 0.   , 0.   , 0.837, 0.   , 0.   , 0.   , 0.   , 0.   , 0.   , 0.   , 0.   ]), array([0.   , 0.   , 0.   , 0.   , 0.   , 0.634, 0.   , 0.366, 0.   , 0.   , 0.   , 0.   , 0.   , 0.   , 0.   , 0.   , 0.   , 0.   ]))]Load PettingZoo Atari env: pong_v1
+Load PettingZoo Atari env: pong_v1
+Load PettingZoo Atari env: pong_v1
+Load PettingZoo Atari env: pong_v1
+Load PettingZoo Atari env: pong_v1
