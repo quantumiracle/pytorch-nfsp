@@ -2393,4 +2393,8 @@ Q table:
  [0.893 0.897 0.875 0.891 0.906 0.856]
  [0.873 0.881 0.89  0.888 0.87  0.89 ]
  [0.884 0.888 0.897 0.898 0.875 0.89 ]]
-Nash policies:  [(array([0.   , 0.982, 0.018, 0.   , 0.   , 0.   ]), array([0.652, 0.   , 0.348, 0.   , 0.   , 0.   ]))]
+Nash policies:  [(array([0.   , 0.982, 0.018, 0.   , 0.   , 0.   ]), array([0.652, 0.   , 0.348, 0.   , 0.   , 0.   ]))]Load SlimeVolley env: SlimeVolley-v0
+Load SlimeVolley env: SlimeVolley-v0
+Load SlimeVolley env: SlimeVolley-v0
+Load SlimeVolley env: SlimeVolley-v0
+Load SlimeVolley env: SlimeVolley-v0
